@@ -1,2 +1,2 @@
-# tng-industrial-pilot
-5GTANGO Industrial pilot repository
+# tng-etsi-plugtests
+5GTANGO ETSI PlugTests repository
