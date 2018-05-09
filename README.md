@@ -1,2 +1,2 @@
-# tng-etsi-plugtests
+# tng-industrial-pilot
 5GTANGO industrial pilot repository
