@@ -41,7 +41,13 @@ virtual_deployment_units:
       - id: "in"
         interface: "ipv4"
         type: "external"
-      - id: "out"
+      - id: "out1"
+        interface: "ipv4"
+        type: "external"
+      - id: "out2"
+        interface: "ipv4"
+        type: "external"
+      - id: "out3"
         interface: "ipv4"
         type: "external"
  
@@ -56,7 +62,13 @@ connection_points:
   - id: "input"
     interface: "ipv4"
     type: "external"
-  - id: "output"
+  - id: "output1"
+    interface: "ipv4"
+    type: "external"
+  - id: "output2"
+    interface: "ipv4"
+    type: "external"
+  - id: "output3"
     interface: "ipv4"
     type: "external"
  
@@ -76,10 +88,20 @@ virtual_links:
     connection_points_reference:
       - "vdu01:in"
       - "input"
-  - id: "output"
+  - id: "output1"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:out"
+      - "vdu01:out1"
+      - "output"
+  - id: "output2"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vdu01:out2"
+      - "output"
+  - id: "output3"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vdu01:out3"
       - "output"
  
 ##

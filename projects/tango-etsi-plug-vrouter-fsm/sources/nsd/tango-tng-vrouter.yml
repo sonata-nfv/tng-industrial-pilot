@@ -36,7 +36,13 @@ connection_points:
   - id: "input"
     interface: "ipv4"
     type: "external"
-  - id: "output"
+  - id: "output1"
+    interface: "ipv4"
+    type: "external"
+  - id: "output2"
+    interface: "ipv4"
+    type: "external"
+  - id: "output3"
     interface: "ipv4"
     type: "external"
 
@@ -55,10 +61,20 @@ virtual_links:
     connection_points_reference:
       - "input"
       - "vnf_vrouter:input"
-  - id: "vrouter-2-output"
+  - id: "vrouter-2-output1"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vnf_vrouter:output"
+      - "vnf_vrouter:output1"
+      - "output"
+  - id: "vrouter-2-output2"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf_vrouter:output2"
+      - "output"
+  - id: "vrouter-2-output3"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf_vrouter:output3"
       - "output"
 
 ##
@@ -66,12 +82,14 @@ virtual_links:
 ##
 forwarding_graphs:
   - fg_id: "fg01"
-    number_of_endpoints: 2
-    number_of_virtual_links: 3
+    number_of_endpoints: 3
+    number_of_virtual_links: 5
     constituent_virtual_links: 
       - "mgmt"
       - "input-2-vrouter"
-      - "vrouter-2-output"
+      - "vrouter-2-output1"
+      - "vrouter-2-output2"
+      - "vrouter-2-output3"
     constituent_vnfs:
       - "vnf_vrouter"
     network_forwarding_paths:
