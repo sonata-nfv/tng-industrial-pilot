@@ -1,1 +1,1 @@
-Sonata's FSM for cache VNF
+Sonata's FSM for vrouter VNF

@@ -41,19 +41,19 @@ Run python setup.py install
 WORKDIR /son-sm-template
 RUN python setup.py install
 
-#WORKDIR /son-security-pilot/install/roles/docker-squid/files
-#COPY ansible/roles/squid/files /etc/squid3
+#WORKDIR /son-security-pilot/install/roles/docker-quagga/files
+#COPY ansible/roles/quagga/files /etc/squid3
 
-#CMD mkdir /squid-config
+#CMD mkdir /quagga-config
 
 WORKDIR /
-ADD fsm/squid-config /squid-config
+ADD fsm/quagga-config /quagga-config
 
-WORKDIR /squid-config
+WORKDIR /quagga-config
 RUN python setup.py develop
 
-#COPY ansible/roles/squid/files/entrypoint.sh /sbin
+#COPY ansible/roles/quagga/files/entrypoint.sh /sbin
 #RUN chmod 755 /sbin/entrypoint.sh
 
-CMD ["fsm-squid"]
+CMD ["fsm-quagga"]
 #ENTRYPOINT ["tail", "-f", "/dev/null"]

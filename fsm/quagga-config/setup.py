@@ -11,15 +11,15 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='squid configuration',
+    name='quagga configuration',
 
     version='0.1',
 
-    description='FSM squid configuration',
+    description='FSM quagga configuration',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/sonata-nfv/son-security-pilot/fsm/squid-config',
+    url='https://github.com/sonata-nfv/son-security-pilot/fsm/quagga-config',
 
     # Author details
     author='Miguel Mesquita',
@@ -31,7 +31,7 @@ setup(
     # What does your project relate to?
     keywords='NFV orchestrator',
 
-    packages=find_packages("squid-config"),
+    packages=find_packages("quagga-config"),
     install_requires=['pytest', 'ansible>=2.4.0.0'],
     setup_requires=['pytest-runner'],
 
@@ -39,6 +39,6 @@ setup(
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
-        'console_scripts': ['fsm-squid=sonfsm_face.__main__:main'],
+        'console_scripts': ['fsm-quagga=tngfsm_css.__main__:main'],
     },
 )

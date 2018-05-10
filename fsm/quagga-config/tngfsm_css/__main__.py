@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from sonfsm_face import sonfsm_face
+from tngfsm_css import tngfsm_css
 
 def main():
-    sonfsm_face.main()
+    tngfsm_css.main()
 
 if __name__ == '__main__':
     main()

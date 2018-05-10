@@ -17,12 +17,7 @@ class Factory:
             raise NotImplementedError("Unknown OS type.")
 
 class OS_implementation(metaclass = ABCMeta):
-    config_options = { 'direct': './ansible/roles/squid/files/squid_direct.conf', 
-        'transparent': './ansible/roles/squid/files/squid.conf', 
-        'squidufdb_xenial': './ansible/roles/squid/files/squid_ufdb_xenial.conf',
-        'squidufdb_centos': './ansible/roles/squid/files/squid_ufdb_centos.conf',
-        'ufdbguardconf': './ansible/roles/squid/files/ufdbguard.conf' }
-    config_dir = './ansible/roles/squid/files'
+    config_dir = './ansible/roles/quagga/files'
     monitoring_file = './node.conf'
     LOG = None
 
@@ -34,7 +29,7 @@ class OS_implementation(metaclass = ABCMeta):
         raise NotImplementedError("Not implemented")
     
     @abstractmethod
-    def configure_squid_forwarding_rules(self, ssh, gw):
+    def configure_quagga_forwarding_rules(self, ssh, gw):
         raise NotImplementedError("Not implemented")
 
     def configure_monitoring(self, ssh, host_ip):
@@ -59,14 +54,14 @@ class OS_implementation(metaclass = ABCMeta):
     def stop_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
     def scale_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -189,7 +184,7 @@ class Centos_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_squid_forwarding_rules(self, ssh, gw):
+    def configure_quagga_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -224,14 +219,14 @@ class Centos_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
-        self.LOG.info("Configuration of squid service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start squid')
+        self.LOG.info("Configuration of quagga service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         self.LOG.info("SSH connection established")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
         
@@ -241,13 +236,13 @@ class Centos_implementation(OS_implementation):
         if cfg == "transparent":
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/squid.conf'
+            remotepath = '/tmp/quagga.conf'
             sftpa = ftp.put(localpath, remotepath)
         elif cfg == "squidguard":
             cfg = "squid_ufdb_centos"
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/squid.conf'
+            remotepath = '/tmp/quagga.conf'
             sftpa = ftp.put(localpath, remotepath)
             localpath = self.config_options["ufdbguardconf"]
             self.LOG.info("SFTP connection entering on %s", localpath)
@@ -257,11 +252,11 @@ class Centos_implementation(OS_implementation):
         ftp.close()
 
         self.LOG.info("Moving the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/squid/squid.conf /etc/squid/squid.conf.old')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/quagga/quagga.conf /etc/quagga/quagga.conf.old')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
         self.LOG.info("Copying the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/squid.conf /etc/squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/quagga.conf /etc/quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -285,7 +280,7 @@ class Centos_implementation(OS_implementation):
             self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         self.LOG.info("Restarting Squid")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -435,6 +430,18 @@ class Ubuntu_implementation(OS_implementation):
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
+        self.LOG.info("Displaying eth2 data")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth2")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
+        self.LOG.info("Displaying eth3 data")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
         self.LOG.info("Force ip forwarding")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("echo '1' | sudo tee /proc/sys/net/ipv4/ip_forward")
         sout = ssh_stdout.read().decode('utf-8')
@@ -461,7 +468,7 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_squid_forwarding_rules(self, ssh, gw):
+    def configure_quagga_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -496,14 +503,14 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
-        self.LOG.info("Configuration of squid service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start squid')
+        self.LOG.info("Configuration of quagga service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         self.LOG.info("SSH connection established")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
         
@@ -513,13 +520,13 @@ class Ubuntu_implementation(OS_implementation):
         if cfg == "transparent":
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/squid.conf'
+            remotepath = '/tmp/quagga.conf'
             sftpa = ftp.put(localpath, remotepath)
         elif cfg == "squidguard":
             cfg = "squidufdb_xenial"
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/squid.conf'
+            remotepath = '/tmp/quagga.conf'
             sftpa = ftp.put(localpath, remotepath)
             localpath = self.config_options["ufdbguardconf"]
             self.LOG.info("SFTP connection entering on %s", localpath)
@@ -528,11 +535,11 @@ class Ubuntu_implementation(OS_implementation):
         ftp.close()
 
         self.LOG.info("Moving the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/squid/squid.conf /etc/squid/squid.conf.old')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/quagga/quagga.conf /etc/quagga/quagga.conf.old')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
         self.LOG.info("Copying the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/squid.conf /etc/squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/quagga.conf /etc/quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -559,7 +566,7 @@ class Ubuntu_implementation(OS_implementation):
 
 
         self.LOG.info("Restarting Squid")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart squid')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart quagga')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
