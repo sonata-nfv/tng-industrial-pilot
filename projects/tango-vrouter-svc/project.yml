@@ -1,4 +1,13 @@
 descriptor_extension: yml
+files:
+- path: sources/nsd/tango-tng-vrouter.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.nsd
+- path: sources/vnf/vrouter/vrouter-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
 package:
   description: Project for the development of vrouter + fsm service
   maintainer: Miguel Mesquita, Alticelabs

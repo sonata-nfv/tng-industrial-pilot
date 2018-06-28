@@ -6,7 +6,7 @@
 ## @author Felipe Vicens, ATOS, felipe.vicens@atos.net
 ##
 ---
-descriptor_version: "1.0"
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
 
 vendor: "eu.sonata-nfv.service-descriptor"
 name: "tng-vrouter-fsm"
