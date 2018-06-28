@@ -114,10 +114,6 @@ class Centos_implementation(OS_implementation):
         remotepath = '/tmp/ifcfg-eth2'
         self.LOG.info("SFTP connection entering on %s", localpath)
         sftpa = ftp.put(localpath, remotepath)
-        localpath = self.config_dir + '/ifcfg-eth3'
-        remotepath = '/tmp/ifcfg-eth3'
-        self.LOG.info("SFTP connection entering on %s", localpath)
-        sftpa = ftp.put(localpath, remotepath)
         ftp.close()
 
         self.LOG.info("Making sure the hostname is resolvable")
@@ -230,31 +226,63 @@ class Centos_implementation(OS_implementation):
 
     def reconfigure_service(self, ssh, cfg):
         self.LOG.info("SSH connection established")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/zebra.conf ] && echo OK")
-        sout = ssh_stdout.read().decode('utf-8')
-        self.LOG.info('output from remote: ' + sout)
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
+        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+        self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
+        
+        ftp = ssh.open_sftp()
+        self.LOG.info("SFTP connection established")
+
+        if cfg == "transparent":
+            localpath = self.config_options[cfg]
+            self.LOG.info("SFTP connection entering on %s", localpath)
+            remotepath = '/tmp/quagga.conf'
+            sftpa = ftp.put(localpath, remotepath)
+        elif cfg == "squidguard":
+            cfg = "squid_ufdb_centos"
+            localpath = self.config_options[cfg]
+            self.LOG.info("SFTP connection entering on %s", localpath)
+            remotepath = '/tmp/quagga.conf'
+            sftpa = ftp.put(localpath, remotepath)
+            localpath = self.config_options["ufdbguardconf"]
+            self.LOG.info("SFTP connection entering on %s", localpath)
+            remotepath = '/tmp/ufdbguard.conf'
+            sftpa = ftp.put(localpath, remotepath)
+
+        ftp.close()
+
+        self.LOG.info("Moving the Squid configuration file")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/quagga/quagga.conf /etc/quagga/quagga.conf.old')
+        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/ospfd.conf ] && echo OK1")
-        sout1 = ssh_stdout.read().decode('utf-8')
-        self.LOG.info('output from remote: ' + sout1)
+        self.LOG.info("Copying the Squid configuration file")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/quagga.conf /etc/quagga')
+        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        if sout == "OK":
-            self.LOG.info("Moving the Zebra configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/zebra.conf /etc/quagga/zebra.conf.old'")
-            self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-            self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
+        if cfg == "squid_ufdb_centos":
+            self.LOG.info("Copying the Squid Guard configuration file")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/ufdbguard/ufdbGuard.conf ] && echo OK")
+            sout = ssh_stdout.read().decode('utf-8')
+            self.LOG.info('output from remote: ' + sout)
+            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        if sout == "OK1":
-            self.LOG.info("Moving the OSPF configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/ospfd.conf /etc/quagga/ospfd.conf.old'")
+            if sout == "OK":
+                ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/ufdbguard/ufdbGuard.conf /etc/ufdbguard/ufdbGuard.conf.old'") 
+                self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+                self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
+            
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /tmp/ufdbguard.conf /etc/ufdbguard/ufdbGuard.conf'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-            self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
+            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo systemctl start ufdb.service")
+            self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        self.LOG.info("Initiate config and operation of quagga service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_quagga.sh')
-        self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
-        self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
+        self.LOG.info("Restarting Squid")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart quagga')
+        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+        self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def configure_forward_routing(self, ssh, host_ip, data_ip, next_ip):
         self.LOG.info("Retrieve FSM IP address")
@@ -413,17 +441,17 @@ class Ubuntu_implementation(OS_implementation):
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
-#        self.LOG.info("Displaying eth3 data")
-#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
-#        sout = ssh_stdout.read().decode('utf-8')
-#        serr = ssh_stderr.read().decode('utf-8')
-#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+        self.LOG.info("Displaying eth3 data")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
-#        self.LOG.info("Displaying eth4 data")
-#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
-#        sout = ssh_stdout.read().decode('utf-8')
-#        serr = ssh_stderr.read().decode('utf-8')
-#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+        self.LOG.info("Displaying eth4 data")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
         self.LOG.info("Force ip forwarding")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("echo '1' | sudo tee /proc/sys/net/ipv4/ip_forward")

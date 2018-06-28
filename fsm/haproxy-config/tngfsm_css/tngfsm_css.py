@@ -41,8 +41,8 @@ class quaggaFSM(sonSMbase):
         'transparent': './ansible/roles/quagga/files/squid.conf', 
         'squidguard': './ansible/roles/quagga/files/squid_guard.conf' }
     config_dir = './ansible/roles/quagga/files'
-    username = 'tango'
-    password = 't4ng0'
+    username = 'sonata'
+    password = 'sonata'
     with_monitoring = True
     monitoring_ip = '10.30.0.112'
 
@@ -69,7 +69,7 @@ class quaggaFSM(sonSMbase):
         #self.service_name = 'psa'
         #self.function_name = 'proxy'
         self.specific_manager_name = 'vrouter-config'
-        self.service_name = 'vdmzservice'
+        self.service_name = 'i40service'
         self.function_name = 'vrouter-vnf'
         self.id_number = '1'
         self.version = 'v0.1'

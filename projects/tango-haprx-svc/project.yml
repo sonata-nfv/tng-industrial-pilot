@@ -1,0 +1,8 @@
+descriptor_extension: yml
+package:
+  description: Project for the development of haprx + fsm service
+  maintainer: Miguel Mesquita, Alticelabs
+  name: tango-prx-fsm
+  vendor: eu.sonata-nfv
+  version: '0.1'
+version: '0.5'
