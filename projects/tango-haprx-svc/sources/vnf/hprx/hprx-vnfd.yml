@@ -1,6 +1,7 @@
 ##
 ## vrouter VNF Descriptor
 ##
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
 descriptor_version: "vnfd-schema-02"
 vendor: "eu.sonata-nfv"
 name: "hprx-vnf"
