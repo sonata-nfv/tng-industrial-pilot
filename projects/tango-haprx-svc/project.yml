@@ -1,8 +1,17 @@
 descriptor_extension: yml
+files:
+- path: sources/nsd/tango-hprx-vrouter.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.nsd
+- path: sources/vnf/vrouter/hprx-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
 package:
   description: Project for the development of haprx + fsm service
   maintainer: Miguel Mesquita, Alticelabs
-  name: tango-prx-fsm
+  name: tango-hprx-fsm
   vendor: eu.sonata-nfv
   version: '0.1'
 version: '0.5'
