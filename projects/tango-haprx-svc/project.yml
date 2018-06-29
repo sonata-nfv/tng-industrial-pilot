@@ -4,7 +4,7 @@ files:
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.nsd
-- path: sources/vnf/vrouter/hprx-vnfd.yml
+- path: sources/vnf/hprx/hprx-vnfd.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
