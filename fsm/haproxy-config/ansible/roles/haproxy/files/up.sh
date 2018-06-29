@@ -1,0 +1,1 @@
+sudo docker run -d -p8080:8080 hap -f /usr/local/etc/haproxy/haproxy.cfg
