@@ -1,0 +1,17 @@
+descriptor_extension: yml
+files:
+- path: sources/nsd/tango-tng-ids.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.nsd
+- path: sources/vnf/ids/ids-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+package:
+  description: Project for the development of ids + fsm service
+  maintainer: Miguel Mesquita, Alticelabs
+  name: tango-ids-fsm
+  vendor: eu.sonata-nfv
+  version: '0.1'
+version: '0.5'
