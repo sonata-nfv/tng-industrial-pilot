@@ -17,7 +17,7 @@ class Factory:
             raise NotImplementedError("Unknown OS type.")
 
 class OS_implementation(metaclass = ABCMeta):
-    config_dir = './ansible/roles/quagga/files'
+    config_dir = './ansible/roles/snort/files'
     monitoring_file = './node.conf'
     LOG = None
 
@@ -29,7 +29,7 @@ class OS_implementation(metaclass = ABCMeta):
         raise NotImplementedError("Not implemented")
     
     @abstractmethod
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_snort_forwarding_rules(self, ssh, gw):
         raise NotImplementedError("Not implemented")
 
     def configure_monitoring(self, ssh, host_ip):
@@ -54,14 +54,14 @@ class OS_implementation(metaclass = ABCMeta):
     def stop_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop snort')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
     def scale_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start snort')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -112,6 +112,10 @@ class Centos_implementation(OS_implementation):
         sftpa = ftp.put(localpath, remotepath)
         localpath = self.config_dir + '/ifcfg-eth2'
         remotepath = '/tmp/ifcfg-eth2'
+        self.LOG.info("SFTP connection entering on %s", localpath)
+        sftpa = ftp.put(localpath, remotepath)
+        localpath = self.config_dir + '/ifcfg-eth3'
+        remotepath = '/tmp/ifcfg-eth3'
         self.LOG.info("SFTP connection entering on %s", localpath)
         sftpa = ftp.put(localpath, remotepath)
         ftp.close()
@@ -184,7 +188,7 @@ class Centos_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_snort_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -219,70 +223,38 @@ class Centos_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
-        self.LOG.info("Configuration of quagga service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
+        self.LOG.info("Configuration of snort service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start snort')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         self.LOG.info("SSH connection established")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
-        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-        self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
-        
-        ftp = ssh.open_sftp()
-        self.LOG.info("SFTP connection established")
-
-        if cfg == "transparent":
-            localpath = self.config_options[cfg]
-            self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/quagga.conf'
-            sftpa = ftp.put(localpath, remotepath)
-        elif cfg == "squidguard":
-            cfg = "squid_ufdb_centos"
-            localpath = self.config_options[cfg]
-            self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/quagga.conf'
-            sftpa = ftp.put(localpath, remotepath)
-            localpath = self.config_options["ufdbguardconf"]
-            self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/ufdbguard.conf'
-            sftpa = ftp.put(localpath, remotepath)
-
-        ftp.close()
-
-        self.LOG.info("Moving the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/quagga/quagga.conf /etc/quagga/quagga.conf.old')
-        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/snort/zebra.conf ] && echo OK")
+        sout = ssh_stdout.read().decode('utf-8')
+        self.LOG.info('output from remote: ' + sout)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-        self.LOG.info("Copying the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/quagga.conf /etc/quagga')
-        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/snort/ospfd.conf ] && echo OK1")
+        sout1 = ssh_stdout.read().decode('utf-8')
+        self.LOG.info('output from remote: ' + sout1)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        if cfg == "squid_ufdb_centos":
-            self.LOG.info("Copying the Squid Guard configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/ufdbguard/ufdbGuard.conf ] && echo OK")
-            sout = ssh_stdout.read().decode('utf-8')
-            self.LOG.info('output from remote: ' + sout)
-            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-
-            if sout == "OK":
-                ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/ufdbguard/ufdbGuard.conf /etc/ufdbguard/ufdbGuard.conf.old'") 
-                self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-                self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-            
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /tmp/ufdbguard.conf /etc/ufdbguard/ufdbGuard.conf'")
+        if sout == "OK":
+            self.LOG.info("Moving the Zebra configuration file")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/snort/zebra.conf /etc/snort/zebra.conf.old'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo systemctl start ufdb.service")
-            self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-            self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
+            self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        self.LOG.info("Restarting Squid")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart quagga')
-        self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
-        self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
+        if sout == "OK1":
+            self.LOG.info("Moving the OSPF configuration file")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/snort/ospfd.conf /etc/snort/ospfd.conf.old'")
+            self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
+            self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
+
+        self.LOG.info("Initiate config and operation of snort service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_snort.sh')
+        self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
+        self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def configure_forward_routing(self, ssh, host_ip, data_ip, next_ip):
         self.LOG.info("Retrieve FSM IP address")
@@ -396,9 +368,9 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("SFTP connection entering on %s", localpath)
         remotepath = '/tmp/50-cloud-init.cfg'
         sftpa = ftp.put(localpath, remotepath)
-        localpath = self.config_dir + '/conf_quagga.sh'
+        localpath = self.config_dir + '/conf_snort.sh'
         self.LOG.info("SFTP connection entering on %s", localpath)
-        remotepath = '/tmp/conf_quagga.sh'
+        remotepath = '/tmp/conf_snort.sh'
         sftpa = ftp.put(localpath, remotepath)
 
         ftp.close()
@@ -441,17 +413,17 @@ class Ubuntu_implementation(OS_implementation):
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
-        self.LOG.info("Displaying eth3 data")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
-        sout = ssh_stdout.read().decode('utf-8')
-        serr = ssh_stderr.read().decode('utf-8')
-        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+#        self.LOG.info("Displaying eth3 data")
+#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
+#        sout = ssh_stdout.read().decode('utf-8')
+#        serr = ssh_stderr.read().decode('utf-8')
+#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
-        self.LOG.info("Displaying eth4 data")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
-        sout = ssh_stdout.read().decode('utf-8')
-        serr = ssh_stderr.read().decode('utf-8')
-        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+#        self.LOG.info("Displaying eth4 data")
+#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
+#        sout = ssh_stdout.read().decode('utf-8')
+#        serr = ssh_stderr.read().decode('utf-8')
+#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
         self.LOG.info("Force ip forwarding")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("echo '1' | sudo tee /proc/sys/net/ipv4/ip_forward")
@@ -479,7 +451,7 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_snort_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -494,35 +466,35 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         self.LOG.info("Copy of guagga shell script")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/conf_quagga.sh /usr/sbin')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/conf_snort.sh /usr/sbin')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/zebra.conf ] && echo OK")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/snort/zebra.conf ] && echo OK")
         sout = ssh_stdout.read().decode('utf-8')
         self.LOG.info('output from remote: ' + sout)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/ospfd.conf ] && echo OK1")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/snort/ospfd.conf ] && echo OK1")
         sout1 = ssh_stdout.read().decode('utf-8')
         self.LOG.info('output from remote: ' + sout1)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         if sout == "OK":
             self.LOG.info("Moving the Zebra configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/zebra.conf /etc/quagga/zebra.conf.old'")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/snort/zebra.conf /etc/snort/zebra.conf.old'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
             self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         if sout == "OK1":
             self.LOG.info("Moving the OSPF configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/ospfd.conf /etc/quagga/ospfd.conf.old'")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/snort/ospfd.conf /etc/snort/ospfd.conf.old'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
             self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        self.LOG.info("Initiate config and operation of quagga service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_quagga.sh')
+        self.LOG.info("Initiate config and operation of snort service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_snort.sh')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 

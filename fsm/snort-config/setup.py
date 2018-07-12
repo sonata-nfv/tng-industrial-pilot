@@ -11,15 +11,15 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='quagga configuration',
+    name='snort configuration',
 
     version='0.1',
 
-    description='FSM quagga configuration',
+    description='FSM snort configuration',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/sonata-nfv/son-security-pilot/fsm/quagga-config',
+    url='https://github.com/sonata-nfv/son-security-pilot/fsm/snort-config',
 
     # Author details
     author='Miguel Mesquita',
@@ -31,14 +31,14 @@ setup(
     # What does your project relate to?
     keywords='NFV orchestrator',
 
-    packages=find_packages("quagga-config"),
-    install_requires=['pytest', 'ansible>=2.4.0.0'],
+    packages=find_packages("snort-config"),
+    install_requires=['pytest'],
     setup_requires=['pytest-runner'],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
-        'console_scripts': ['fsm-quagga=tngfsm_css.__main__:main'],
+        'console_scripts': ['fsm-snort=tngfsm_css.__main__:main'],
     },
 )

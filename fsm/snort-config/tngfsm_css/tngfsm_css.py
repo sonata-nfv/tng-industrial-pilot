@@ -35,14 +35,14 @@ from .OS_Factory import Factory, OS_implementation
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
-class quaggaFSM(sonSMbase):
+class snortFSM(sonSMbase):
 
-    config_options = { 'direct': './ansible/roles/quagga/files/squid_direct.conf', 
-        'transparent': './ansible/roles/quagga/files/squid.conf', 
-        'squidguard': './ansible/roles/quagga/files/squid_guard.conf' }
-    config_dir = './ansible/roles/quagga/files'
-    username = 'sonata'
-    password = 'sonata'
+    config_options = { 'direct': './ansible/roles/snort/files/squid_direct.conf', 
+        'transparent': './ansible/roles/snort/files/squid.conf', 
+        'squidguard': './ansible/roles/snort/files/squid_guard.conf' }
+    config_dir = './ansible/roles/snort/files'
+    username = 'tango'
+    password = 't4ng0'
     with_monitoring = True
     monitoring_ip = '10.30.0.112'
 
@@ -69,7 +69,7 @@ class quaggaFSM(sonSMbase):
         #self.service_name = 'psa'
         #self.function_name = 'proxy'
         self.specific_manager_name = 'vrouter-config'
-        self.service_name = 'i40service'
+        self.service_name = 'vdmzservice'
         self.function_name = 'vrouter-vnf'
         self.id_number = '1'
         self.version = 'v0.1'
@@ -145,22 +145,22 @@ class quaggaFSM(sonSMbase):
         cpts = vdu['vnfc_instance'][0]['connection_points']
 
 
-        quagga_ip = None
+        snort_ip = None
         for cp in cpts:
             if cp['type'] == 'management':
-                quagga_ip = cp['interface']['address']
-                LOG.info("management ip: " + str(quagga_ip))
+                snort_ip = cp['interface']['address']
+                LOG.info("management ip: " + str(snort_ip))
                 
-        if quagga_ip is not None:
+        if snort_ip is not None:
             opt = 0
-            self.ssh_execution(opt, quagga_ip)
+            self.ssh_execution(opt, snort_ip)
 
         else:
             LOG.info("No management connection point in vnfr")
             
         response = {}
         response['status'] = 'COMPLETED'
-        response['IP'] = quagga_ip
+        response['IP'] = snort_ip
         
         return response
     
@@ -173,16 +173,16 @@ class quaggaFSM(sonSMbase):
         vdu = vnfr['virtual_deployment_units'][0]
         cpts = vdu['vnfc_instance'][0]['connection_points']
         
-        quagga_ip = None
+        snort_ip = None
         for cp in cpts:
             if cp['type'] == 'management':
-                quagga_ip = cp['interface']['address']
-                LOG.info("management ip: " + str(quagga_ip))
+                snort_ip = cp['interface']['address']
+                LOG.info("management ip: " + str(snort_ip))
                 
                 
-        if quagga_ip is not None:
+        if snort_ip is not None:
             opt = 1
-            self.ssh_execution(opt, quagga_ip)
+            self.ssh_execution(opt, snort_ip)
         else:
             LOG.info("No management connection point in vnfr")
             
@@ -196,12 +196,12 @@ class quaggaFSM(sonSMbase):
         config_opt = 'transparent'
         
         config_opt = content['configuration_opt']
-        quagga_ip = content['management_ip']
+        snort_ip = content['management_ip']
         next_hop_ip = content['next_ip']
         prx_in_out_ip = content['own_ip']
 
         try:
-            IP(quagga_ip)
+            IP(snort_ip)
             IP(prx_in_out_ip)
         except ValueError:
             LOG.info("Invalid value of management IP or own_IP")
@@ -210,17 +210,17 @@ class quaggaFSM(sonSMbase):
             return
 
         if next_hop_ip is None:
-            self.quagga_configure(quagga_ip, prx_in_out_ip)
+            self.snort_configure(snort_ip, prx_in_out_ip)
         else:
-            self.quagga_configure(quagga_ip, prx_in_out_ip, next_hop_ip)
+            self.snort_configure(snort_ip, prx_in_out_ip, next_hop_ip)
 
         opt = 2
         LOG.info("config_opt = " + config_opt)
-        self.ssh_execution(opt, quagga_ip, config_opt)
+        self.ssh_execution(opt, snort_ip, config_opt)
             
         response = {}
         response['status'] = 'COMPLETED'
-        response['IP'] = quagga_ip
+        response['IP'] = snort_ip
         
         return response
     
@@ -233,21 +233,21 @@ class quaggaFSM(sonSMbase):
         vdu = vnfr['virtual_deployment_units'][0]
         cpts = vdu['vnfc_instance'][0]['connection_points']
         
-        quagga_ip = None
+        snort_ip = None
         for cp in cpts:
             if cp['type'] == 'management':
-                quagga_ip = cp['interface']['address']
-                LOG.info("management ip: " + str(quagga_ip))
+                snort_ip = cp['interface']['address']
+                LOG.info("management ip: " + str(snort_ip))
                 
-        if quagga_ip is not None:
+        if snort_ip is not None:
             opt = 3
-            self.ssh_execution(opt, quagga_ip)
+            self.ssh_execution(opt, snort_ip)
         else:
             LOG.info("No management connection point in vnfr")
         
         response = {}
         response['status'] = 'COMPLETED'
-        response['IP'] = quagga_ip
+        response['IP'] = snort_ip
 
         return response
         
@@ -295,7 +295,7 @@ class quaggaFSM(sonSMbase):
 
         if function == 0:
             gw = os_impl.configure_interfaces(ssh)
-            os_impl.configure_quagga_forwarding_rules(ssh, gw)
+            os_impl.configure_snort_forwarding_rules(ssh, gw)
 
             if self.with_monitoring == True:
                 os_impl.configure_monitoring(ssh, self.monitoring_ip)
@@ -321,7 +321,7 @@ class quaggaFSM(sonSMbase):
         
         return
 
-    def quagga_configure(self, host_ip, data_ip, next_ip = None):
+    def snort_configure(self, host_ip, data_ip, next_ip = None):
  
         ssh = paramiko.SSHClient()
         LOG.info("SSH client started")
@@ -370,7 +370,7 @@ class quaggaFSM(sonSMbase):
 
 
 def main():
-    quaggaFSM()
+    snortFSM()
     while True:
         time.sleep(10)
 
