@@ -4,7 +4,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 vendor: "eu.5gtango"
 name: "ipfire-vnf"
 version: "0.1"
-author: "tango"
+author: "AR, ALabs"
 description: "An IPfire VNF descriptor"
 
 
@@ -30,7 +30,7 @@ virtual_deployment_units:
       - name: "vm_net_rx_MB"
         unit: "MB"
       - name: "vm_net_tx_MB"
-        unit: "Mbps"
+        unit: "MB"
     connection_points:
       - id: "mgmt"
         interface: "ipv4"
@@ -76,3 +76,41 @@ virtual_links:
       - "vdu01:output"
       - "output"
     dhcp: True
+
+##
+## The monitoring rules that react to the monitoring parameters
+##
+monitoring_rules:
+  - name: "mon:rule:vm_cpu_perc"
+    description: "Trigger events if CPU load is above 90 percent."
+    duration: 60
+    duration_unit: "s"
+    condition: "vdu01:vm_cpu_perc > 90"
+    notification:
+      - name: "notification01"
+        type: "rabbitmq_message"
+  - name: "mon:rule:vm_mem_perc"
+    description: "Trigger events if memory consumption is above 90 percent."
+    duration: 120
+    duration_unit: "s"
+    condition: "vdu01:vm_mem_perc > 90"
+    notification:
+      - name: "notification02"
+        type: "rabbitmq_message"
+
+
+##
+## Function Specific Managers
+##
+function_specific_managers:
+  - id: "sonfsmvdmzserviceipfire-vnfipfire-config1"
+    description: "FSM for the configuration of the ipfire"
+    image: "sonatanfv/tng-ipfire-fsm-css"
+    options:
+      - key: "type"
+        value: "configure"
+      - key: "type"
+        value: "start"
+      - key: "type"
+        value: "stop"
+
