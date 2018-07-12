@@ -1,0 +1,87 @@
+---
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
+
+vendor: "eu.5gtango"
+name: "sample-nsd"
+version: "0.1"
+author: "tango"
+description: "A NSD to build an IT security perimeter buikd of five VNFDs"
+
+# involved network functions
+network_functions:
+  - vnf_id: "vnf1"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "ipfire-vnf"
+    vnf_version: "0.1"
+  - vnf_id: "vnf1"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "snort-vnf"
+    vnf_version: "0.1"
+  - vnf_id: "vnf1"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "quagga-vnf"
+    vnf_version: "0.1"
+  - vnf_id: "vnf1"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "haproxy-vnf"
+    vnf_version: "0.1"
+  - vnf_id: "vnf1"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "openvpn-vnf"
+    vnf_version: "0.1"
+
+# NS connection points to the outside world
+connection_points:
+  - id: "mgmt"
+    interface: "ipv4"
+    type: "management"
+  - id: "input"
+    interface: "ipv4"
+    type: "external"
+  - id: "output"
+    interface: "ipv4"
+    type: "external"
+
+    
+# virtual links connect the VNFs' and NS' connection points
+virtual_links:
+  - id: "mgmt"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "vnf1:mgmt"
+      - "vnf2:mgmt"
+      - "mgmt"
+  - id: "input-2-vnf1"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "input"
+      - "vnf1:input"
+  - id: "vnf1-2-output"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf1:output"
+      - "output"
+
+
+forwarding_graphs:
+  - fg_id: "fg01"
+    number_of_endpoints: 2
+    number_of_virtual_links: 2
+    constituent_virtual_links: 
+      - "input-2-vnf1"
+      - "vnf1-2-output"
+    constituent_vnfs:
+      - "vnf1"
+    network_forwarding_paths:
+      - fp_id: "fg01:fp01"
+        policy: "none"
+        connection_points:
+          - connection_point_ref: "input"
+            position: 1
+          - connection_point_ref: "vnf1:input"
+            position: 2
+          - connection_point_ref: "vnf1:output"
+            position: 3
+          - connection_point_ref: "output"
+            position: 4
+
