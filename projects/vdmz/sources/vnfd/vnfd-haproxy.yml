@@ -4,7 +4,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 vendor: "eu.5gtango"
 name: "haproxy-vnf"
 version: "0.1"
-author: "tango"
+author: "AR, Alabs"
 description: "A HAProxy VNF descriptor"
 
 
@@ -36,10 +36,10 @@ virtual_deployment_units:
       - id: "mgmt"
         interface: "ipv4"
         type: "internal"
-      - id: "input"
+      - id: "cp1"
         interface: "ipv4"
         type: "internal"
-      - id: "output"
+      - id: "cp2"
         interface: "ipv4"
         type: "internal"
         
@@ -49,10 +49,10 @@ connection_points:
   - id: "mgmt"
     interface: "ipv4"
     type: "management"
-  - id: "input"
+  - id: "cp1"
     interface: "ipv4"
     type: "external"
-  - id: "output"
+  - id: "cp2"
     interface: "ipv4"
     type: "external"
     
@@ -65,17 +65,17 @@ virtual_links:
       - "vdu01:mgmt"
       - "mgmt"
     dhcp: True
-  - id: "input"
+  - id: "vl6"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:input"
-      - "input"
+      - "vdu01:cp1"
+      - "cp1"
     dhcp: True
-  - id: "output"
+  - id: "vl3"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:output"
-      - "output"
+      - "vdu01:cp2"
+      - "cp2"
     dhcp: True
 
 ##
@@ -116,6 +116,5 @@ function_specific_managers:
         value: "stop"
 
 #    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16haproxy-1.8.12.qcow2"
-#    vm_image_format: "qcow2"
 #    vm_image_md5: "316605ef953b492c41094324d93e4237"
 

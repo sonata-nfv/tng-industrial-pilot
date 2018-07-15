@@ -24,10 +24,10 @@ files:
   type: application/vnd.5gtango.nsd
   tags:
   - eu.5gtango
-descriptor_extension: yml
+descriptor_extension: 'yml'
 package:
-  name: 5gtango-security-perimeter
-  vendor: eu.5gtango
-  description: "vDMZ or Security Perimeter NS"
+  name: '5gtango-security-perimeter'
+  vendor: 'eu.5gtango'
+  description: 'vDMZ or Security Perimeter NS'
   version: '0.1'
-  maintainer: AR, Alabs
+  maintainer: 'AR, Alabs'

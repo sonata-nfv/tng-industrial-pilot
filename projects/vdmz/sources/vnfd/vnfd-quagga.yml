@@ -4,7 +4,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 vendor: "eu.5gtango"
 name: "quagga-vnf"
 version: "0.1"
-author: "tango"
+author: "AR, Alabs"
 description: "A Quagga VNF descriptor"
 
 
@@ -36,10 +36,13 @@ virtual_deployment_units:
       - id: "mgmt"
         interface: "ipv4"
         type: "internal"
-      - id: "input"
+      - id: "cp1"
         interface: "ipv4"
         type: "internal"
-      - id: "output"
+      - id: "cp2"
+        interface: "ipv4"
+        type: "internal"
+      - id: "cp3"
         interface: "ipv4"
         type: "internal"
         
@@ -49,10 +52,13 @@ connection_points:
   - id: "mgmt"
     interface: "ipv4"
     type: "management"
-  - id: "input"
+  - id: "cp1"
     interface: "ipv4"
     type: "external"
-  - id: "output"
+  - id: "cp2"
+    interface: "ipv4"
+    type: "external"
+  - id: "cp3"
     interface: "ipv4"
     type: "external"
     
@@ -65,17 +71,23 @@ virtual_links:
       - "vdu01:mgmt"
       - "mgmt"
     dhcp: True
-  - id: "input"
+  - id: "vl2"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:input"
-      - "input"
+      - "vdu01:cp2"
+      - "cp2"
     dhcp: True
-  - id: "output"
+  - id: "vl3"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:output"
-      - "output"
+      - "vdu01:cp1"
+      - "cp1"
+    dhcp: True
+  - id: "vl4"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vdu01:cp3"
+      - "cp3"
     dhcp: True
 
 ##
@@ -118,6 +130,5 @@ function_specific_managers:
 #    vm_image: "quagga_docker"
 #    vm_image_format: "docker"
 #    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16quagga-0.99.24.1.qcow2"
-#    vm_image_format: "qcow2"
-#    vm_image_md5: ""
+#    vm_image_md5: "14f1c0ccffafdbfa3e4549e583330f45"
 

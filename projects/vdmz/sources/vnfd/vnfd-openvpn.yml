@@ -4,15 +4,15 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 vendor: "eu.5gtango"
 name: "openvpn-vnf"
 version: "0.1"
-author: "tango"
-description: "A openvpn VNF descriptor"
+author: "AR, Alabs"
+description: "A OpenVPN VNF descriptor"
 
 
 # virtual deployment units inside the VNF
 virtual_deployment_units:
   - id: "vdu01"
-    vm_image: "openvpn_docker"
-    vm_image_format: "docker"
+    vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/vpn-vnf/sonata-vpn.qcow2"
+    vm_image_md5: "f091341dd533e2b5ea55f7e45ff2a0ee"
     resource_requirements:
       cpu:
         vcpus: 1
@@ -30,15 +30,15 @@ virtual_deployment_units:
       - name: "vm_net_rx_MB"
         unit: "MB"
       - name: "vm_net_tx_MB"
-        unit: "Mbps"
+        unit: "MB"
     connection_points:
       - id: "mgmt"
         interface: "ipv4"
         type: "internal"
-      - id: "input"
+      - id: "cp1"
         interface: "ipv4"
         type: "internal"
-      - id: "output"
+      - id: "cp2"
         interface: "ipv4"
         type: "internal"
         
@@ -48,10 +48,10 @@ connection_points:
   - id: "mgmt"
     interface: "ipv4"
     type: "management"
-  - id: "input"
+  - id: "cp1"
     interface: "ipv4"
     type: "external"
-  - id: "output"
+  - id: "cp2"
     interface: "ipv4"
     type: "external"
     
@@ -64,17 +64,17 @@ virtual_links:
       - "vdu01:mgmt"
       - "mgmt"
     dhcp: True
-  - id: "input"
+  - id: "vl4"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:input"
-      - "input"
+      - "vdu01:cp1"
+      - "cp1"
     dhcp: True
-  - id: "output"
+  - id: "vl1"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:output"
-      - "output"
+      - "vdu01:cp2"
+      - "cp2"
     dhcp: True
 
 ##
@@ -113,4 +113,7 @@ function_specific_managers:
         value: "start"
       - key: "type"
         value: "stop"
+
+#    vm_image: "openvpn_docker"
+#    vm_image_format: "docker"
 

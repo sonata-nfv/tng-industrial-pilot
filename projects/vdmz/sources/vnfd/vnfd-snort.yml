@@ -11,8 +11,8 @@ description: "A SNORT VNF descriptor"
 # virtual deployment units inside the VNF
 virtual_deployment_units:
   - id: "vdu01"
-    vm_image: "snort_docker"
-    vm_image_format: "docker"
+    vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/snort-vnf/snort-u16-x64.qcow2"
+    vm_image_md5: "d50640462faae7ad1e6c09ae058f3fc8"
     resource_requirements:
       cpu:
         vcpus: 1
@@ -113,4 +113,7 @@ function_specific_managers:
         value: "start"
       - key: "type"
         value: "stop"
+
+#    vm_image: "snort_docker"
+#    vm_image_format: "docker"
 
