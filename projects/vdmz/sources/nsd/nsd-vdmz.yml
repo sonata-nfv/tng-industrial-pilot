@@ -3,7 +3,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 
 vendor: "eu.5gtango"
 name: "vdmz-nsd"
-version: "0.1"
+version: "0.3"
 author: "AR, Alabs"
 description: "A NSD to build an IT security perimeter build of five VNFDs"
 
@@ -12,23 +12,23 @@ network_functions:
   - vnf_id: "vnf1"
     vnf_vendor: "eu.5gtango"
     vnf_name: "ipfire-vnf"
-    vnf_version: "0.1"
+    vnf_version: "0.3"
   - vnf_id: "vnf2"
     vnf_vendor: "eu.5gtango"
     vnf_name: "snort-vnf"
-    vnf_version: "0.1"
+    vnf_version: "0.3"
   - vnf_id: "vnf3"
     vnf_vendor: "eu.5gtango"
     vnf_name: "quagga-vnf"
-    vnf_version: "0.1"
+    vnf_version: "0.3"
   - vnf_id: "vnf4"
     vnf_vendor: "eu.5gtango"
     vnf_name: "haproxy-vnf"
-    vnf_version: "0.1"
+    vnf_version: "0.3"
   - vnf_id: "vnf5"
     vnf_vendor: "eu.5gtango"
     vnf_name: "openvpn-vnf"
-    vnf_version: "0.1"
+    vnf_version: "0.3"
 
 # NS connection points to the outside world
 connection_points:

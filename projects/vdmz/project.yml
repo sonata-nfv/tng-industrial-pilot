@@ -29,5 +29,5 @@ package:
   name: '5gtango-security-perimeter'
   vendor: 'eu.5gtango'
   description: 'vDMZ or Security Perimeter NS'
-  version: '0.1'
+  version: '0.3'
   maintainer: 'AR, Alabs'

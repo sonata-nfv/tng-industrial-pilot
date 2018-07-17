@@ -3,7 +3,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 
 vendor: "eu.5gtango"
 name: "openvpn-vnf"
-version: "0.1"
+version: "0.3"
 author: "AR, Alabs"
 description: "A OpenVPN VNF descriptor"
 
@@ -12,7 +12,7 @@ description: "A OpenVPN VNF descriptor"
 virtual_deployment_units:
   - id: "vdu01"
     vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/vpn-vnf/sonata-vpn.qcow2"
-    vm_image_md5: "f091341dd533e2b5ea55f7e45ff2a0ee"
+    vm_image_md5: "f03341dd533e2b5ea55f7e45ff2a0ee"
     resource_requirements:
       cpu:
         vcpus: 1
@@ -102,17 +102,17 @@ monitoring_rules:
 ##
 ## Function Specific Managers
 ##
-function_specific_managers:
-  - id: "sonfsmvdmzserviceopenvpn-vnfopenvpn-config1"
-    description: "FSM for the configuration of the openvpn"
-    image: "sonatanfv/tng-openvpn-fsm-css"
-    options:
-      - key: "type"
-        value: "configure"
-      - key: "type"
-        value: "start"
-      - key: "type"
-        value: "stop"
+#function_specific_managers:
+#  - id: "sonfsmvdmzserviceopenvpn-vnfopenvpn-config1"
+#    description: "FSM for the configuration of the openvpn"
+#    image: "sonatanfv/tng-openvpn-fsm-css"
+#    options:
+#      - key: "type"
+#        value: "configure"
+#      - key: "type"
+#        value: "start"
+#      - key: "type"
+#        value: "stop"
 
 #    vm_image: "openvpn_docker"
 #    vm_image_format: "docker"

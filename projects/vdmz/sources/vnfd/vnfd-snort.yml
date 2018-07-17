@@ -3,7 +3,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 
 vendor: "eu.5gtango"
 name: "snort-vnf"
-version: "0.1"
+version: "0.3"
 author: "tango"
 description: "A SNORT VNF descriptor"
 
@@ -102,17 +102,17 @@ monitoring_rules:
 ##
 ## Function Specific Managers
 ##
-function_specific_managers:
-  - id: "sonfsmvdmzservicesnort-vnfsnort-config1"
-    description: "FSM for the configuration of the snort"
-    image: "sonatanfv/tng-snort-fsm-css"
-    options:
-      - key: "type"
-        value: "configure"
-      - key: "type"
-        value: "start"
-      - key: "type"
-        value: "stop"
+#function_specific_managers:
+#  - id: "sonfsmvdmzservicesnort-vnfsnort-config1"
+#    description: "FSM for the configuration of the snort"
+#    image: "sonatanfv/tng-snort-fsm-css"
+#    options:
+#      - key: "type"
+#        value: "configure"
+#      - key: "type"
+#        value: "start"
+#      - key: "type"
+#        value: "stop"
 
 #    vm_image: "snort_docker"
 #    vm_image_format: "docker"
