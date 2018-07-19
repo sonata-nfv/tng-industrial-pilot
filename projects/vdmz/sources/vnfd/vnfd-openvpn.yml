@@ -12,7 +12,7 @@ description: "A OpenVPN VNF descriptor"
 virtual_deployment_units:
   - id: "vdu01"
     vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/vpn-vnf/sonata-vpn.qcow2"
-    vm_image_md5: "f03341dd533e2b5ea55f7e45ff2a0ee"
+    vm_image_md5: "f091341dd533e2b5ea55f7e45ff2a0ee"
     resource_requirements:
       cpu:
         vcpus: 1

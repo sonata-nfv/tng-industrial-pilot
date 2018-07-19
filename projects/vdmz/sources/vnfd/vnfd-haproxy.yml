@@ -13,7 +13,7 @@ virtual_deployment_units:
   - id: "vdu01"
     vm_image: "http://files.sonata-nfv.eu/industrial-pilot/ce7haproxy-1.8.1.qcow2"
     vm_image_format: "qcow2"
-    vm_image_md5: "578c86764e4039964f8acfb995f5145"
+    vm_image_md5: '578c86764e40719964f8acfb995f5145'
     resource_requirements:
       cpu:
         vcpus: 1
@@ -117,4 +117,3 @@ monitoring_rules:
 
 #    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16haproxy-1.8.12.qcow2"
 #    vm_image_md5: "316605ef953b492c41094324d93e4237"
-

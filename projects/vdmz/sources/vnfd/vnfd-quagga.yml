@@ -13,7 +13,7 @@ virtual_deployment_units:
   - id: "vdu01"
     vm_image: "http://files.sonata-nfv.eu/industrial-pilot/ce7quagga-0.99.22.4.qcow2"
     vm_image_format: "qcow2"
-    vm_image_md5: "5dc0383b4b19b12b1f16d1206616288"
+    vm_image_md5: "5dc0e183b4b19b12b1f16d1206616288"
     resource_requirements:
       cpu:
         vcpus: 1
