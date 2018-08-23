@@ -31,6 +31,7 @@ from IPy import IP
 from collections import namedtuple
 from sonsmbase.smbase import sonSMbase
 from .OS_Factory import Factory, OS_implementation
+#from OS_Factory import Factory, OS_implementation
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
@@ -68,7 +69,7 @@ class quaggaFSM(sonSMbase):
         self.specific_manager_type = 'fsm'
         #self.service_name = 'psa'
         #self.function_name = 'proxy'
-        self.specific_manager_name = 'vrouter-config'
+        self.specific_manager_name = 'css'
         self.service_name = 'vdmzservice'
         self.function_name = 'vrouter-vnf'
         self.id_number = '1'

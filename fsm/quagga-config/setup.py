@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/sonata-nfv/son-security-pilot/fsm/quagga-config',
+    url='https://github.com/sonata-nfv/tng-industrial-pilot/fsm/quagga-config',
 
     # Author details
     author='Miguel Mesquita',
