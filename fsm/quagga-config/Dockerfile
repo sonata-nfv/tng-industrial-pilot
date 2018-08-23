@@ -18,7 +18,7 @@ ENV broker_exchange son-kernel
 #    && apt-get clean
 
 RUN apt-get update && apt-get -y install python3-pip ssh \
-    && apt-get update && pip3 install paramiko && pip3 install ansible \
+    && apt-get update && pip3 install paramiko && pip3 install amqpstorm \
     && apt-get install -y python3-amqp python3-amqplib \
     && pip3 install IPy
 

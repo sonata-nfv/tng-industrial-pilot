@@ -17,7 +17,7 @@ class Factory:
             raise NotImplementedError("Unknown OS type.")
 
 class OS_implementation(metaclass = ABCMeta):
-    config_dir = './ansible/roles/quagga/files'
+    config_dir = '/quagga-config/ansible/roles/quagga/files'
     monitoring_file = './node.conf'
     LOG = None
 
@@ -401,8 +401,20 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
+        self.LOG.info("Raising eth1")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo /sbin/ifup eth1")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
         self.LOG.info("Displaying eth1 data")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth1")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
+        self.LOG.info("Raising eth2")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo /sbin/ifup eth2")
         sout = ssh_stdout.read().decode('utf-8')
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
@@ -412,18 +424,6 @@ class Ubuntu_implementation(OS_implementation):
         sout = ssh_stdout.read().decode('utf-8')
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
-
-#        self.LOG.info("Displaying eth3 data")
-#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
-#        sout = ssh_stdout.read().decode('utf-8')
-#        serr = ssh_stderr.read().decode('utf-8')
-#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
-
-#        self.LOG.info("Displaying eth4 data")
-#        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
-#        sout = ssh_stdout.read().decode('utf-8')
-#        serr = ssh_stderr.read().decode('utf-8')
-#        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
         self.LOG.info("Force ip forwarding")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("echo '1' | sudo tee /proc/sys/net/ipv4/ip_forward")

@@ -14,10 +14,9 @@ description: "Implementation of hprx function"
 ##
 virtual_deployment_units:
   - id: "vdu01"
-    #vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/prx-vnf/eu.sonata-nfv_vprx-vnf_0.1_vdu01.qcow2"
-    vm_image: "http://www.google.com"
+    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16haproxy-1.8.12.qcow2"
     vm_image_format: "qcow2"
-    vm_image_md5: "bef00927169fc4fff9da293a1b39fdb1"
+    vm_image_md5: "316605ef953b492c41094324d93e4237"
     resource_requirements:
       cpu:
         vcpus: 1
