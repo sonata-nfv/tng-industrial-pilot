@@ -1,0 +1,25 @@
+package:
+  name: tng-ns-quagga-haproxy-nginx
+  maintainer: AR, Alabs, arocha@ptinovacao.pt
+  version: '0.1'
+  description: a NS built of 3 VNF's - QUAGGA, HAPROXY and NGINX
+  vendor: eu.5gtango
+files:
+- type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+  path: sources/vnfd/vnfd-quagga.yml
+- type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+  path: sources/vnfd/vnfd-haproxy.yml
+- type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+  path: sources/vnfd/vnfd-nginx.yml
+- type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+  path: sources/nsd/nsd-quagga-haproxy-nginx.yml
+version: '0.5'
+descriptor_extension: yml

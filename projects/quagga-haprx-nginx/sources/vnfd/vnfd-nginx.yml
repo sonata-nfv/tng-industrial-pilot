@@ -1,0 +1,79 @@
+---
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml"
+
+vendor: "eu.5gtango"
+name: "nginx-vnf"
+version: "0.1"
+author: "tango"
+description: "A NGINX VNF descriptor"
+
+
+# virtual deployment units inside the VNF
+virtual_deployment_units:
+  - id: "vdu01"
+    vm_image: "http://files.sonata-nfv.eu/son-psa-pilot/nginx-vnf/nginx-u16-x64.qcow2"
+    vm_image_md5: "26e301ec605d2ba48febb926f8ff1621"
+    vm_image_format: "qcow2"
+    resource_requirements:
+      cpu:
+        vcpus: 1
+      memory:
+        size: 2
+        size_unit: "GB"
+      storage:
+        size: 20
+        size_unit: "GB"
+    monitoring_parameters:
+      - name: "vm_cpu_perc"
+        unit: "Percentage"
+      - name: "vm_mem_pers"
+        unit: "Percentage"
+      - name: "vm_net_rx_MB"
+        unit: "MB"
+      - name: "vm_net_tx_MB"
+        unit: "Mbps"
+    connection_points:
+      - id: "mgmt"
+        interface: "ipv4"
+        type: "internal"
+      - id: "input"
+        interface: "ipv4"
+        type: "internal"
+      - id: "output"
+        interface: "ipv4"
+        type: "internal"
+        
+        
+# vnf connection points to the outside world
+connection_points:
+  - id: "mgmt"
+    interface: "ipv4"
+    type: "management"
+  - id: "input"
+    interface: "ipv4"
+    type: "external"
+  - id: "output"
+    interface: "ipv4"
+    type: "external"
+    
+
+# virtual links connecting the VDUs' connection points with each other and with the VNF's connection points
+virtual_links:
+  - id: "mgmt"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "vdu01:mgmt"
+      - "mgmt"
+    dhcp: True
+  - id: "input"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vdu01:input"
+      - "input"
+    dhcp: True
+  - id: "output"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vdu01:output"
+      - "output"
+    dhcp: True

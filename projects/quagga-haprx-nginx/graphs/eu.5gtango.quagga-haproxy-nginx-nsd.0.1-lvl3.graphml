@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="label" attr.type="string" for="edge" id="d8" />
+  <key attr.name="type" attr.type="string" for="edge" id="d7" />
+  <key attr.name="level" attr.type="long" for="edge" id="d6" />
+  <key attr.name="level" attr.type="long" for="node" id="d5" />
+  <key attr.name="node_label" attr.type="string" for="node" id="d4" />
+  <key attr.name="label" attr.type="string" for="node" id="d3" />
+  <key attr.name="parent_id" attr.type="string" for="node" id="d2" />
+  <key attr.name="type" attr.type="string" for="node" id="d1" />
+  <key attr.name="node_id" attr.type="string" for="node" id="d0" />
+  <graph edgedefault="undirected">
+    <node id="vnf3:vdu01:input">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.nginx-vnf.0.1</data>
+      <data key="d3">input</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <node id="vnf1:vdu01:output">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.quagga-vnf.0.1</data>
+      <data key="d3">output</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <node id="vnf2:output">
+      <data key="d0">eu.5gtango.haproxy-vnf.0.1</data>
+      <data key="d4">haproxy-vnf</data>
+      <data key="d3">output</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="vnf1:input">
+      <data key="d0">eu.5gtango.quagga-vnf.0.1</data>
+      <data key="d4">quagga-vnf</data>
+      <data key="d3">input</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="vnf1:output">
+      <data key="d0">eu.5gtango.quagga-vnf.0.1</data>
+      <data key="d4">quagga-vnf</data>
+      <data key="d3">output</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="vnf2:vdu01:input">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.haproxy-vnf.0.1</data>
+      <data key="d3">input</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <node id="vnf2:vdu01:output">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.haproxy-vnf.0.1</data>
+      <data key="d3">output</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <node id="vnf1:vdu01:input">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.quagga-vnf.0.1</data>
+      <data key="d3">input</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <node id="vnf3:input">
+      <data key="d0">eu.5gtango.nginx-vnf.0.1</data>
+      <data key="d4">nginx-vnf</data>
+      <data key="d3">input</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="vnf3:output">
+      <data key="d0">eu.5gtango.nginx-vnf.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d3">output</data>
+      <data key="d4">nginx-vnf</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="input">
+      <data key="d0">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d4">quagga-haproxy-nginx-nsd</data>
+      <data key="d3">input</data>
+      <data key="d2" />
+      <data key="d1">iface</data>
+      <data key="d5">0</data>
+    </node>
+    <node id="vnf2:input">
+      <data key="d0">eu.5gtango.haproxy-vnf.0.1</data>
+      <data key="d4">haproxy-vnf</data>
+      <data key="d3">input</data>
+      <data key="d2">eu.5gtango.quagga-haproxy-nginx-nsd.0.1</data>
+      <data key="d1">iface</data>
+      <data key="d5">1</data>
+    </node>
+    <node id="vnf3:vdu01:output">
+      <data key="d0">vdu01</data>
+      <data key="d1">iface</data>
+      <data key="d2">eu.5gtango.nginx-vnf.0.1</data>
+      <data key="d3">output</data>
+      <data key="d4">vdu01</data>
+      <data key="d5">2</data>
+    </node>
+    <edge source="vnf3:vdu01:input" target="vnf3:vdu01:output" />
+    <edge source="vnf3:vdu01:input" target="vnf3:input">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">input</data>
+    </edge>
+    <edge source="vnf1:vdu01:output" target="vnf1:output">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">output</data>
+    </edge>
+    <edge source="vnf1:vdu01:output" target="vnf1:vdu01:input" />
+    <edge source="vnf2:output" target="vnf2:vdu01:output">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">output</data>
+    </edge>
+    <edge source="vnf2:output" target="vnf3:input">
+      <data key="d8">vnf2-2-vnf3</data>
+      <data key="d7">iface</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="vnf1:input" target="vnf1:vdu01:input">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">input</data>
+    </edge>
+    <edge source="vnf1:input" target="input">
+      <data key="d8">input-2-vnf1</data>
+      <data key="d7">iface</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="vnf1:output" target="vnf2:input">
+      <data key="d8">vnf1-2-vnf2</data>
+      <data key="d7">iface</data>
+      <data key="d6">1</data>
+    </edge>
+    <edge source="vnf2:vdu01:input" target="vnf2:vdu01:output" />
+    <edge source="vnf2:vdu01:input" target="vnf2:input">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">input</data>
+    </edge>
+    <edge source="vnf3:output" target="vnf3:vdu01:output">
+      <data key="d6">2</data>
+      <data key="d7">iface</data>
+      <data key="d8">output</data>
+    </edge>
+  </graph>
+</graphml>
