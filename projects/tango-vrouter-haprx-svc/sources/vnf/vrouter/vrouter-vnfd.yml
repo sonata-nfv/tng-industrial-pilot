@@ -1,22 +1,22 @@
 ##
 ## vrouter VNF Descriptor
 ##
-descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml"
 descriptor_version: "vnfd-schema-02"
 vendor: "eu.sonata-nfv"
-name: "hprx-vnf"
+name: "vrouter-vnf"
 version: "0.1"
 author: "Miguel Mesquita, Alticelabs"
-description: "Implementation of hprx function"
+description: "Implementation of vRouter function"
  
 ##
 ## The virtual deployment units.
 ##
 virtual_deployment_units:
   - id: "vdu01"
-    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16haproxy-1.8.12.qcow2"
+    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16quagga-0.99.24.1.qcow2"
     vm_image_format: "qcow2"
-    vm_image_md5: "316605ef953b492c41094324d93e4237"
+    vm_image_md5: "14f1c0ccffafdbfa3e4549e583330f45"
     resource_requirements:
       cpu:
         vcpus: 1
@@ -60,7 +60,8 @@ connection_points:
   - id: "output"
     interface: "ipv4"
     type: "external"
-
+ 
+##
 ## The virtual links that interconnect
 ## the different connections points.
 ##
@@ -76,10 +77,10 @@ virtual_links:
     connection_points_reference:
       - "input"
       - "vdu01:in"
-  - id: "output1"
+  - id: "output"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:out1"
+      - "vdu01:out"
       - "output"
  
 ##
@@ -109,9 +110,10 @@ monitoring_rules:
 ## Function Specific Managers
 ##
 function_specific_managers:
-  - id: "sonfsmvdmzservicehprx-vnfcss1"
-    description: "FSM for the configuration of the hprx"
-    image: "mesquitasonata/tng-hprx-fsm-css"
+  - id: "sonfsmvdmzservicevrouter-vnfcss1"
+    description: "FSM for the configuration of the vrouter"
+#    image: "sonatanfv/tng-vrouter-fsm-css"
+    image: "mesquitasonata/tng-vrouter-fsm-css"
     options:
       - key: "type"
         value: "configure"

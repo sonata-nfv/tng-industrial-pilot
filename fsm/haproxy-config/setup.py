@@ -11,15 +11,15 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='quagga configuration',
+    name='haproxy configuration',
 
     version='0.1',
 
-    description='FSM quagga configuration',
+    description='FSM haproxy configuration',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/sonata-nfv/son-security-pilot/fsm/quagga-config',
+    url='https://github.com/sonata-nfv/tng-industrial-pilot/fsm/haproxy-config',
 
     # Author details
     author='Miguel Mesquita',
@@ -31,7 +31,7 @@ setup(
     # What does your project relate to?
     keywords='NFV orchestrator',
 
-    packages=find_packages("quagga-config"),
+    packages=find_packages("haproxy-config"),
     install_requires=['pytest', 'ansible>=2.4.0.0'],
     setup_requires=['pytest-runner'],
 
@@ -39,6 +39,6 @@ setup(
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
-        'console_scripts': ['fsm-quagga=tngfsm_css.__main__:main'],
+        'console_scripts': ['fsm-haproxy=tngfsm_css.__main__:main'],
     },
 )
