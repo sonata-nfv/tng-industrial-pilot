@@ -17,7 +17,7 @@ class Factory:
             raise NotImplementedError("Unknown OS type.")
 
 class OS_implementation(metaclass = ABCMeta):
-    config_dir = './ansible/roles/quagga/files'
+    config_dir = '/haproxy-config/ansible/roles/haproxy/files'
     monitoring_file = './node.conf'
     LOG = None
 
@@ -29,7 +29,7 @@ class OS_implementation(metaclass = ABCMeta):
         raise NotImplementedError("Not implemented")
     
     @abstractmethod
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_haproxy_forwarding_rules(self, ssh, gw):
         raise NotImplementedError("Not implemented")
 
     def configure_monitoring(self, ssh, host_ip):
@@ -54,14 +54,14 @@ class OS_implementation(metaclass = ABCMeta):
     def stop_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop haproxy')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
     def scale_service(self, ssh):
         self.LOG.info("SSH connection established")
 
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start haproxy')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -184,7 +184,7 @@ class Centos_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_haproxy_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -219,14 +219,14 @@ class Centos_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
         
-        self.LOG.info("Configuration of quagga service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start quagga')
+        self.LOG.info("Configuration of haproxy service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl start haproxy')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         self.LOG.info("SSH connection established")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl stop haproxy')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
         
@@ -236,13 +236,13 @@ class Centos_implementation(OS_implementation):
         if cfg == "transparent":
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/quagga.conf'
+            remotepath = '/tmp/haproxy.conf'
             sftpa = ftp.put(localpath, remotepath)
         elif cfg == "squidguard":
             cfg = "squid_ufdb_centos"
             localpath = self.config_options[cfg]
             self.LOG.info("SFTP connection entering on %s", localpath)
-            remotepath = '/tmp/quagga.conf'
+            remotepath = '/tmp/haproxy.conf'
             sftpa = ftp.put(localpath, remotepath)
             localpath = self.config_options["ufdbguardconf"]
             self.LOG.info("SFTP connection entering on %s", localpath)
@@ -252,11 +252,11 @@ class Centos_implementation(OS_implementation):
         ftp.close()
 
         self.LOG.info("Moving the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/quagga/quagga.conf /etc/quagga/quagga.conf.old')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo mv /etc/haproxy/haproxy.conf /etc/haproxy/haproxy.conf.old')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
         self.LOG.info("Copying the Squid configuration file")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/quagga.conf /etc/quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/haproxy.conf /etc/haproxy')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -280,7 +280,7 @@ class Centos_implementation(OS_implementation):
             self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         self.LOG.info("Restarting Squid")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart quagga')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo systemctl restart haproxy')
         self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
@@ -396,9 +396,9 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("SFTP connection entering on %s", localpath)
         remotepath = '/tmp/50-cloud-init.cfg'
         sftpa = ftp.put(localpath, remotepath)
-        localpath = self.config_dir + '/conf_quagga.sh'
+        localpath = self.config_dir + '/conf_haproxy.sh'
         self.LOG.info("SFTP connection entering on %s", localpath)
-        remotepath = '/tmp/conf_quagga.sh'
+        remotepath = '/tmp/conf_haproxy.sh'
         sftpa = ftp.put(localpath, remotepath)
 
         ftp.close()
@@ -429,26 +429,26 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
+        self.LOG.info("Raising eth1")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo /sbin/ifup eth1")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
         self.LOG.info("Displaying eth1 data")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth1")
         sout = ssh_stdout.read().decode('utf-8')
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
 
+        self.LOG.info("Raising eth2")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo /sbin/ifup eth2")
+        sout = ssh_stdout.read().decode('utf-8')
+        serr = ssh_stderr.read().decode('utf-8')
+        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
+
         self.LOG.info("Displaying eth2 data")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth2")
-        sout = ssh_stdout.read().decode('utf-8')
-        serr = ssh_stderr.read().decode('utf-8')
-        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
-
-        self.LOG.info("Displaying eth3 data")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth3")
-        sout = ssh_stdout.read().decode('utf-8')
-        serr = ssh_stderr.read().decode('utf-8')
-        self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
-
-        self.LOG.info("Displaying eth4 data")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("/sbin/ifconfig eth4")
         sout = ssh_stdout.read().decode('utf-8')
         serr = ssh_stderr.read().decode('utf-8')
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
@@ -479,7 +479,7 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("stdout: {0}\nstderr:  {1}".format(sout, serr))
         return sout.strip()
 
-    def configure_quagga_forwarding_rules(self, ssh, gw):
+    def configure_haproxy_forwarding_rules(self, ssh, gw):
 
         self.LOG.info("Always use eth0 (mgmt) for connection to 10.230.x.x for protecting admin ssh connections")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
@@ -494,35 +494,35 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         self.LOG.info("Copy of guagga shell script")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/conf_quagga.sh /usr/sbin')
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/conf_haproxy.sh /usr/sbin')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
     def reconfigure_service(self, ssh, cfg):
         
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/zebra.conf ] && echo OK")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/haproxy/zebra.conf ] && echo OK")
         sout = ssh_stdout.read().decode('utf-8')
         self.LOG.info('output from remote: ' + sout)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/quagga/ospfd.conf ] && echo OK1")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("[ -f /etc/haproxy/ospfd.conf ] && echo OK1")
         sout1 = ssh_stdout.read().decode('utf-8')
         self.LOG.info('output from remote: ' + sout1)
         self.LOG.info('error from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         if sout == "OK":
             self.LOG.info("Moving the Zebra configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/zebra.conf /etc/quagga/zebra.conf.old'")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/haproxy/zebra.conf /etc/haproxy/zebra.conf.old'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
             self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
         if sout == "OK1":
             self.LOG.info("Moving the OSPF configuration file")
-            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/quagga/ospfd.conf /etc/quagga/ospfd.conf.old'")
+            ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("sudo su -c 'mv /etc/haproxy/ospfd.conf /etc/haproxy/ospfd.conf.old'")
             self.LOG.info('output from remote: ' + ssh_stdout.read().decode('utf-8'))
             self.LOG.info('output from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        self.LOG.info("Initiate config and operation of quagga service")
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_quagga.sh')
+        self.LOG.info("Initiate config and operation of haproxy service")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo /usr/sbin/conf_haproxy.sh')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 

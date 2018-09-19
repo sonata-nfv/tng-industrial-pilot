@@ -1,0 +1,117 @@
+##
+## This is a network service descriptor
+## for the SONATA PSA pilot containing the
+## PRX
+## 
+## @author Felipe Vicens, ATOS, felipe.vicens@atos.net
+##
+---
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
+
+vendor: "eu.sonata-nfv.service-descriptor"
+name: "tng-hprx-vrouter-fsm"
+version: "0.1.0"
+author: "Miguel Mesquita, Alticelabs"
+description: >
+  "The network service descriptor for the TANGO hprx and vrouter,
+   comprising hprx function and vrouter function"
+
+##
+## The various network functions this service
+## is composed of.
+##
+network_functions:
+  - vnf_id: "vnf_hprx"
+    vnf_vendor: "eu.sonata-nfv"
+    vnf_name: "hprx-vnf"
+    vnf_version: "0.1"
+  - vnf_id: "vnf_vrouter"
+    vnf_vendor: "eu.sonata-nfv"
+    vnf_name: "vrouter-vnf"
+    vnf_version: "0.1"
+
+## The NS connection points to the 
+## outside world.
+##
+connection_points:
+  - id: "mgmt"
+    interface: "ipv4"
+    type: "management"
+  - id: "input"
+    interface: "ipv4"
+    type: "external"
+  - id: "output"
+    interface: "ipv4"
+    type: "external"
+
+##
+## The virtual links that interconnect
+## the different connections points.
+##
+virtual_links:
+  - id: "mgmt"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "vnf_hprx:mgmt"
+      - "vnf_vrouter:mgmt"
+      - "mgmt"
+  - id: "input-2-vrouter"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf_vrouter:input"
+      - "input"
+  - id: "vrouter-2-hprx"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf_vrouter:output"
+      - "vnf_hprx:input"
+  - id: "hprx-2-output"
+    connectivity_type: "E-Line"
+    connection_points_reference:
+      - "vnf_hprx:output"
+      - "output"
+
+##
+## The forwarding graphs.
+##
+forwarding_graphs:
+  - fg_id: "fg01"
+    number_of_endpoints: 3
+    number_of_virtual_links: 4
+    constituent_virtual_links: 
+      - "mgmt"
+      - "input-2-vrouter"
+      - "vrouter-2-hprx"
+      - "hprx-2-output"
+    constituent_vnfs:
+      - "vnf_hprx"
+      - "vnf_vrouter"
+    network_forwarding_paths:
+      - fp_id: "fg01:fp01"
+        policy: "none"
+        connection_points:
+          - connection_point_ref: "input"
+            position: 1
+          - connection_point_ref: "vnf_hprx:input"
+            position: 2
+          - connection_point_ref: "vnf_hprx:output"
+            position: 3
+          - connection_point_ref: "vnf_vrouter:input"
+            position: 4
+          - connection_point_ref: "vnf_vrouter:output"
+            position: 5
+          - connection_point_ref: "output"
+            position: 6
+
+service_specific_managers:
+ - id: "sonssmvdmzservicetask-config-monitor1"
+   description: "An FSM functioning as task, config and monitor FSM."
+   image: "sonatanfv/vdmzservice-ssm-taskconfigmonitor"
+   options:
+     - key: "type"
+       value: "task"
+     - key: "type"
+       value: "configure"
+     - key: "type"
+       value: "monitor"
+
