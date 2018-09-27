@@ -497,8 +497,13 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info('stdout from remote: ' + my_ip)
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
-        self.LOG.info("Copy of guagga shell script")
+        self.LOG.info("Copy of haproxy shell script")
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/conf_haproxy.sh /usr/sbin')
+        self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
+        self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
+
+        self.LOG.info("Copy of haproxy cfg file")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('sudo cp /tmp/haproxy.cfg /etc')
         self.LOG.info('stdout from remote: ' + ssh_stdout.read().decode('utf-8'))
         self.LOG.info('stderr from remote: ' + ssh_stderr.read().decode('utf-8'))
 
