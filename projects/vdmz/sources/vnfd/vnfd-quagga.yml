@@ -118,7 +118,7 @@ monitoring_rules:
 function_specific_managers:
   - id: "sonfsmvdmzservicequagga-vnfquagga-config1"
     description: "FSM for the configuration of the quagga"
-    image: "sonatanfv/tng-quagga-fsm-css"
+    image: "mesquitasonata/tng-quagga-fsm-css"
     options:
       - key: "type"
         value: "configure"

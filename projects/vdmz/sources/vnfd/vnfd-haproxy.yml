@@ -106,7 +106,7 @@ monitoring_rules:
 function_specific_managers:
   - id: "sonfsmvdmzservicehaproxy-vnfhaproxy-config1"
     description: "FSM for the configuration of the haproxy"
-    image: "sonatanfv/tng-haproxy-fsm-css"
+    image: "mesquitasonata/tng-haproxy-fsm-css"
     options:
       - key: "type"
         value: "configure"

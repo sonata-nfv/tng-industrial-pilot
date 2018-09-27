@@ -105,7 +105,7 @@ monitoring_rules:
 function_specific_managers:
   - id: "sonfsmvdmzservicesnort-vnfsnort-config1"
     description: "FSM for the configuration of the snort"
-    image: "sonatanfv/tng-snort-fsm-css"
+    image: "mesquitasonata/tng-snort-fsm-css"
     options:
       - key: "type"
         value: "configure"

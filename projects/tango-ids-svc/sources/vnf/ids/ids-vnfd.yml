@@ -112,7 +112,7 @@ monitoring_rules:
 function_specific_managers:
   - id: "sonfsmvdmzserviceids-vnfids-config1"
     description: "FSM for the configuration of the ids"
-    image: "sonatanfv/tng-ids-fsm-css"
+    image: "mesquitasonata/tng-ids-fsm-css"
     options:
       - key: "type"
         value: "configure"

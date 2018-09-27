@@ -400,6 +400,10 @@ class Ubuntu_implementation(OS_implementation):
         self.LOG.info("SFTP connection entering on %s", localpath)
         remotepath = '/tmp/conf_haproxy.sh'
         sftpa = ftp.put(localpath, remotepath)
+        localpath = self.config_dir + '/haproxy.cfg'
+        self.LOG.info("SFTP connection entering on %s", localpath)
+        remotepath = '/tmp/haproxy.cfg'
+        sftpa = ftp.put(localpath, remotepath)
 
         ftp.close()
 
