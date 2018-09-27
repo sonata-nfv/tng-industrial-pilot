@@ -112,7 +112,6 @@ monitoring_rules:
 function_specific_managers:
   - id: "sonfsmvdmzservicevrouter-vnfcss1"
     description: "FSM for the configuration of the vrouter"
-#    image: "sonatanfv/tng-vrouter-fsm-css"
     image: "mesquitasonata/tng-vrouter-fsm-css"
     options:
       - key: "type"

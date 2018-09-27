@@ -38,7 +38,7 @@ from queue import Queue
 
 
 logging.basicConfig(level=logging.INFO)
-LOG = logging.getLogger("ssm-task_config-1")
+LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
@@ -639,7 +639,7 @@ def connectPortal(url, in_q):
 def main():
     q = Queue()
     #url = "ws://10.10.243.100:4000/ssm"
-    url = "ws://10.30.0.116:4000/ssm"
+    url = "ws://172.31.8.130:4000/ssm"
     t = threading.Thread(target=connectPortal, args=(url,q,), daemon=True)
     t.start()
 

@@ -15,7 +15,7 @@ files:
 package:
   description: Project for the development of haprx + vrouter fsm service
   maintainer: Miguel Mesquita, Alticelabs
-  name: tango-hprx-vrouter-fsm
+  name: tango-hprx-vrouter-svc
   vendor: eu.sonata-nfv
   version: '0.1'
 version: '0.5'

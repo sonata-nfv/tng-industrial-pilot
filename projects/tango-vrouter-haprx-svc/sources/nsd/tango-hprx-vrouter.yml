@@ -106,7 +106,7 @@ forwarding_graphs:
 service_specific_managers:
  - id: "sonssmvdmzservicetask-config-monitor1"
    description: "An FSM functioning as task, config and monitor FSM."
-   image: "sonatanfv/vdmzservice-ssm-taskconfigmonitor"
+   image: "mesquitasonata/vdmzservice-ssm-taskconfigmonitor"
    options:
      - key: "type"
        value: "task"
