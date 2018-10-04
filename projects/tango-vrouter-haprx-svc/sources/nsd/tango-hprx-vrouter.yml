@@ -92,13 +92,13 @@ forwarding_graphs:
         connection_points:
           - connection_point_ref: "input"
             position: 1
-          - connection_point_ref: "vnf_hprx:input"
-            position: 2
-          - connection_point_ref: "vnf_hprx:output"
-            position: 3
           - connection_point_ref: "vnf_vrouter:input"
-            position: 4
+            position: 2
           - connection_point_ref: "vnf_vrouter:output"
+            position: 3
+          - connection_point_ref: "vnf_hprx:input"
+            position: 4
+          - connection_point_ref: "vnf_hprx:output"
             position: 5
           - connection_point_ref: "output"
             position: 6
