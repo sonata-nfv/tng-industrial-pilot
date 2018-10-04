@@ -1,0 +1,33 @@
+version: '0.5'
+files:
+- path: sources/vnfd/vnfd-ipfire.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: sources/vnfd/vnfd-snort.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: sources/vnfd/vnfd-quagga.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: sources/vnfd/vnfd-haproxy.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: sources/vnfd/vnfd-openvpn.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: sources/nsd/nsd-vdmz.yml
+  type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+descriptor_extension: 'yml'
+package:
+  name: '5gtango-security-perimeter'
+  vendor: 'eu.5gtango'
+  description: 'vDMZ or Security Perimeter NS'
+  version: '0.1'
+  maintainer: 'AR, Alabs'

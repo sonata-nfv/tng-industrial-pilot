@@ -1,22 +1,22 @@
 ##
-## ids VNF Descriptor
+## vrouter VNF Descriptor
 ##
 descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml"
 descriptor_version: "vnfd-schema-02"
 vendor: "eu.sonata-nfv"
-name: "ids-vnf"
+name: "vrouter-vnf"
 version: "0.1"
 author: "Miguel Mesquita, Alticelabs"
-description: "Implementation of IDS function"
+description: "Implementation of vRouter function"
  
 ##
 ## The virtual deployment units.
 ##
 virtual_deployment_units:
   - id: "vdu01"
-    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16quagga-0.99.24-1.qcow2"
+    vm_image: "http://files.sonata-nfv.eu/industrial-pilot/u16quagga-0.99.24.1.qcow2"
     vm_image_format: "qcow2"
-    vm_image_md5: "7399c7a0235f74aeef167b4c1935533e"
+    vm_image_md5: "14f1c0ccffafdbfa3e4549e583330f45"
     resource_requirements:
       cpu:
         vcpus: 1
@@ -110,9 +110,9 @@ monitoring_rules:
 ## Function Specific Managers
 ##
 function_specific_managers:
-  - id: "sonfsmvdmzserviceids-vnfids-config1"
-    description: "FSM for the configuration of the ids"
-    image: "mesquitasonata/tng-ids-fsm-css"
+  - id: "sonfsmvdmzservicevrouter-vnfcss1"
+    description: "FSM for the configuration of the vrouter"
+    image: "mesquitasonata/tng-vrouter-fsm-css"
     options:
       - key: "type"
         value: "configure"
