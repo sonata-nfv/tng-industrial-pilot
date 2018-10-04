@@ -79,7 +79,7 @@ virtual_links:
   - id: "output1"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:out1"
+      - "vdu01:out"
       - "output"
  
 ##
