@@ -2,7 +2,6 @@
 ## vrouter VNF Descriptor
 ##
 descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml"
-descriptor_version: "vnfd-schema-02"
 vendor: "eu.sonata-nfv"
 name: "vrouter-vnf"
 version: "0.1"
