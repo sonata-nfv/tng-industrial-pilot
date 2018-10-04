@@ -2,7 +2,7 @@
 ## vrouter VNF Descriptor
 ##
 descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
-descriptor_version: "vnfd-schema-02"
+
 vendor: "eu.sonata-nfv"
 name: "hprx-vnf"
 version: "0.1"
@@ -79,7 +79,7 @@ virtual_links:
   - id: "output1"
     connectivity_type: "E-Line"
     connection_points_reference:
-      - "vdu01:out1"
+      - "vdu01:out"
       - "output"
  
 ##

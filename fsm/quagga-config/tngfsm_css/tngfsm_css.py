@@ -130,9 +130,7 @@ class quaggaFSM(sonSMbase):
             LOG.info("Response to request generated:" + str(response))
             #topic = "generic.fsm." + str(self.sfuuid)
             corr_id = props.correlation_id
-            self.manoconn.notify(self.topic,
-                                 yaml.dump(response),
-                                 correlation_id = corr_id)
+            self.manoconn.notify(self.topic, yaml.dump(response), correlation_id = corr_id)
             return
         
         LOG.info("Request received for other type of FSM, ignoring...")

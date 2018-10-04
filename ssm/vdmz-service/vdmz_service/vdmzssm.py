@@ -57,14 +57,6 @@ class Client():
         LOG.info("received ssm info from queue.")
         self.ioloop.start()
  
-    # Called for every client connecting (after handshake)
-    def new_client(self, client, server):
-        logging.warning("*********************"+"New client connected and was given id"+ str(client['id']))
-
-    # Called for every client disconnecting
-    def client_left(self, client, server):
-        logging.warning("*********************"+"Client("+str(client['id'])+") disconnected")
-
     def message_received(self, message):
         LOG.info('message received...')
         if len(message) > 200:
@@ -106,14 +98,15 @@ class Client():
         if status == 'ready':
             LOG.info("Triggering plugin SSM to reconfigure")
             self.ssm.push_update(message)
+            self.reply_to_portal(actionName)
             # TODO: fetch get_status until 'ready', before sending response to portal
             # application
         else:
             LOG.info("Service not ready to be reconfigured, status: " + str(status))
+            self.reply_to_portal('None')
             # TODO: respond to portal that service is not ready to reconfigure
             
         # Send a response to the portal
-        self.reply_to_portal(actionName)
 
     def add_ssm(self, ssm_object):
         """
@@ -138,6 +131,14 @@ class Client():
                       {"name": "HAProxy", "id": "2", "state": "started"},
                   ],
               }
+        if actionName == "None":
+             toSend = {
+                 "name": "yet to start",
+                 "data": 
+                 [
+                     { }
+                 ],
+             } 
  #       if actionName == "anon":
  #           toSend  = {
  #               "name": "anon start",
@@ -212,21 +213,6 @@ class Client():
             else:
                 LOG.info("received message: " + str(msg))
                 self.message_received(msg)
-
-#    def keep_alive(self):
-#        if self.ws is None:
-#            self.connect()
-#        else:
-#            self.ws.write_message("keep alive")
-
-            
-        # host="selfservice-ssm"
-        #server = WebsocketServer(port, host=host)
-        #server.set_fn_new_client(self.new_client)
-        #server.set_fn_client_left(self.client_left)
-        #server.set_fn_message_received(self.message_received)
-        #server.run_forever()
-
 
 class TaskConfigMonitorSSM(sonSMbase):
 
@@ -328,7 +314,7 @@ class TaskConfigMonitorSSM(sonSMbase):
         This method handles a task request. A task request allows the SSM to
         change the tasks in the workflow of the SLM. For the vPSA, we wan to
         add a configuration phase: first we want to dictate the payload for the
-        configration FSMs and then we want to trigger there config_event.
+        configration FSMs and then we want to trigger their config_event.
         """
 
         # Update the received schedule
