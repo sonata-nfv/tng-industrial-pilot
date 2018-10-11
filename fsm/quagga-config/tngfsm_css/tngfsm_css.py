@@ -194,7 +194,8 @@ class quaggaFSM(sonSMbase):
         LOG.info("Configuration event with content = %s", str(content.keys()))
         config_opt = 'transparent'
         
-        config_opt = content['configuration_opt']
+        #config_opt = content['configuration_opt']
+        config_opt = 'transparent'
         quagga_ip = content['management_ip']
         next_hop_ip = content['next_ip']
         prx_in_out_ip = content['own_ip']

@@ -237,7 +237,6 @@ class TaskConfigMonitorSSM(sonSMbase):
 
         # init SSM
         self.nsd = None
-        self.nsr = None
         self.functions = {}
         self.vnfrs = []
         self.ingress = None
@@ -387,7 +386,6 @@ class TaskConfigMonitorSSM(sonSMbase):
         functions = content['functions']
 
         self.nsd = service['nsd']
-        self.nsr = service['nsr']
 
         for function in functions:
             LOG.info("Adding vnf: " + str(function['vnfd']['name']))
@@ -395,8 +393,8 @@ class TaskConfigMonitorSSM(sonSMbase):
             self.functions[function['vnfd']['name']]['id'] = function['id']
             self.functions[function['vnfd']['name']]['vnfd'] = function['vnfd']
             self.functions[function['vnfd']['name']]['vnfr'] = function['vnfr']
-            if function['vnfd']['name'] == 'prx-vnf':
-                self.functions[function['vnfd']['name']]['configuration_opt'] = 'transparent'
+            #if function['vnfd']['name'] == 'prx-vnf':
+              #  self.functions[function['vnfd']['name']]['configuration_opt'] = 'transparent'
             self.vnfrs.append(function['vnfr'])
 
             vdu = function['vnfr']['virtual_deployment_units'][0]
@@ -426,11 +424,11 @@ class TaskConfigMonitorSSM(sonSMbase):
         LOG.info("keys in function: " + str(self.functions.keys()))
         for key in self.functions.keys():
             LOG.info("Function %s: %s", key, str(self.functions[key]))
-            self.functions['vpn-vnf']['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
-            self.functions['tor-vnf']['next_ip'] = None
-            self.functions['prx-vnf']['next_ip'] = None
-            self.functions['vfw-vnf']['next_ip'] = None
-            self.functions['vrouter-vnf']['next_ip'] = None
+            #self.functions['vpn-vnf']['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
+            #self.functions['tor-vnf']['next_ip'] = None
+            #self.functions['prx-vnf']['next_ip'] = None
+            #self.functions['vfw-vnf']['next_ip'] = None
+            self.functions['vrouter-vnf']['next_ip'] = self.floating_to_internal(self.functions['hprx-vnf']['own_ip'])
             self.functions['hprx-vnf']['next_ip'] = None
 #            if key == 'vpn-vnf':
 #                if 'prx-vnf' in self.functions.keys():
