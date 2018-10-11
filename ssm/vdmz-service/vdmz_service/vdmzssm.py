@@ -75,9 +75,8 @@ class Client():
         message['chain'] = []
         if actionName == "basic":
             message['chain'] = ['vrouter-vnf', 'hprx-vnf']
- #       if actionName == "anon":
- #           message['chain'] = ['vpn-vnf', 'prx-vnf', 'tor-vnf', 'vfw-vnf']
- #           message['prx_config'] = 'squidguard'
+        if actionName == "anon":
+            message['chain'] = ['vpn-vnf', 'vrouter-vnf', 'hprx-vnf']
  #       if actionName == "basic stop":
  #           message['chain'] = ['vpn-vnf', 'vfw-vnf']
  #           message['prx_config'] = 'transparent'
@@ -129,6 +128,16 @@ class Client():
                   [
                       {"name": "VRouter", "id": "1", "state": "started"},
                       {"name": "HAProxy", "id": "2", "state": "started"},
+                  ],
+              }
+        if actionName == "anon":
+              toSend  = {
+                  "name": "anon start",
+                  "data":
+                  [
+                      {"name": "VPN", "id": "1", "state": "started"},
+                      {"name": "VRouter", "id": "2", "state": "started"},
+                      {"name": "HAProxy", "id": "3", "state": "started"},
                   ],
               }
         if actionName == "None":
@@ -424,21 +433,18 @@ class TaskConfigMonitorSSM(sonSMbase):
         LOG.info("keys in function: " + str(self.functions.keys()))
         for key in self.functions.keys():
             LOG.info("Function %s: %s", key, str(self.functions[key]))
-            #self.functions['vpn-vnf']['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
-            #self.functions['tor-vnf']['next_ip'] = None
-            #self.functions['prx-vnf']['next_ip'] = None
-            #self.functions['vfw-vnf']['next_ip'] = None
-            self.functions['vrouter-vnf']['next_ip'] = self.floating_to_internal(self.functions['hprx-vnf']['own_ip'])
+            self.functions['vpn-vnf']['next_ip'] = self.floating_to_internal(self.functions['hprx-vnf']['own_ip'])
+            self.functions['vrouter-vnf']['next_ip'] = None
             self.functions['hprx-vnf']['next_ip'] = None
-#            if key == 'vpn-vnf':
-#                if 'prx-vnf' in self.functions.keys():
-#                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['prx-vnf']['own_ip'])
-#                elif 'tor-vnf' in self.functions.keys():
-#                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['tor-vnf']['own_ip'])
+            if key == 'vpn-vnf':
+                if 'vrouter-vnf' in self.functions.keys():
+                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['vrouter-vnf']['own_ip'])
+                elif 'hprx-vnf' in self.functions.keys():
+                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['hprx-vnf']['own_ip'])
 #                elif 'vfw-vnf' in self.functions.keys():
 #                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
-#                else:
-#                    self.functions[key]['next_ip'] = None
+                else:
+                    self.functions[key]['next_ip'] = None
 #            if key == 'prx-vnf':
 #                if 'tor-vnf' in self.functions.keys():
 #                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['tor-vnf']['own_ip'])
@@ -446,13 +452,13 @@ class TaskConfigMonitorSSM(sonSMbase):
 #                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
 #                else:
 #                    self.functions[key]['next_ip'] = None
-#            if key == 'tor-vnf':
-#                if 'vfw-vnf' in self.functions.keys():
-#                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['vfw-vnf']['own_ip'])
-#                else:
-#                    self.functions[key]['next_ip'] = None
-#            if key == 'vfw-vnf':
-#                self.functions[key]['next_ip'] = None
+            if key == 'vrouter-vnf':
+                if 'hprx-vnf' in self.functions.keys():
+                    self.functions[key]['next_ip'] = self.floating_to_internal(self.functions['hprx-vnf']['own_ip'])
+                else:
+                    self.functions[key]['next_ip'] = None
+            if key == 'hprx-vnf':
+                self.functions[key]['next_ip'] = None
 
         response = self.create_configuration_message()
 

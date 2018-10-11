@@ -1,0 +1,25 @@
+descriptor_extension: yml
+files:
+- path: sources/nsd/tango-vpn-hprx-vrouter.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.nsd
+- path: sources/vnf/hprx/hprx-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+- path: sources/vnf/vrouter/vrouter-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+- path: sources/vnf/vpn/vpn-vnfd.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+package:
+  description: Project for the development of vpn+haprx + vrouter fsm service
+  maintainer: Miguel Mesquita, Alticelabs
+  name: tango-vpn-hprx-vrouter-svc
+  vendor: eu.sonata-nfv
+  version: '0.1'
+version: '0.5'
