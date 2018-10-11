@@ -1,0 +1,6 @@
+- name: restart openvpn
+  runit:
+    name: openvpn
+    service_src: /etc/service
+    service_dir: /etc/service
+    state: restarted
