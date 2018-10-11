@@ -1,0 +1,10 @@
+---
+- name: Install OpenVPN
+  hosts: vpnserver
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
+  remote_user: root
+  roles:
+    - { role: 'openvpn-docker', when: SON_EMULATOR}
+    - { role: 'openvpn', when: not SON_EMULATOR }
+
