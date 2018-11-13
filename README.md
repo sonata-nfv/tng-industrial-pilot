@@ -4,7 +4,7 @@
 
 ## Folder structure
 
-|--- | --- |
+| --- | --- |
 | `doc` | documentation, figures |
 | `sdk-projects` | 5GTANG SDK network service projects (descriptors) |
 | `son-sm`| reference to son-sm library to build SSMs and FSMs |
