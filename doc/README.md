@@ -1,0 +1,1 @@
+This folder contains documentation. For example, figures and sources of that figure for the pilot.
