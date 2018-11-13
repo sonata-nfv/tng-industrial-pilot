@@ -4,6 +4,7 @@
 
 ## Folder structure
 
+| Folder | Comment |
 | --- | --- |
 | `doc` | documentation, figures |
 | `sdk-projects` | 5GTANG SDK network service projects (descriptors) |
