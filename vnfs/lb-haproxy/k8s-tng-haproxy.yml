@@ -42,7 +42,7 @@ items:
           io.kompose.service: haproxy
       spec:
         containers:
-        - image: registry.sonata-nfv.eu:5000/tng-haproxy
+        - image: haproxy
           name: haproxy
           ports:
           - containerPort: 80
