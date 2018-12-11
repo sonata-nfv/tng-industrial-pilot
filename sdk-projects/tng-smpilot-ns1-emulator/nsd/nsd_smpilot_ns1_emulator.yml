@@ -61,33 +61,38 @@ virtual_links:
   - id: vnf_cc-2-vnf_eae
     connectivity_type: E-Line
     connection_points_reference:
-      - 'vnf_cc:data'
-      - 'vnf_eae:data'
-# TODO define forwarding graph(s)
-#forwarding_graphs:
-#  - fg_id: fg01
-#    number_of_endpoints: 2
-#    number_of_virtual_links: 3
-#    constituent_virtual_links:
-#      - input-2-vnf0
-#      - vnf0-2-vnf1
-#      - vnf1-2-output
-#    constituent_vnfs:
-#      - vnf0
-#      - vnf1
-#    network_forwarding_paths:
-#      - fp_id: 'fg01:fp01'
-#        policy: none
-#        connection_points:
-#          - connection_point_ref: input
-#            position: 1
-#          - connection_point_ref: 'vnf0:input'
-#            position: 2
-#          - connection_point_ref: 'vnf0:output'
-#            position: 3
-#          - connection_point_ref: 'vnf1:input'
-#            position: 4
-#          - connection_point_ref: 'vnf1:output'
-#            position: 5
-#          - connection_point_ref: output
-#            position: 6
+      - 'vnf_cc:intern'
+      - 'vnf_eae:intern'
+# vim-emu LLCM requires this section, but ignores many parts of it
+forwarding_graphs:
+  - fg_id: fg01
+    number_of_endpoints: 1
+    number_of_virtual_links: 1
+    constituent_virtual_links:
+      - data-2-vnf_cc
+    constituent_vnfs:
+      - vnf_cc
+    network_forwarding_paths:
+      - fp_id: 'fg01:fp01'
+        policy: none
+        connection_points:
+          - connection_point_ref: data
+            position: 1
+          - connection_point_ref: 'vnf_cc:data'
+            position: 2
+  - fg_id: fg02
+    number_of_endpoints: 0
+    number_of_virtual_links: 1
+    constituent_virtual_links:
+      - vnf_cc-2-vnf_eae
+    constituent_vnfs:
+      - vnf_cc
+      - vnf_eae
+    network_forwarding_paths:
+      - fp_id: 'fg02:fp01'
+        policy: none
+        connection_points:
+          - connection_point_ref: 'vnf_cc:intern'
+            position: 1
+          - connection_point_ref: 'vnf_eae:intern'
+            position: 2
