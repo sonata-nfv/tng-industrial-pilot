@@ -32,7 +32,7 @@ author: 'Manuel Peuster (Paderborn University)'
 description: 'Cloud connector (CC) CNF'
 virtual_deployment_units:
   - id: vdu01
-    vm_image: 'ubuntu:16.04'
+    vm_image: 'ubuntu:trusty'
     vm_image_format: docker
     resource_requirements:
       cpu:
@@ -50,11 +50,17 @@ virtual_deployment_units:
       - id: data
         interface: ipv4
         type: internal
+      - id: intern
+        interface: ipv4
+        type: internal
 connection_points:
   - id: mgmt
     interface: ipv4
     type: management
   - id: data
+    interface: ipv4
+    type: external
+  - id: intern
     interface: ipv4
     type: external
 virtual_links:
@@ -65,8 +71,14 @@ virtual_links:
       - mgmt
     dhcp: true
   - id: data
-    connectivity_type: E-LAN
+    connectivity_type: E-Line
     connection_points_reference:
       - 'vdu01:data'
       - data
+    dhcp: true
+  - id: intern
+    connectivity_type: E-Line
+    connection_points_reference:
+      - 'vdu01:intern'
+      - intern
     dhcp: true
