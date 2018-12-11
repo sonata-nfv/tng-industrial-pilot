@@ -1,4 +1,5 @@
 *.tgo
+local_backups/
 reports/
 graphs/
 .idea/
