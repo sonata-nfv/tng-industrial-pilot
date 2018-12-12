@@ -57,14 +57,14 @@ virtual_links:
     connectivity_type: E-Tree
     connection_points_reference:
       - mgmt
-      - 'vdu01:mgmt'
+      - 'cdu01:mgmt'
   - id: data
     connectivity_type: E-Tree
     connection_points_reference:
       - data
-      - 'vdu01:data'    
+      - 'cdu01:data'    
   - id: intern
     connectivity_type: E-Tree
     connection_points_reference:
       - intern
-      - 'vdu01:intern'
+      - 'cdu01:intern'
