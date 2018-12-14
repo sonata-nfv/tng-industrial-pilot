@@ -47,22 +47,19 @@ connection_points:
     interface: ipv4
     type: external
 virtual_links:
-  - id: mgmt
+  - id: mgmt-2vnfs
     connectivity_type: E-LAN
     connection_points_reference:
+      - mgmt
       - 'vnf_cc:mgmt'
       - 'vnf_eae:mgmt'
-      - mgmt
-  - id: data-2-vnf_cc
-    connectivity_type: E-Line
+  - id: data-2-vnfs
+    connectivity_type: E-LAN
     connection_points_reference:
       - data
       - 'vnf_cc:data'
-  - id: vnf_cc-2-vnf_eae
-    connectivity_type: E-Line
-    connection_points_reference:
-      - 'vnf_cc:intern'
-      - 'vnf_eae:intern'
+      - 'vnf_eae:data'
+
 # vim-emu LLCM requires this section, but ignores many parts of it
 forwarding_graphs:
   - fg_id: fg01
@@ -92,7 +89,7 @@ forwarding_graphs:
       - fp_id: 'fg02:fp01'
         policy: none
         connection_points:
-          - connection_point_ref: 'vnf_cc:intern'
+          - connection_point_ref: 'vnf_cc:data'
             position: 1
-          - connection_point_ref: 'vnf_eae:intern'
+          - connection_point_ref: 'vnf_eae:data'
             position: 2

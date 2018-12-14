@@ -36,13 +36,13 @@ cloudnative_deployment_units:
     connection_points:
       - id: mgmt
         port: 22
-      - id: intern
+      - id: data
         port: 5555  # TODO change
 connection_points:
   - id: mgmt
     interface: ipv4
     type: management
-  - id: intern
+  - id: data
     interface: ipv4
     type: serviceendpoint
     port: 5555  # TODO change
@@ -52,8 +52,8 @@ virtual_links:
     connection_points_reference:
       - mgmt
       - 'cdu01:mgmt'   
-  - id: intern
+  - id: data
     connectivity_type: E-Tree
     connection_points_reference:
-      - intern
-      - 'cdu01:intern'
+      - data
+      - 'cdu01:data'
