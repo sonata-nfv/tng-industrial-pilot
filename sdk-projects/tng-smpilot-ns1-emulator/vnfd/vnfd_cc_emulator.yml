@@ -32,23 +32,35 @@ author: 'Manuel Peuster (Paderborn University)'
 description: 'Cloud connector (CC) CNF'
 cloudnative_deployment_units:
   - id: cdu01
+    # CDU1: broker
     image: 'ubuntu:trusty'
     connection_points:
       - id: mgmt
         port: 22
       - id: data
         port: 5555  # TODO change
-      - id: intern
-        port: 5555  # TODO change
+  #- id: cdu02
+  #  # CDU2: processor
+  #  image: 'ubuntu:trusty'
+  #  connection_points:
+  #    - id: mgmt
+  #      port: 22
+  #    - id: data
+  #      port: 5555  # TODO change
+  #- id: cdu03
+  #  # CDU3: database
+  #  image: 'ubuntu:trusty'
+  #  connection_points:
+  #    - id: mgmt
+  #      port: 22
+  #    - id: data
+  #      port: 5555  # TODO change
 connection_points:
   - id: mgmt
     interface: ipv4
     type: management
+    port: 22  # TODO change
   - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-  - id: intern
     interface: ipv4
     type: serviceendpoint
     port: 5555  # TODO change
@@ -58,13 +70,12 @@ virtual_links:
     connection_points_reference:
       - mgmt
       - 'cdu01:mgmt'
+      #- 'cdu02:mgmt'
+      #- 'cdu03:mgmt'
   - id: data
     connectivity_type: E-Tree
     connection_points_reference:
       - data
-      - 'cdu01:data'    
-  - id: intern
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - intern
-      - 'cdu01:intern'
+      - 'cdu01:data'
+      #- 'cdu02:data'
+      #- 'cdu03:data'
