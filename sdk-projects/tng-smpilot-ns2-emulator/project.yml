@@ -39,6 +39,10 @@ files:
     type: application/vnd.5gtango.vnfd
     tags:
       - eu.5gtango
+  - path: vnfd/vnfd_rtr_emulator.yml
+    type: application/vnd.5gtango.vnfd
+    tags:
+      - eu.5gtango
 package:
   name: 'tng-smpilot-ns2-emulator'
   version: '0.1'

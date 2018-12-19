@@ -1,3 +1,4 @@
+deploy_rdev.sh
 *.tgo
 local_backups/
 reports/
