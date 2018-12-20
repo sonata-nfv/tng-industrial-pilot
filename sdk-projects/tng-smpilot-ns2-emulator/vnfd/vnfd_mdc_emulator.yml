@@ -34,7 +34,7 @@ description: 'Machine data collector (MDC) CNF'
 
 cloudnative_deployment_units:
   - id: cdu01
-    image: 'ubuntu:trusty'
+    image: 'sonatanfv/mdc-machinedatacollector-emulator:latest'
     connection_points:
       - id: mgmt
         port: 22
