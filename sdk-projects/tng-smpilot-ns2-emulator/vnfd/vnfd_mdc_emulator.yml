@@ -34,7 +34,7 @@ description: 'Machine data collector (MDC) CNF'
 
 cloudnative_deployment_units:
   - id: cdu01
-    image: 'sonatanfv/mdc-machinedatacollector-emulator:latest'
+    image: 'sonatanfv/vnf-mdc:vimemu'
     connection_points:
       - id: mgmt
         port: 22
