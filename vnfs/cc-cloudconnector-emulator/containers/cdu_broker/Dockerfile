@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 # install latest mosquitto
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
-RUN apt-get install -y mosquitto
+RUN apt-get install -y mosquitto mosquitto-clients
 
 ADD start.sh start.sh
 RUN chmod +x start.sh

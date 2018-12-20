@@ -29,3 +29,6 @@
 route add -net $NETNS1 gw $GATEWAY dev $IFLOCAL
 echo "MDC: Configured route to NS1 over RTR:"
 route -n
+
+echo "MDC: Starting MQTT generator ..."
+./mqtt_generator.sh &

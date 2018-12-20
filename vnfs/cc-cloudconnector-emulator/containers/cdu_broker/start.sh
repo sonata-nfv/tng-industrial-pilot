@@ -26,6 +26,6 @@
 # partner consortium (www.5gtango.eu).
 
 # run mosquitto
-mosquitto -v > /mosquitto.log 2>&1 
+mosquitto -v > /mosquitto.log 2>&1 &
 echo "CC-CDU01 (broker): Mosquitto started (see /mosquitto.log) ..."
 

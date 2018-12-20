@@ -31,14 +31,28 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     iproute \
     inetutils-ping \
+    software-properties-common \
     iptables
+
+# install latest mosquitto clients
+RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+RUN apt-get update
+RUN apt-get install -y mosquitto-clients
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
+ADD mqtt_generator.sh mqtt_generator.sh
+RUN chmod +x mqtt_generator.sh
 
+# network config
 ENV IFLOCAL data
 ENV NETNS1 30.0.1.0/24
 ENV GATEWAY 30.0.3.3
+
+# MQTT config
+ENV MQTT_BROKER_HOST 30.0.1.1
+ENV MQTT_BROKER_PORT 1883
+ENV TOPIC machines/molding-042/sensors/temp
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
