@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -24,20 +25,5 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-FROM ubuntu:trusty
-LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
-
-RUN	apt-get update && apt-get install -y \
-	net-tools \
-	iproute \
-	inetutils-ping \
-    iptables
-
-ADD start.sh start.sh
-RUN chmod +x start.sh
-
-# set entry point for emulator
-ENV VIM_EMU_CMD "./start.sh"
-
-# this has to be /bin/bash for the emulator
-CMD /bin/bash
+# Start script to configure Router/NAT using iptables
+mkdir "hello_world"
