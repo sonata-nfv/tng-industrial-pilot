@@ -33,7 +33,7 @@ description: 'Cloud connector (CC) CNF'
 cloudnative_deployment_units:
   - id: cdu01
     # CDU1: broker
-    image: 'ubuntu:trusty'
+    image: 'sonatanfv/vnf-cc-broker:vimemu'
     connection_points:
       - id: mgmt
         port: 22

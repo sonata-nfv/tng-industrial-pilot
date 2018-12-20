@@ -24,7 +24,7 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-FROM ubuntu:trusty
+FROM ubuntu:xenial
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
 RUN apt-get update && apt-get install -y \
