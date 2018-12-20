@@ -27,16 +27,20 @@
 FROM ubuntu:trusty
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
-RUN	apt-get update && apt-get install -y \
-	net-tools \
-	iproute \
-	inetutils-ping \
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iproute \
+    inetutils-ping \
     iptables
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
 
-# set entry point for emulator
+# configurations
+ENV IFUPLINK uplink
+ENV IFLOCAL data
+
+# set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
 
 # this has to be /bin/bash for the emulator

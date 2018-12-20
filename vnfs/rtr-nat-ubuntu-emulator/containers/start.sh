@@ -26,4 +26,12 @@
 # partner consortium (www.5gtango.eu).
 
 # Start script to configure Router/NAT using iptables
-mkdir "hello_world"
+
+# 1. enable ip forwarding
+sysctl -w net.ipv4.ip_forward=1
+# 2. configure NAT
+iptables -t nat -A POSTROUTING -o $IFUPLINK -j MASQUERADE
+iptables -A FORWARD -i $IFUPLINK -o $IFLOCAL -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i $IFLOCAL -o $IFUPLINK -j ACCEPT
+
+echo "RTR: Configured ip_forward and NAT."
