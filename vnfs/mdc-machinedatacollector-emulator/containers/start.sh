@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -24,40 +25,7 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-descriptor_schema: >-
-  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
-vendor: eu.5gtango
-name: smpilot-mdc
-version: '0.1'
-author: 'Stefan Schneider (Paderborn University)'
-description: 'Machine data collector (MDC) CNF'
-
-cloudnative_deployment_units:
-  - id: cdu01
-    image: 'sonatanfv/mdc-machinedatacollector-emulator:latest'
-    connection_points:
-      - id: mgmt
-        port: 22
-      - id: data
-        port: 5555  # TODO change
-        
-connection_points:
-  - id: mgmt
-    interface: ipv4
-    type: management
-  - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-    
-virtual_links:
-  - id: mgmt
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - mgmt
-      - 'cdu01:mgmt'   
-  - id: data
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - data
-      - 'cdu01:data'
+# 1. set route to RTR
+route add -net $NETNS1 gw $GATEWAY dev $IFLOCAL
+route -n
+echo "MDC: Configured route to NS1 over RTR"

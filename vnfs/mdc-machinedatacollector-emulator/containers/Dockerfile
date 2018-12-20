@@ -24,40 +24,24 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-descriptor_schema: >-
-  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
-vendor: eu.5gtango
-name: smpilot-mdc
-version: '0.1'
-author: 'Stefan Schneider (Paderborn University)'
-description: 'Machine data collector (MDC) CNF'
+FROM ubuntu:trusty
+LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
-cloudnative_deployment_units:
-  - id: cdu01
-    image: 'sonatanfv/mdc-machinedatacollector-emulator:latest'
-    connection_points:
-      - id: mgmt
-        port: 22
-      - id: data
-        port: 5555  # TODO change
-        
-connection_points:
-  - id: mgmt
-    interface: ipv4
-    type: management
-  - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-    
-virtual_links:
-  - id: mgmt
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - mgmt
-      - 'cdu01:mgmt'   
-  - id: data
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - data
-      - 'cdu01:data'
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iproute \
+    inetutils-ping \
+    iptables
+
+ADD start.sh start.sh
+RUN chmod +x start.sh
+
+ENV IFLOCAL data
+ENV NETNS1 30.0.1.0/24
+ENV GATEWAY 30.0.3.3
+
+# set entry point for emulator (configuration script)
+ENV VIM_EMU_CMD "./start.sh"
+
+# this has to be /bin/bash for the emulator
+CMD /bin/bash
