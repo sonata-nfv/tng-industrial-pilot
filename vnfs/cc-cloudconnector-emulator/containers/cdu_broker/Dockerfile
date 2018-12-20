@@ -36,8 +36,6 @@ RUN apt-get update && apt-get install -y \
 ADD start.sh start.sh
 RUN chmod +x start.sh
 
-# configurations
-ENV IFUPLINK uplink
 ENV IFLOCAL data
 
 # set entry point for emulator (configuration script)

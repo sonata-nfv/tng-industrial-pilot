@@ -4,7 +4,10 @@ set -e
 target_repo=${1-sonatanfv}
 
 # RTR
-docker build -t $target_repo/rtr-nat-ubuntu-emulator -f rtr-nat-ubuntu-emulator/containers/Dockerfile rtr-nat-ubuntu-emulator/containers/
+docker build -t $target_repo/vnf-rtr-nat:vimemu -f rtr-nat-ubuntu-emulator/containers/Dockerfile rtr-nat-ubuntu-emulator/containers/
 
 # MDC
-docker build -t $target_repo/mdc-machinedatacollector-emulator -f mdc-machinedatacollector-emulator/containers/Dockerfile mdc-machinedatacollector-emulator/containers/
+docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-emulator/containers/Dockerfile mdc-machinedatacollector-emulator/containers/
+
+# CC-CDU01: broker
+docker build -t $target_repo/vnf-cc-broker:vimemu -f cc-cloudconnector-emulator/containers/cdu_broker/Dockerfile cc-cloudconnector-emulator/containers/cdu_broker/
