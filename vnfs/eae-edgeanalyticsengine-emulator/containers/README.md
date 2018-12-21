@@ -9,7 +9,7 @@ The EAE will leverage the existing Grafana Docker container to provide a nice vi
 Build from `vnfs` folder:
 
 ```bash
-docker build -t sonatanfv/vnf-eae:vimemu -f eae-edgeanalyticsengine/containers/Dockerfile eae-edgeanalyticsengine/containers/
+docker build -t sonatanfv/vnf-eae:vimemu -f eae-edgeanalyticsengine-emulator/containers/Dockerfile eae-edgeanalyticsengine-emulator/containers/
 ```
 
 ## Usage

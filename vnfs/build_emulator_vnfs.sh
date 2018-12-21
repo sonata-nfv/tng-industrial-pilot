@@ -11,3 +11,6 @@ docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-emulator
 
 # CC-CDU01: broker
 docker build -t $target_repo/vnf-cc-broker:vimemu -f cc-cloudconnector-emulator/containers/cdu_broker/Dockerfile cc-cloudconnector-emulator/containers/cdu_broker/
+
+# EAE
+docker build -t $target_repo/vnf-eae:vimemu -f eae-edgeanalyticsengine-emulator/containers/Dockerfile eae-edgeanalyticsengine-emulator/containers/
