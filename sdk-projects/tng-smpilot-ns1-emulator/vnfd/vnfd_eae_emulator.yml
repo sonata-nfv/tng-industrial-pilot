@@ -32,7 +32,7 @@ author: 'Stefan Schneider (Paderborn University)'
 description: 'Edge analytics engine (EAE) CNF'
 cloudnative_deployment_units:
   - id: cdu01
-    image: 'ubuntu:trusty'
+    image: 'sonatanfv/vnf-eae:vimemu'
     connection_points:
       - id: mgmt
         port: 22
