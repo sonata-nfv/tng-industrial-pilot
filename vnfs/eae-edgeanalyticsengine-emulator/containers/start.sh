@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -23,37 +24,5 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-descriptor_schema: >-
-  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
-vendor: eu.5gtango
-name: smpilot-eae
-version: '0.1'
-author: 'Stefan Schneider (Paderborn University)'
-description: 'Edge analytics engine (EAE) CNF'
-cloudnative_deployment_units:
-  - id: cdu01
-    image: 'sonatanfv/vnf-eae:vimemu'
-    connection_points:
-      - id: mgmt
-        port: 22
-      - id: data
-        port: 5555  # TODO change
-connection_points:
-  - id: mgmt
-    interface: ipv4
-    type: management
-  - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-virtual_links:
-  - id: mgmt
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - mgmt
-      - 'cdu01:mgmt'   
-  - id: data
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - data
-      - 'cdu01:data'
+
+# empty for now

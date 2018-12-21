@@ -32,5 +32,11 @@
 
 
 FROM grafana/grafana
-MAINTAINER 5GTANGO
+LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 
+
+# set entry point for emulator (configuration script)
+ENV VIM_EMU_CMD "./start.sh"
+
+# this has to be /bin/bash for the emulator
+CMD /bin/bash
