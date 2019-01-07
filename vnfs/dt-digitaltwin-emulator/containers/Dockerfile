@@ -1,4 +1,4 @@
-#  Copyright (c) 2018 5GTANGO, Paderborn University
+#  Copyright (c) 2018 5GTANGO, Weidmüller, Paderborn University
 # ALL RIGHTS RESERVED.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither the name of the SONATA-NFV, 5GTANGO, Paderborn University
+# Neither the name of the SONATA-NFV, 5GTANGO, Weidmüller, Paderborn University
 # nor the names of its contributors may be used to endorse or promote
 # products derived from this software without specific prior written
 # permission.
