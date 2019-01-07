@@ -23,39 +23,14 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
+import os
 
-FROM ubuntu:xenial
-LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
-RUN apt-get update && apt-get install -y \
-    net-tools \
-    iproute \
-    inetutils-ping \
-    software-properties-common \
-    iptables
-
-# install latest mosquitto clients
-RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
-RUN apt-get update
-RUN apt-get install -y mosquitto-clients
-
-ADD start.sh start.sh
-RUN chmod +x start.sh
-ADD mqtt_generator.sh mqtt_generator.sh
-RUN chmod +x mqtt_generator.sh
-
-# network config
-ENV IFLOCAL data
-ENV NETNS1 30.0.1.0/24
-ENV GATEWAY 30.0.3.3
-
-# MQTT config
-ENV MQTT_BROKER_HOST 30.0.1.1
-ENV MQTT_BROKER_PORT 1883
-ENV TOPIC machines/molding-042/sensors/temp
-
-# set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.sh"
-
-# this has to be /bin/bash for the emulator
-CMD /bin/bash
+# Check if file exists and remove it
+def rmFile(filename):
+    if os.path.exists(filename):
+        try:
+            os.remove(filename)
+        except:
+            print("Exception detected while deleting a file: ", filename)
+            pass
