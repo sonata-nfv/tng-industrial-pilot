@@ -34,7 +34,7 @@ description: 'Digital twin (DT) CNF'
 
 cloudnative_deployment_units:
   - id: cdu01
-    image: 'ubuntu:trusty'      # TODO: change
+    image: 'sonatanfv/vnf-dt:vimemu'
     connection_points:
       - id: mgmt
         port: 22
