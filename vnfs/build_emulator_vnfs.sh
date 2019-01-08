@@ -14,3 +14,6 @@ docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-emulator
 
 # DT
 docker build -t $target_repo/vnf-dt:vimemu -f dt-digitaltwin-emulator/containers/Dockerfile dt-digitaltwin-emulator/containers/
+
+# EAE
+docker build -t $target_repo/vnf-eae:vimemu -f eae-edgeanalyticsengine-emulator/containers/Dockerfile eae-edgeanalyticsengine-emulator/containers/
