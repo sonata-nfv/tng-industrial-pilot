@@ -82,6 +82,8 @@ from flask import Flask, render_template, request
 from em63 import rmFile 
 #from flask_restful import Api
 #from gevent.pywsgi import WSGIServer
+
+
 app = Flask(__name__)
 
 # User inputs
@@ -142,7 +144,8 @@ varFormEM63pass = ''
 
 session = 0 # increment session for further sessions
 
-filepathEM63 = "/home/marcel/em63/"
+# get configuration from environment varialbe (or use the old default)
+filepathEM63 = os.environ.get("DT_EM63_SHARE", "/home/marcel/em63/")
 
 valEM63 = [
         [txtDATE, varDATE, desDATE],
@@ -274,8 +277,11 @@ def resultEM63():
     return render_template("result.html",result = result);
 
 def _start_flask():
-    app.run()
-    return;
+    # make the server configurable through environment variables
+    listen_host = os.environ.get("DT_WEB_LISTEN", "127.0.0.1")  # default localhost 
+    listen_port = os.environ.get("DT_WEB_PORT", 5000)  # default 5000
+    app.run(host=listen_host, port=listen_port)
+    return;  # Comment: remove all the ";" ... not needed in Python
     
 def start_webapp():
     thread = threading.Thread(target=_start_flask)

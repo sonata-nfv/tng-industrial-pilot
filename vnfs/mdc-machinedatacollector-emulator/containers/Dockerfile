@@ -44,6 +44,8 @@ RUN chmod +x start.sh
 ADD mqtt_generator.sh mqtt_generator.sh
 RUN chmod +x mqtt_generator.sh
 
+ADD MDC_VNF MDC_VNF
+
 # network config
 ENV IFLOCAL data
 ENV NETNS1 30.0.1.0/24

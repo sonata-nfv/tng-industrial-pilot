@@ -32,10 +32,28 @@ RUN apt-get update && apt-get install -y \
     iproute \
     inetutils-ping \
     software-properties-common \
-    iptables
+    iptables \
+    python3-pip
+
+RUN pip3 install matplotlib
+RUN pip3 install python-statemachine
+RUN pip3 install flask
+
+# digital twin tool
+ADD IMMS_APP IMMS_APP
+# folder for euromap communication
+ADD em63_share em63_share
+
+# configuration
+ENV DT_WEB_LISTEN 0.0.0.0
+ENV DT_WEB_PORT 15001
+ENV DT_EM63_SHARE /em63_share
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash
+
+# DT's webinterface port
+EXPOSE 15001
