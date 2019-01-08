@@ -33,7 +33,9 @@ RUN apt-get update && apt-get install -y \
     inetutils-ping \
     software-properties-common \
     iptables \
-    python3-pip
+    python3-pip \
+    smbclient \
+    cifs-utils
 
 RUN pip3 install matplotlib
 RUN pip3 install python-statemachine

@@ -32,7 +32,9 @@ RUN apt-get update && apt-get install -y \
     iproute \
     inetutils-ping \
     software-properties-common \
-    iptables
+    iptables \
+    samba-common \
+    samba
 
 # install latest mosquitto clients
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
@@ -44,7 +46,14 @@ RUN chmod +x start.sh
 ADD mqtt_generator.sh mqtt_generator.sh
 RUN chmod +x mqtt_generator.sh
 
+# Samba configuration
+ADD smb.conf /etc/samba/smb.conf
+
+# MDC application
 ADD MDC_VNF MDC_VNF
+
+# folder for euromap communication
+ADD em63_share em63_share
 
 # network config
 ENV IFLOCAL data
@@ -56,8 +65,18 @@ ENV MQTT_BROKER_HOST 30.0.1.1
 ENV MQTT_BROKER_PORT 1883
 ENV TOPIC machines/molding-042/sensors/temp
 
+# MDC configs
+# (dont change, its also hardcoded in smb.conf)
+ENV MDC_EM63_SHARE_FOLDER /em63_share
+
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash
+
+# Samba 139, 445 TCP and 137, 138 UDP
+EXPOSE 139
+EXPOSE 445
+EXPOSE 137/udp
+EXPOSE 138/udp
