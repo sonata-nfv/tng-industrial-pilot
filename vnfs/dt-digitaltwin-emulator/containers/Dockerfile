@@ -33,7 +33,9 @@ RUN apt-get update && apt-get install -y \
     inetutils-ping \
     software-properties-common \
     iptables \
-    python3-pip
+    python3-pip \
+    smbclient \
+    cifs-utils
 
 RUN pip3 install matplotlib
 RUN pip3 install python-statemachine
@@ -43,6 +45,9 @@ RUN pip3 install flask
 ADD IMMS_APP IMMS_APP
 # folder for euromap communication
 ADD em63_share em63_share
+
+ADD start.sh start.sh
+RUN chmod +x start.sh
 
 # configuration
 ENV DT_WEB_LISTEN 0.0.0.0
