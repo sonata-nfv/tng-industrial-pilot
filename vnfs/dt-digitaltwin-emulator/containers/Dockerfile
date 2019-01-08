@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     iptables
 
+ADD IMMS_APP IMMS_APP
+
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
 
