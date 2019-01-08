@@ -23,7 +23,13 @@ $ docker run --network=host --hostname=suricata --name=suricata -it suricata
 
 `
 $ docker pull logstash:6.5.4
+`
+
+`
 $ docker pull elasticsearch:6.5.4
+`
+
+`
 $ docker pull kibana:6.5.4
 `
 
