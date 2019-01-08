@@ -44,6 +44,9 @@ ADD IMMS_APP IMMS_APP
 # folder for euromap communication
 ADD em63_share em63_share
 
+ADD start.sh start.sh
+RUN chmod +x start.sh
+
 # configuration
 ENV DT_WEB_LISTEN 0.0.0.0
 ENV DT_WEB_PORT 15001
