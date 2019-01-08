@@ -26,4 +26,4 @@
 # partner consortium (www.5gtango.eu).
 
 echo "DT: Starting DigitalTwin generator ..."
-sleep 1
+python3 IMMS_APP/IMMS_APP.py &
