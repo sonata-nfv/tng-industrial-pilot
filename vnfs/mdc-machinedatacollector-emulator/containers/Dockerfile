@@ -54,6 +54,8 @@ ADD MDC_VNF MDC_VNF
 
 # folder for euromap communication
 ADD em63_share em63_share
+# allow everybody to write to our share (enables guest access over samba)
+RUN chmod 777 em63_share
 
 # network config
 ENV IFLOCAL data

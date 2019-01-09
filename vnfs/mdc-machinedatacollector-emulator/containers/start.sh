@@ -30,5 +30,9 @@ route add -net $NETNS1 gw $GATEWAY dev $IFLOCAL
 echo "MDC: Configured route to NS1 over RTR:"
 route -n
 
-echo "MDC: Starting MQTT generator ..."
-./mqtt_generator.sh &
+echo "MDC: Starting SAMBA server ..."
+smbd -F -d verbose --log-stdout > /var/smb.log &
+
+# for debugging, we can use this simple MQTT generator
+# echo "MDC: Starting MQTT generator ..."
+# ./mqtt_generator.sh &
