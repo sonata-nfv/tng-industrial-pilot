@@ -59,6 +59,7 @@ import os
 import time
 import signal
 import sys
+import traceback
 import paho.mqtt.client as paho
 from em63 import rmFile 
 # see http://www.steves-internet-guide.com/client-objects-python-mqtt/
@@ -279,6 +280,7 @@ while not stop_loop:
         print("---------------------------------------------")
     except BaseException as ex:
         print("Exception detected: {}".format(ex))
+        traceback.print_exc()
         time.sleep(1)
     finally:
         f_in.close() #2 close opened *.DAT
