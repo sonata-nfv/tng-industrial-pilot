@@ -25,10 +25,10 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-echo "DT: Mount em63_share from MDC ..."
-mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
+echo "DT: Mount em63_share from MDC ... (logs: /var/mount.log)"
+mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE > /var/mount.log
 
-echo "DT: Starting DigitalTwin generator ..."
+echo "DT: Starting DigitalTwin generator ... (logs: /var/imms.log)"
 cd IMMS_APP
 python3 IMMS_APP.py > /var/imms.log &
 cd /

@@ -54,7 +54,7 @@ RUN chmod +x start.sh
 ENV DT_WEB_LISTEN 0.0.0.0
 ENV DT_WEB_PORT 15001
 ENV DT_EM63_SHARE /em63_share
-ENV DT_EM63_SHARE_HOST 172.17.0.2
+ENV DT_EM63_SHARE_HOST 30.0.3.2 # local testing: 172.17.0.2
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
