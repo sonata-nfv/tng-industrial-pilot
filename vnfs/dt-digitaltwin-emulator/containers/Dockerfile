@@ -37,6 +37,7 @@ RUN apt-get update && apt-get install -y \
     smbclient \
     cifs-utils
 
+# install required python libs
 RUN pip3 install matplotlib
 RUN pip3 install python-statemachine
 RUN pip3 install flask

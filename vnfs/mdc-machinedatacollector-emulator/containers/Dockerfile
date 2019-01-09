@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y \
     inetutils-ping \
     software-properties-common \
     iptables \
+    python3-pip \
     samba-common \
     samba
 
@@ -40,6 +41,9 @@ RUN apt-get update && apt-get install -y \
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
 RUN apt-get install -y mosquitto-clients
+
+# install required python libs
+RUN pip3 install paho-mqtt
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
@@ -65,6 +69,7 @@ ENV GATEWAY 30.0.3.3
 # MQTT config
 ENV MQTT_BROKER_HOST 30.0.1.1
 ENV MQTT_BROKER_PORT 1883
+# only for dummy MQTT generator not for MDC APP
 ENV TOPIC machines/molding-042/sensors/temp
 
 # MDC configs

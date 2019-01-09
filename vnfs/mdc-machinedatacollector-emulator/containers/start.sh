@@ -33,6 +33,10 @@ route -n
 echo "MDC: Starting SAMBA server ..."
 smbd -F -d verbose --log-stdout > /var/smb.log &
 
+echo "MDC: Starting MDC VNF APP ..."
+cd /MDC_VNF
+python3 MDC_VNF.py &
+
 # for debugging, we can use this simple MQTT generator
 # echo "MDC: Starting MQTT generator ..."
 # ./mqtt_generator.sh &

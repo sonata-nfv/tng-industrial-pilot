@@ -57,6 +57,7 @@
 #import datetime
 import os
 import time
+import signal
 import paho.mqtt.client as paho
 from em63 import rmFile 
 # see http://www.steves-internet-guide.com/client-objects-python-mqtt/
@@ -70,10 +71,12 @@ machinename = "WIMMS"
 # Session number
 session = "0001" 
 # Path to the Euromap 63 sharing folder for this machine
-#Linux
-filepath = "/home/marcel/em63/"
+# get configuration from environment varialbe (or use the old default)
+filepath = os.environ.get("MDC_EM63_SHARE_FOLDER", "/home/marcel/em63/")
 # MQTT broker
-broker="localhost"
+broker = os.environ.get("MQTT_BROKER_HOST", "127.0.0.1")
+broker_port = os.environ.get("MQTT_BROKER_HOST", 1883)
+
 # -------------------------- Secondary-------------------------------------- #
 #
 # Job number: Initial value for job is 0, in while it is incremented
@@ -83,6 +86,20 @@ waitTimeCycle=1;
 # Loops and Time per loop for waiting for machine's answer: DAT file
 waitCnt=100; # 10 times
 waitTime=0.1; # 1 second
+
+stop_loop = False  # stop flag
+
+
+# allow graceful stop
+def signal_handler(sig, frame):
+    global stop_loop
+    stop_loop = True
+    print('Received signal. Stopping ...')
+    exit(0)
+
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 #
 #
 # -------------------------------------------------------------------------- #
@@ -113,20 +130,24 @@ else:
     jobFileBody ="ActStsMach;"
 
 mqttclientname = machinename + "-client-pub"
-client= paho.Client(mqttclientname)
+client = paho.Client(mqttclientname)
+
 
 
 # # # Cyclic part
-while 1:
+while not stop_loop:
     try: 
         if job >=999:
             job=1
         else:
             job=job+1;
             
-        # MQTT connection
-        print("Connecting to broker ",broker)
-        client.connect(broker)
+        try:
+            # MQTT connection
+            print("Connecting to broker ", broker)
+            client.connect(broker, port=broker_port)
+        except BaseException as ex:
+            print("Cannot connect to MQTT broker '{}'".format(broker))
         
         # Delete *.RSP if available
         rspFile = filepath + "SESS" + session + '.RSP'
@@ -139,7 +160,7 @@ while 1:
         rmFile(logFile)
         
         # Create new *.JOB
-        jobFile=filepath + session + str(job).zfill(4) + '.JOB'
+        jobFile = os.path.join(filepath, session + str(job).zfill(4) + '.JOB')
         f_jobFile = open(jobFile, 'w+')
         jobFileHeaderDynamic1='JOB 0000' + str(job).zfill(4) + ' RESPONSE "' + session + str(job).zfill(4) + '.LOG";\n'
         jobFileHeaderDynamic2='REPORT ' + session + '_0000' + str(job).zfill(4) + ' REWRITE "' + session + str(job).zfill(4) + '.DAT"\n'
@@ -149,7 +170,7 @@ while 1:
         f_jobFile.close()
 
         # Create new *.REQ
-        reqFile= filepath + "SESS" + session + '.REQ'
+        reqFile= os.path.join(filepath, "SESS" + session + '.REQ')
         f_reqFile = open(reqFile, 'w+')
         reqFileContent = '0000' + str(job).zfill(4) + ' EXECUTE "' + session + str(job).zfill(4) + '.JOB";'
         f_reqFile.write(reqFileContent)
@@ -163,23 +184,26 @@ while 1:
         time.sleep(waitTimeCycle); 
         
         # File *.DAT which have to be used
-        datFile = filepath + session + str(job).zfill(4) + '.DAT'
+        datFile = os.path.join(filepath, session + str(job).zfill(4) + '.DAT')
         print("Looking for: ",datFile)
 
         # Open *.DAT file
+        file_found = False
         waitIndex=0
         while waitIndex<waitCnt:
             if os.path.exists(datFile):
                 print("DAT file found. Processing ...")
-                break;
+                file_found = True
+                break
             else:
                 waitIndex=waitIndex+1;
-                print(waitIndex);
-                time.sleep(waitTime);
-            if waitIndex>=waitCnt:
-                print("Stop because no Euromap 63 response file was found!")
-                exit();
-                
+                print("Waiting ({}/{})".format(waitIndex, waitCnt))
+                time.sleep(waitTime)
+        if not file_found:
+            # ok never stop in a real deployment, just retry. give other VNFs time to breathe ;-)
+            print("Error no Euromap 63 response file was found! Retry!")
+            continue
+       
         f_in = open(datFile,'r')
         parameter_value_list_in = f_in.read()
         f_in.close() #2 can not be closed later because of it will be removed in a few lines later
@@ -220,26 +244,29 @@ while 1:
                 valuelist.remove(delDummy)
         valuelist_final = valuelist
 
-        start_ende = len(parameterlist_final)
-        if start_ende == len(valuelist_final):
-            print("Start transfer: publishing...")
-            for index in range(len(parameterlist_final)):
-                print("#" + str(index) + "\t : \t"  + parameterlist_final[index] + "\t\t" + valuelist_final[index])
-            client.loop_start()
-            for index in range(start_ende):
-                parameter = parameterlist_final[index]
-                value = valuelist_final[index]
-                parameterName = machinename + "/EM63/" +  parameter
-                parameterValue = str(value)
-                #(topic, payload)
-                client.publish(parameterName,parameterValue)
-        else:
-            print("Number of parameters and values is not equal")
-            print("Number of parameters: ", len(parameterlist_final))
-            print("Number of values: ", len(valuelist))
-        client.disconnect() #disconnect
-        client.loop_stop() #stop loop
-        
+        try:
+            start_ende = len(parameterlist_final)
+            if start_ende == len(valuelist_final):
+                print("Start transfer: publishing...")
+                for index in range(len(parameterlist_final)):
+                    print("#" + str(index) + "\t : \t"  + parameterlist_final[index] + "\t\t" + valuelist_final[index])
+                client.loop_start()
+                for index in range(start_ende):
+                    parameter = parameterlist_final[index]
+                    value = valuelist_final[index]
+                    parameterName = machinename + "/EM63/" +  parameter
+                    parameterValue = str(value)
+                    #(topic, payload)
+                    client.publish(parameterName,parameterValue)
+            else:
+                print("Number of parameters and values is not equal")
+                print("Number of parameters: ", len(parameterlist_final))
+                print("Number of values: ", len(valuelist))
+            client.disconnect() #disconnect
+            client.loop_stop() #stop loop
+        except BaseException as ex:
+            print("Publish error: {}".format(ex))
+    
         # After each cycle: remove all files
         rmFile(rspFile)
         rmFile(datFile)
@@ -247,17 +274,9 @@ while 1:
         rmFile(jobFile)
         rmFile(datFile)
         print("---------------------------------------------")
-        
-    except (KeyboardInterrupt, SystemExit):
-        # Catch 
-        print("KeyboardInterrupt or SystemExit detected (maybe ctrl+c): Exit!")
-        raise
-        
-    except:
-        print("Exception detected...")
-        #pass or continue?
-        pass
-        
+    except BaseException as ex:
+        print("Exception detected: {}".format(ex))
+        time.sleep(1)
     finally:
         f_in.close() #2 close opened *.DAT
         client.disconnect() #disconnect
