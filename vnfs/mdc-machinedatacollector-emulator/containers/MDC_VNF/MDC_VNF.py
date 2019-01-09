@@ -58,6 +58,7 @@
 import os
 import time
 import signal
+import sys
 import paho.mqtt.client as paho
 from em63 import rmFile 
 # see http://www.steves-internet-guide.com/client-objects-python-mqtt/
@@ -136,6 +137,7 @@ client = paho.Client(mqttclientname)
 
 # # # Cyclic part
 while not stop_loop:
+    sys.stdout.flush()
     try: 
         if job >=999:
             job=1
@@ -198,6 +200,7 @@ while not stop_loop:
             else:
                 waitIndex=waitIndex+1;
                 print("Waiting ({}/{})".format(waitIndex, waitCnt))
+                sys.stdout.flush()
                 time.sleep(waitTime)
         if not file_found:
             # ok never stop in a real deployment, just retry. give other VNFs time to breathe ;-)
