@@ -37,6 +37,7 @@ RUN apt-get update && apt-get install -y \
     smbclient \
     cifs-utils
 
+# install required python libs
 RUN pip3 install matplotlib
 RUN pip3 install python-statemachine
 RUN pip3 install flask
@@ -53,6 +54,8 @@ RUN chmod +x start.sh
 ENV DT_WEB_LISTEN 0.0.0.0
 ENV DT_WEB_PORT 15001
 ENV DT_EM63_SHARE /em63_share
+# mdc in emulator: 30.0.3.2 local testing: 172.17.0.2
+ENV DT_EM63_SHARE_HOST 30.0.3.2
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"

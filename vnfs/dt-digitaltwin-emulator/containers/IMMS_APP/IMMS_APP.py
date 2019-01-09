@@ -74,6 +74,7 @@ import matplotlib.pyplot as plt
 import math
 import re
 import os
+import sys
 import time
 import datetime
 import threading
@@ -433,8 +434,9 @@ def valEM63print():
     print("SetCntMld = ", varSetCntMld)
     print("SetCntPrt = ", varSetCntPrt)
     print("SetTimCyc = ", varSetTimCyc)
-    print("\n")   
-    return;
+    print("\n")
+    sys.stdout.flush()  
+    return
 
     
 def run_EM63():
@@ -593,7 +595,8 @@ def run_EM63():
         txtRSP = '00000001 PROCESSED "EXECUTE ' + jobFile + '";'
         f_rspFile.write(txtRSP)
         f_rspFile.close()
-        #print("Response file was written: ", rspFile)
+        print("Response file was written: ", rspFile)
+        sys.stdout.flush()
     
 class vIMM(StateMachine):
     # Simplified IMM states
