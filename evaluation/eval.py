@@ -101,13 +101,13 @@ if __name__ == '__main__':
 
     # run measurements for NS1
     for i in range(args.runs):
-        print("Run {} of {} with NS1".format(i, args.runs))
+        print("Run {} of {} with NS1".format(i+1, args.runs))
         times['service'].append('ns1')
         times = measure_times(ns1_project, ns1_package, times)
 
     # run measurements for NS2
     for i in range(args.runs):
-        print("Run {} of {} with NS2".format(i, args.runs))
+        print("Run {} of {} with NS2".format(i+1, args.runs))
         times['service'].append('ns2')
         times = measure_times(ns2_project, ns2_package, times)
 
