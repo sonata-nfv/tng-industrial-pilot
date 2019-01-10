@@ -10,7 +10,11 @@ This directory contains scripts for evaluations and plotting
     * Install with Python 2 (globally): `sudo python setup.py install`
 1. Start server for starting/stopping emulation (incl. in tng-sdk-benchmark): `sudo tng-bench-emusrv`
 
+## Usage
 
+```bash
+python3 eval.py
+```
 
 
 ## Other

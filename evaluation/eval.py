@@ -26,18 +26,16 @@
 
 
 # script for packaging, onboarding, and instantiating NS1 and NS2 and measuring the time (over multiple runs)
-import requests
 from timeit import default_timer as timer
 from subprocess import run
 from emuc import EmuSrvClient, LLCMClient
 
-serv_url = 'http://127.0.0.1:4999'
-emu_url = 'http://127.0.0.1:5000'
+srv_client = EmuSrvClient('http://127.0.0.1:4999')
+llcm_client = LLCMClient('http://127.0.0.1:5000')
 
 
-if __name__ == '__main__':
-    srv_client = EmuSrvClient(serv_url)
-    llcm_client = LLCMClient(emu_url)
+def measure_times(project_path, package_path):
+    times = dict()
 
     # start emulation
     print("Starting vim-emu")
@@ -51,16 +49,18 @@ if __name__ == '__main__':
     # packaging
     print("Packaging")
     start = timer()
-    run(['tng-pkg', '-p', '../sdk-projects/tng-smpilot-ns1-emulator'])
+    run(['tng-pkg', '-p', project_path])
     packaging_done = timer()
     packaging_time = packaging_done - start
+    dict['packaging'] = packaging_time
     print("Packaging time: {}s".format(packaging_time))
 
     # on-board
     print("Uploading package")
-    uuid = llcm_client.upload_package('../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
+    uuid = llcm_client.upload_package(package_path)
     uploading_done = timer()
     uploading_time = uploading_done - packaging_done
+    dict['uploading'] = uploading_time
     print("Uploading done in: {} (UUID: {})".format(uploading_time, uuid))
 
     # instantiate service
@@ -68,9 +68,20 @@ if __name__ == '__main__':
     llcm_client.instantiate_service(uuid)
     instantiation_done = timer()
     instantiation_time = instantiation_done - uploading_done
+    dict['instantiation'] = instantiation_time
     print("Instantiation done in: {}".format(instantiation_time))
 
     # stop emulation
     print("Stopping emulation")
     srv_client.stop_emulation()
     print("Emulation stopped")
+
+    return times
+
+
+if __name__ == '__main__':
+    # ns1
+    times = measure_times('../sdk-projects/tng-smpilot-ns1-emulator',
+                          '../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
+
+    print(times)
