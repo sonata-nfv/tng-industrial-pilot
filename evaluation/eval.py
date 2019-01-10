@@ -88,7 +88,14 @@ if __name__ == '__main__':
 
     # on-board
     print("Uploading package")
-    llcm_client.upload_package('../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
+    uuid = llcm_client.upload_package('../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
     uploading_done = timer()
     uploading_time = uploading_done - packaging_done
-    print("Uploading done in: {}".format(uploading_time))
+    print("Uploading done in: {} (UUID: {})".format(uploading_time, uuid))
+
+    # instantiate service
+    print("Instantiating service")
+    llcm_client.instantiate_service(uuid)
+    instantiation_done = timer()
+    instantiation_time = instantiation_done - uploading_done
+    print("Instantiation done in: {}".format(instantiation_time))
