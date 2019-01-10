@@ -52,7 +52,7 @@ def measure_times(project_path, package_path):
     run(['tng-pkg', '-p', project_path])
     packaging_done = timer()
     packaging_time = packaging_done - start
-    dict['packaging'] = packaging_time
+    times['packaging'] = packaging_time
     print("Packaging time: {}s".format(packaging_time))
 
     # on-board
@@ -60,7 +60,7 @@ def measure_times(project_path, package_path):
     uuid = llcm_client.upload_package(package_path)
     uploading_done = timer()
     uploading_time = uploading_done - packaging_done
-    dict['uploading'] = uploading_time
+    times['uploading'] = uploading_time
     print("Uploading done in: {} (UUID: {})".format(uploading_time, uuid))
 
     # instantiate service
@@ -68,7 +68,7 @@ def measure_times(project_path, package_path):
     llcm_client.instantiate_service(uuid)
     instantiation_done = timer()
     instantiation_time = instantiation_done - uploading_done
-    dict['instantiation'] = instantiation_time
+    times['instantiation'] = instantiation_time
     print("Instantiation done in: {}".format(instantiation_time))
 
     # stop emulation
