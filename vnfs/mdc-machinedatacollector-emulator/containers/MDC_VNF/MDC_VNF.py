@@ -77,7 +77,7 @@ session = "0001"
 filepath = os.environ.get("MDC_EM63_SHARE_FOLDER", "/home/marcel/em63/")
 # MQTT broker
 broker = os.environ.get("MQTT_BROKER_HOST", "127.0.0.1")
-broker_port = os.environ.get("MQTT_BROKER_HOST", 1883)
+broker_port = os.environ.get("MQTT_BROKER_PORT", 1883)
 
 # -------------------------- Secondary-------------------------------------- #
 #
@@ -148,9 +148,10 @@ while not stop_loop:
         try:
             # MQTT connection
             print("Connecting to broker ", broker)
-            client.connect(broker, port=broker_port)
+            client.connect(broker, port=int(broker_port))
+            print("Connected.")
         except BaseException as ex:
-            print("Cannot connect to MQTT broker '{}'".format(broker))
+            print("Cannot connect to MQTT broker '{}:{}': {}".format(broker, broker_port, ex))
         
         # Delete *.RSP if available
         rspFile = filepath + "SESS" + session + '.RSP'
@@ -281,6 +282,7 @@ while not stop_loop:
     except BaseException as ex:
         print("Exception detected: {}".format(ex))
         traceback.print_exc()
+        raise ex
         time.sleep(1)
     finally:
         f_in.close() #2 close opened *.DAT
