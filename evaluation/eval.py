@@ -58,10 +58,10 @@ def measure_times(project_path, package_path):
 
     # packaging
     print("Packaging")
-    start = timer()
+    packaging_start = timer()
     run(['tng-pkg', '-p', project_path])
     packaging_done = timer()
-    packaging_time = packaging_done - start
+    packaging_time = packaging_done - packaging_start
     times['packaging'] = packaging_time
     print("Packaging time: {}s".format(packaging_time))
 
@@ -79,11 +79,14 @@ def measure_times(project_path, package_path):
     instantiation_done = timer()
     instantiation_time = instantiation_done - uploading_done
     times['instantiation'] = instantiation_time
+    times['total'] = instantiation_done - packaging_start
     print("Instantiation done in: {}".format(instantiation_time))
 
+    # TODO: may also have to stop service in future (to stop Samba file share)
+    # llcm_client.terminate_service(uuid)
+
     # stop emulation
-    print("Stopping service and emulation")
-    llcm_client.terminate_service(uuid)
+    print("Stopping emulation")
     srv_client.stop_emulation()
     print("Emulation stopped")
 
