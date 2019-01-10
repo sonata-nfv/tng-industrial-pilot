@@ -9,6 +9,9 @@ docker build -t $target_repo/vnf-rtr-nat:vimemu -f rtr-nat-ubuntu-emulator/conta
 # CC-CDU01: broker
 docker build -t $target_repo/vnf-cc-broker:vimemu -f cc-cloudconnector-emulator/containers/cdu_broker/Dockerfile cc-cloudconnector-emulator/containers/cdu_broker/
 
+# CC-CDU02: processor
+docker build -t $target_repo/vnf-cc-processor:vimemu -f cc-cloudconnector-emulator/containers/cdu_processor/Dockerfile cc-cloudconnector-emulator/containers/cdu_processor/
+
 # MDC
 docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-emulator/containers/Dockerfile mdc-machinedatacollector-emulator/containers/
 
