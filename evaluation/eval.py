@@ -93,17 +93,24 @@ def measure_times(project_path, package_path, times):
 if __name__ == '__main__':
     ns1_project = '../sdk-projects/tng-smpilot-ns1-emulator'
     ns1_package = '../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo'
-    # TODO: NS2
+    ns2_project = '../sdk-projects/tng-smpilot-ns2-emulator'
+    ns2_package = '../sdk-projects/eu.5gtango.tng-smpilot-ns2-emulator.0.1.tgo'
 
     args = parse_args()
-    # store measured times in dict containing arrays
-    times = {'packaging': [], 'uploading': [], 'instantiation': [], 'total': []}
+    times = {'service': [], 'packaging': [], 'uploading': [], 'instantiation': [], 'total': []}
 
-    # run measurements
+    # run measurements for NS1
     for i in range(args.runs):
+        print("Run {} of {} with NS1".format(i, args.runs))
+        times['service'].append('ns1')
         times = measure_times(ns1_project, ns1_package, times)
-        print(times)
+
+    # run measurements for NS2
+    for i in range(args.runs):
+        print("Run {} of {} with NS2".format(i, args.runs))
+        times['service'].append('ns2')
+        times = measure_times(ns2_project, ns2_package, times)
 
     # save to pandas dataframe
     df = pd.DataFrame.from_dict(times)
-    print(df.head())
+    print(df)
