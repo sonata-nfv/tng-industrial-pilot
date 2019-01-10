@@ -50,6 +50,7 @@ def measure_ns1(emu_path="../vim-emu/examples/tango_default_cli_topology_2_pop.p
     sleep(1)
     stop = timer()
     log.info("Time: {}".format(stop - start))
+    print(stop-start, flush=True)
 
     # stop emulator
     response = requests.delete(emuserv_url)
