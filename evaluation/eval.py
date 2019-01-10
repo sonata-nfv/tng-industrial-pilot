@@ -114,3 +114,5 @@ if __name__ == '__main__':
     # save to pandas dataframe
     df = pd.DataFrame.from_dict(times)
     print(df)
+    df.to_pickle('times_ns1_ns2_{}runs.pkl'.format(args.runs))
+    print("Saved times to 'times_ns1_ns2_{}runs.pkl'".format(args.runs))
