@@ -39,15 +39,14 @@ def measure_ns1():
 
     # start vim-emu, sleep for 10s to wait until it's ready
     print("Starting vim-emu")
-    response = requests.post(emuserv_url)
+    response = requests.post(emuserv_url).text
 
     # wait until vim-emu is running (poll every 1s via http get)
     emu_running = requests.get(emuserv_url)
     while emu_running != 'true':
         sleep(1)
-        emu_running = requests.get(emuserv_url)
+        emu_running = requests.get(emuserv_url).text
         print(emu_running)
-    # TODO: check if emulator is running
 
     # packaging
     print("Packaging")
