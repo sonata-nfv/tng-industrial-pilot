@@ -30,7 +30,7 @@ import requests
 from time import sleep
 from timeit import default_timer as timer
 from subprocess import run
-from .emuc import EmuSrvClient, LLCMClient
+from emuc import EmuSrvClient, LLCMClient
 
 serv_url = 'http://127.0.0.1:4999'
 emu_url = 'http://127.0.0.1:5000'
@@ -64,5 +64,16 @@ def measure_ns1():
 
 if __name__ == '__main__':
     # measure_ns1()
-    client = EmuSrvClient(serv_url)
-    client.start_emulation()
+
+
+    srv_client = EmuSrvClient(serv_url)
+    llcm_client = LLCMClient(emu_url)
+
+    # start emulation
+    print("Starting vim-emu")
+    srv_client.start_emulation()
+
+    # wait for it to be ready
+    print("Waiting for it to be ready")
+    srv_client.wait_emulation_ready(llcm_client)
+    print("ready")
