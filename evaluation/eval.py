@@ -30,8 +30,10 @@ import requests
 from time import sleep
 from timeit import default_timer as timer
 from subprocess import run
+from .emuc import EmuSrvClient, LLCMClient
 
-emuserv_url = 'http://127.0.0.1:4999/api/v1/emulation'
+serv_url = 'http://127.0.0.1:4999'
+emu_url = 'http://127.0.0.1:5000'
 
 
 def measure_ns1():
@@ -39,14 +41,8 @@ def measure_ns1():
 
     # start vim-emu, sleep for 10s to wait until it's ready
     print("Starting vim-emu")
-    response = requests.post(emuserv_url).text
-
-    # wait until vim-emu is running (poll every 1s via http get)
-    emu_running = requests.get(emuserv_url)
-    while emu_running != 'true':
-        sleep(1)
-        emu_running = requests.get(emuserv_url).text
-        print(emu_running)
+    response = requests.post(serv_url).text
+    sleep(10)
 
     # packaging
     print("Packaging")
@@ -54,11 +50,19 @@ def measure_ns1():
     run(['tng-pkg', '-p', '../sdk-projects/tng-smpilot-ns1-emulator'])
     packaging_done = timer()
     packaging_time = packaging_done - start
-    print(packaging_time)
+    print("Packaging time: {}s".format(packaging_time))
+
+    # on-boarding
+    # TODO: path
+    files = {'package': open('eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo', 'rb')}
+    response = requests.post(emu_url + 'packages', files=files)
+    print(response.text)
 
     # stop emulator
-    response = requests.delete(emuserv_url)
+    requests.delete(serv_url)
 
 
 if __name__ == '__main__':
-    measure_ns1()
+    # measure_ns1()
+    client = EmuSrvClient(serv_url)
+    client.start_emulation()
