@@ -28,10 +28,20 @@
 # script for packaging, onboarding, and instantiating NS1 and NS2 and measuring the time (over multiple runs)
 from timeit import default_timer as timer
 from subprocess import run
+import argparse
 from emuc import EmuSrvClient, LLCMClient
 
 srv_client = EmuSrvClient('http://127.0.0.1:4999')
 llcm_client = LLCMClient('http://127.0.0.1:5000')
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                     description="Runtime evaluation")
+    parser.add_argument('-n',
+                        help="Number of evaluation runs per network service",
+                        default=1)
+    return parser.parse_args()
 
 
 def measure_times(project_path, package_path):
@@ -72,7 +82,8 @@ def measure_times(project_path, package_path):
     print("Instantiation done in: {}".format(instantiation_time))
 
     # stop emulation
-    print("Stopping emulation")
+    print("Stopping service and emulation")
+    llcm_client.terminate_service(uuid)
     srv_client.stop_emulation()
     print("Emulation stopped")
 
@@ -80,8 +91,11 @@ def measure_times(project_path, package_path):
 
 
 if __name__ == '__main__':
-    # ns1
-    times = measure_times('../sdk-projects/tng-smpilot-ns1-emulator',
-                          '../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
+    ns1_project = '../sdk-projects/tng-smpilot-ns1-emulator'
+    ns1_package = '../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo'
 
+    args = parse_args()
+
+    # ns1
+    times = measure_times(ns1_project, ns1_package)
     print(times)
