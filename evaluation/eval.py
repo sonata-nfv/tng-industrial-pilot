@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 emuserv_url = 'http://127.0.0.1:4999/api/v1/emulation'
 
 
-def measure_ns1(emu_path="../vim-emu/examples/tango_default_cli_topology_2_pop.py"):
+def measure_ns1():
     """"Measure the time for packaging, onboarding, and instantiating NS1"""
 
     # start vim-emu, sleep for 10s to wait until it's ready
@@ -44,13 +44,16 @@ def measure_ns1(emu_path="../vim-emu/examples/tango_default_cli_topology_2_pop.p
     response = requests.post(emuserv_url)
     log.debug(response.text)
     sleep(10)
+    # TODO: check if emulator is running
 
-    # start timer
+    # packaging
+    print("Packaging")
     start = timer()
-    sleep(1)
-    stop = timer()
-    log.info("Time: {}".format(stop - start))
-    print(stop-start, flush=True)
+    run(['tng-pkg', '-p', '../sdk-projects/tng-smpilot-ns1-emulator'])
+    # TODO: check if package is created
+    packaging_done = timer()
+    packaging_time = packaging_done - start
+    print(packaging_time)
 
     # stop emulator
     response = requests.delete(emuserv_url)
