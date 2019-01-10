@@ -77,3 +77,18 @@ if __name__ == '__main__':
     print("Waiting for it to be ready")
     srv_client.wait_emulation_ready(llcm_client)
     print("ready")
+
+    # packaging
+    print("Packaging")
+    start = timer()
+    run(['tng-pkg', '-p', '../sdk-projects/tng-smpilot-ns1-emulator'])
+    packaging_done = timer()
+    packaging_time = packaging_done - start
+    print("Packaging time: {}s".format(packaging_time))
+
+    # on-board
+    print("Uploading package")
+    llcm_client.upload_package('../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo')
+    uploading_done = timer()
+    uploading_time = uploading_done - packaging_done
+    print("Uploading done in: {}".format(uploading_time))
