@@ -26,13 +26,11 @@
 
 
 # script for packaging, onboarding, and instantiating NS1 and NS2 and measuring the time (over multiple runs)
-import logging
 import requests
 from time import sleep
 from timeit import default_timer as timer
 from subprocess import run
 
-log = logging.getLogger(__name__)
 emuserv_url = 'http://127.0.0.1:4999/api/v1/emulation'
 
 
@@ -40,24 +38,27 @@ def measure_ns1():
     """"Measure the time for packaging, onboarding, and instantiating NS1"""
 
     # start vim-emu, sleep for 10s to wait until it's ready
-    log.info("Starting vim-emu")
+    print("Starting vim-emu")
     response = requests.post(emuserv_url)
-    log.debug(response.text)
-    sleep(10)
+
+    # wait until vim-emu is running (poll every 1s via http get)
+    emu_running = requests.get(emuserv_url)
+    while emu_running != 'true':
+        sleep(1)
+        emu_running = requests.get(emuserv_url)
+        print(emu_running)
     # TODO: check if emulator is running
 
     # packaging
     print("Packaging")
     start = timer()
     run(['tng-pkg', '-p', '../sdk-projects/tng-smpilot-ns1-emulator'])
-    # TODO: check if package is created
     packaging_done = timer()
     packaging_time = packaging_done - start
     print(packaging_time)
 
     # stop emulator
     response = requests.delete(emuserv_url)
-    log.debug(response.text)
 
 
 if __name__ == '__main__':
