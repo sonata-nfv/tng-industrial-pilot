@@ -29,6 +29,7 @@
 from timeit import default_timer as timer
 from subprocess import run
 import argparse
+import pandas as pd
 from emuc import EmuSrvClient, LLCMClient
 
 srv_client = EmuSrvClient('http://127.0.0.1:4999')
@@ -43,17 +44,14 @@ def parse_args():
     return parser.parse_args()
 
 
-def measure_times(project_path, package_path):
-    times = dict()
+def measure_times(project_path, package_path, times):
+    """measure time of packaging, uploading, and instantiating the specified NS; append measured times to given dict"""
 
     # start emulation
     print("Starting vim-emu")
     srv_client.start_emulation()
-
-    # wait for it to be ready
-    print("Waiting for it to be ready")
     srv_client.wait_emulation_ready(llcm_client)
-    print("ready")
+    print("Emulation ready")
 
     # packaging
     print("Packaging")
@@ -61,7 +59,7 @@ def measure_times(project_path, package_path):
     run(['tng-pkg', '-p', project_path])
     packaging_done = timer()
     packaging_time = packaging_done - packaging_start
-    times['packaging'] = packaging_time
+    times['packaging'].append(packaging_time)
     print("Packaging time: {}s".format(packaging_time))
 
     # on-board
@@ -69,7 +67,7 @@ def measure_times(project_path, package_path):
     uuid = llcm_client.upload_package(package_path)
     uploading_done = timer()
     uploading_time = uploading_done - packaging_done
-    times['uploading'] = uploading_time
+    times['uploading'].append(uploading_time)
     print("Uploading done in: {} (UUID: {})".format(uploading_time, uuid))
 
     # instantiate service
@@ -77,8 +75,8 @@ def measure_times(project_path, package_path):
     llcm_client.instantiate_service(uuid)
     instantiation_done = timer()
     instantiation_time = instantiation_done - uploading_done
-    times['instantiation'] = instantiation_time
-    times['total'] = instantiation_done - packaging_start
+    times['instantiation'].append(instantiation_time)
+    times['total'].append(instantiation_done - packaging_start)
     print("Instantiation done in: {}".format(instantiation_time))
 
     # TODO: may also have to stop service in future (to stop Samba file share)
@@ -95,9 +93,17 @@ def measure_times(project_path, package_path):
 if __name__ == '__main__':
     ns1_project = '../sdk-projects/tng-smpilot-ns1-emulator'
     ns1_package = '../sdk-projects/eu.5gtango.tng-smpilot-ns1-emulator.0.1.tgo'
+    # TODO: NS2
 
     args = parse_args()
+    # store measured times in dict containing arrays
+    times = {'packaging': [], 'uploading': [], 'instantiation': [], 'total': []}
 
+    # run measurements
     for i in range(args.runs):
-        times = measure_times(ns1_project, ns1_package)
+        times = measure_times(ns1_project, ns1_package, times)
         print(times)
+
+    # save to pandas dataframe
+    df = pd.DataFrame.from_dict(times)
+    print(df.head())

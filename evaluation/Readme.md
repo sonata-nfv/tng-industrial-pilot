@@ -5,6 +5,7 @@ This directory contains scripts for evaluations and plotting
 ## Setup
 
 1. Install vim-emu and the smart manufacturing VNFs
+1. Install `pandas`
 1. Install tng-sdk-benchmark
     * Clone: `git clone git@github.com:sonata-nfv/tng-sdk-benchmark.git`
     * Install with Python 2 (globally): `sudo python setup.py install`
