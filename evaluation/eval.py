@@ -38,7 +38,8 @@ llcm_client = LLCMClient('http://127.0.0.1:5000')
 def parse_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description="Runtime evaluation")
-    parser.add_argument('-n', '-r', help="Number of evaluation runs per network service", default=1, dest='runs')
+    parser.add_argument('-n', '-r', help="Number of evaluation runs per network service",
+                        type=int, default=1, dest='runs')
     return parser.parse_args()
 
 
