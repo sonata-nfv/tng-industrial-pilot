@@ -49,6 +49,8 @@ ADD em63_share em63_share
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
+ADD stop.sh stop.sh
+RUN chmod +x stop.sh
 
 # configuration
 ENV DT_WEB_LISTEN 0.0.0.0
@@ -59,6 +61,7 @@ ENV DT_EM63_SHARE_HOST 30.0.3.2
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
+ENV VIM_EMU_CMD_STOP "./stop.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash
