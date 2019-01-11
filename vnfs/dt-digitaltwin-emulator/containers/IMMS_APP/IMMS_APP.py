@@ -78,6 +78,7 @@ import sys
 import time
 import datetime
 import threading
+import argparse
 from statemachine import StateMachine, State
 from flask import Flask, render_template, request
 from em63 import rmFile 
@@ -675,9 +676,6 @@ class vIMM(StateMachine):
         return;
 
 
-
-    
-
 def waitForProduction():
     global varFormState
     while 0<1:
@@ -687,28 +685,128 @@ def waitForProduction():
             time.sleep(1)
 
 
+def autostart_production(args):
+    """
+    Autostart the production based on the
+    given command line arguments.
+    """
+    global varATActSimPara1, varATActSimPara2period, varATActSimPara2amplitude, varATActSimPara2phase, varATActSimPara2phaseStr, varATActSimPara2offset, varSetCntMld, varSetCntPrt, varSetTimCyc, varFormState
+    print("Autostarting the production ...")
+    ## set variables based on args
+    # simulation parameter
+    varATActSimPara1 = int(args.varATActSimPara1)
+    varATActSimPara2period = float(args.varATActSimPara2period)
+    varATActSimPara2amplitude = float(args.varATActSimPara2amplitude)
+    varATActSimPara2phase = float(args.varATActSimPara2phase)
+    varATActSimPara2phaseStr = str(args.varATActSimPara2phase)
+    varATActSimPara2offset = float(args.varATActSimPara2offset)
+    # production params
+    varSetCntMld = int(args.varSetTimCyc)
+    varSetCntPrt = int(args.varSetCntPrt)
+    varSetTimCyc = float(args.varSetTimCyc)
+    # finally go to productions state
+    varFormState = "formStateproduction"
 
 
-# Instantiate	
-IMM1 = vIMM()
-start_webapp()
-start_EM63()
+#
+# Command line argument parser
+#
+def parse_args(manual_args=None):
+    """
+    CLI interface definition.
+    """
+    parser = argparse.ArgumentParser(
+        description="IMMS ('DigitalTwin' Application)")
 
-while 0<1:
-    IMM1.e_setting()
-    waitForProduction()
-    IMM1.e_start()
-    x=1
-    while x==1:
-        x=0
-        production()
-        if IMM1.is_s_pause:
-            waitForProduction()
-            IMM1.e_proceed()
-            x=1
-        if IMM1.is_s_error:
-            waitForProduction()
-            IMM1.e_confirm()
-            x=1
-    IMM1.e_finished()
-    IMM1.e_reset()
+    parser.add_argument(
+        "-a",
+        "--autostart",
+        help="Automatically start production.",
+        required=False,
+        default=False,
+        dest="autostart",
+        action="store_true")
+
+    parser.add_argument(
+        "--varATActSimPara1",
+        required=False,
+        default=5)
+
+    parser.add_argument(
+        "--varATActSimPara2period",
+        required=False,
+        default=10.0)
+
+    parser.add_argument(
+        "--varATActSimPara2amplitude",
+        required=False,
+        default=1.0)
+
+    parser.add_argument(
+        "--varATActSimPara2phase",
+        required=False,
+        default=0)
+
+    parser.add_argument(
+        "--varATActSimPara2offset",
+        required=False,
+        default=1.0)
+
+    parser.add_argument(
+        "--varPlotATActSimPara",
+        required=False,
+        default=False)
+
+    parser.add_argument(
+        "--varSetCntMld",
+        required=False,
+        default=10)
+
+    parser.add_argument(
+        "--varSetCntPrt",
+        required=False,
+        default=10000)
+
+    parser.add_argument(
+        "--varSetTimCyc",
+        required=False,
+        default=1.0)
+
+    if manual_args is not None:
+        return parser.parse_args(manual_args)
+    return parser.parse_args()
+
+
+def main():
+    # Parse CLI arguments
+    args = parse_args()
+    print("Starting IMMS with arguments: {}".format(args))
+    # Instantiate
+    IMM1 = vIMM()
+    start_webapp()
+    start_EM63()
+
+    if args.autostart:
+        autostart_production(args)
+
+    while 0<1:
+        IMM1.e_setting()
+        waitForProduction()
+        IMM1.e_start()
+        x=1
+        while x==1:
+            x=0
+            production()
+            if IMM1.is_s_pause:
+                waitForProduction()
+                IMM1.e_proceed()
+                x=1
+            if IMM1.is_s_error:
+                waitForProduction()
+                IMM1.e_confirm()
+                x=1
+        IMM1.e_finished()
+        IMM1.e_reset()
+
+if __name__ == "__main__":
+    main()
