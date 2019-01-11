@@ -31,17 +31,33 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     iproute \
     inetutils-ping \
-    software-properties-common
+    software-properties-common \
+    python3-pip \
+    libboost-python-dev \
+    libcurl4-openssl-dev
 
 # install latest mosquitto
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
 RUN apt-get install -y mosquitto-clients
 
+# install releveant python stuff
+RUN pip3 install azure-iothub-device-client
+RUN pip3 install paho-mqtt
+
 ADD start.sh start.sh
 RUN chmod +x start.sh
 
+# add VNF CC app
+ADD CC_VNF CC_VNF
+
 ENV IFLOCAL data
+
+# MQTT config
+ENV MQTT_BROKER_HOST 30.0.1.1
+ENV MQTT_BROKER_PORT 1883
+# only for dummy MQTT generator not for MDC APP
+ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"

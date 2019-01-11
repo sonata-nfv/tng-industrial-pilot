@@ -21,14 +21,14 @@
 """ TODO
     Sends a telegram to Azure per parameter. Better: Send a set of parameters per telegram.
 """
-import iothub_client
+import time
+import os
+import sys
+import json
+import paho.mqtt.client as paho
 from iothub_client import IoTHubClient, IoTHubClientError, IoTHubTransportProvider, IoTHubClientResult
 from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
 from datetime import datetime
-import time
-import os
-import json
-import paho.mqtt.client as paho
 
 
 # IoT Hub function
@@ -36,8 +36,11 @@ def send_confirmation_callback(message, result, user_context):
     print ( "IoT Hub responded to message with status: %s" % (result) )
 
 # IoT Hub function
-def iothub_client_init():
-    client = IoTHubClient(CONNECTION_STRING, PROTOCOL)
+def iothub_client_init(azure_conn_string):
+    if azure_conn_string is None:
+        print("Error: Azure connection string is None.")
+        return None
+    client = IoTHubClient(azure_conn_string, IoTHubTransportProvider.MQTT)
     return client
 
 # MQTT function
@@ -108,10 +111,11 @@ def send_message(msg):
     #payload4=2*payload3
     msg_txt_formatted = MSG_TXT % (topicstr3, payload3, topicstr4, payload4)
     messageA = IoTHubMessage(msg_txt_formatted)
-    print("Sending message: %s \n" % messageA.get_string() )
-    clientA.send_event_async(messageA, send_confirmation_callback, None)  
-    
-    # Case D: dummy values
+    if clientA:
+        print("Sending message: %s \n" % messageA.get_string() )
+        clientA.send_event_async(messageA, send_confirmation_callback, None)
+    else:
+        print("Skipping message to Azure. Not connected.")
 
 topicstr1 = "WIMMS/EM63/DATE"
 payload1 = ""
@@ -138,39 +142,48 @@ payload10 = ""
 #payload2=0
     
 #Data output to Microsoft Azure using the MQTT protocol: clientA
-CONNECTION_STRING_FILE_A = "azure_connection_string"
-if os.path.exists(CONNECTION_STRING_FILE_A):
-    print("Use ", CONNECTION_STRING_FILE_A)
-    try:
-        f_in = open(CONNECTION_STRING_FILE_A,'r')
-        CONNECTION_STRING = f_in.read()
-    finally:
-        f_in.close()
-else:
-    print("Can not find ", CONNECTION_STRING_FILE_A)
-    CONNECTION_STRING ="0"
-    exit
-CONNECTION_STRING = "<TODO_put_your_super_secret_connection_string_here>"
-PROTOCOL = IoTHubTransportProvider.MQTT
-MESSAGE_TIMEOUT = 10000
+
+#
+# Azure connection configuration
+#
+azure_conn_string_file = os.getenv("AZURE_SECRET_FILE",
+                                     "azure_connection_string.secret")
+azure_conn_string = None
+try:
+    with open(azure_conn_string_file, "r") as f:
+        print("Loading Azure connection string from: {}"
+              .format(azure_conn_string_file))
+        azure_conn_string = f.read().strip()
+        if azure_conn_string.startswith("<TODO"):
+            raise BaseException("Azure connection string not configured!")
+        print("Azure connection string successfully loaded.")
+except BaseException as ex:
+    azure_conn_string = None
+    print("Couldn't load Azure connection string from: {}. Error: {}"
+          .format(azure_conn_string_file, ex))
 
 # Data input from MQTT broker
-broker_address="127.0.0.1"
-
+broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
+broker_port = os.getenv("MQTT_BROKER_PORT", 1883)
 
 listetopic = []
 listepayload = []
+# TODO we should retry and wait here until the broker is ready
+# this might take a couple of seconds in real deployments
 clientB = paho.Client("CC-Client-Sub")
-clientB.on_message=on_message
-print("Connecting to broker: %s" % broker_address)
-clientB.connect(broker_address)
+clientB.on_message = on_message
+print("Connecting to broker: {}:{}".format(broker_host, broker_port))
+clientB.connect(broker_host, port=int(broker_port))
 #print("Subscribing to topic","WIMMS/EM63/TIME")
 #client.subscribe("WIMMS/EM63/TIME")
-print("Subscribing to topic","WIMMS/EM63/#")
+print("Subscribing to topic", "WIMMS/EM63/#")
 clientB.subscribe("WIMMS/EM63/#")
-clientA = iothub_client_init()
-while 0<1:
+clientA = iothub_client_init(azure_conn_string)
+sys.stdout.flush()
+sys.stderr.flush()
+while True:
     clientB.loop_start()
     time.sleep(1)
     clientB.loop_stop()
+    sys.stdout.flush()
 #client.loop_forever()
