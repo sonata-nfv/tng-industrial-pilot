@@ -77,14 +77,14 @@ session = "0001"
 filepath = os.environ.get("MDC_EM63_SHARE_FOLDER", "/home/marcel/em63/")
 # MQTT broker
 broker = os.environ.get("MQTT_BROKER_HOST", "127.0.0.1")
-broker_port = os.environ.get("MQTT_BROKER_HOST", 1883)
+broker_port = os.environ.get("MQTT_BROKER_PORT", 1883)
 
 # -------------------------- Secondary-------------------------------------- #
 #
 # Job number: Initial value for job is 0, in while it is incremented
 job = 0;
 # Cycle Time
-waitTimeCycle=1;
+waitTimeCycle=2.0 # attention: 1 seems to small for emulator deployment
 # Loops and Time per loop for waiting for machine's answer: DAT file
 waitCnt=100; # 10 times
 waitTime=0.1; # 1 second
@@ -148,18 +148,19 @@ while not stop_loop:
         try:
             # MQTT connection
             print("Connecting to broker ", broker)
-            client.connect(broker, port=broker_port)
+            client.connect(broker, port=int(broker_port))
+            print("Connected.")
         except BaseException as ex:
-            print("Cannot connect to MQTT broker '{}'".format(broker))
+            print("Cannot connect to MQTT broker '{}:{}': {}".format(broker, broker_port, ex))
         
         # Delete *.RSP if available
-        rspFile = filepath + "SESS" + session + '.RSP'
+        rspFile = os.path.join(filepath, "SESS" + session + '.RSP')
         rmFile(rspFile)
         # Delete *.DAT if available
-        datFile = filepath + session + str(job).zfill(4) + '.DAT'
+        datFile = os.path.join(filepath, session + str(job).zfill(4) + '.DAT')
         rmFile(datFile)
         # Delete *.LOG if available
-        logFile = filepath + session + str(job).zfill(4) + '.LOG'
+        logFile = os.path.join(filepath, session + str(job).zfill(4) + '.LOG')
         rmFile(logFile)
         
         # Create new *.JOB
@@ -195,9 +196,12 @@ while not stop_loop:
         waitIndex=0
         while waitIndex<waitCnt:
             if os.path.exists(datFile):
-                print("DAT file found. Processing ...")
-                file_found = True
-                break
+                # also check that file is not empty to be more robust
+                with open(datFile,'r') as f:
+                    if len(f.read()) > 0:
+                        print("DAT file found. Processing ...")
+                        file_found = True
+                        break
             else:
                 waitIndex=waitIndex+1;
                 print("Waiting ({}/{})".format(waitIndex, waitCnt))
@@ -216,8 +220,11 @@ while not stop_loop:
         # utc_datetime = datetime.datetime.utcnow()
         # zeitstempel = utc_datetime.strftime("%Y-%m-%d %H:%M:%S")
             
-        #print(parameter_value_list_in)
+        # print(parameter_value_list_in)
         parameter_value_list = parameter_value_list_in.splitlines()
+        if len(parameter_value_list) < 1:
+            print("Error: parameter_value_list was empty. Retry!")
+            continue
         parameter_str = parameter_value_list[0]
         value_str = parameter_value_list[1]
         parameterlist = parameter_str.split(',')

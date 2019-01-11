@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018 5GTANGO, Weidmüller, Paderborn University
+#  Copyright (c) 2018 5GTANGO, Weidmüller, Paderborn University
 # ALL RIGHTS RESERVED.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,19 +24,6 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-
-# 1. set route to RTR
-route add -net $NETNS1 gw $GATEWAY dev $IFLOCAL
-echo "MDC: Configured route to NS1 over RTR:"
-route -n
-
-echo "MDC: Starting SAMBA server ... (logs: /var/smb.log)"
-smbd -F -d verbose --log-stdout > /var/smb.log 2>&1 &
-
-echo "MDC: Starting MDC VNF APP ... (logs: /var/mdc.log)"
-cd /MDC_VNF
-python3 MDC_VNF.py > /var/mdc.log 2>&1 &
-
-# for debugging, we can use this simple MQTT generator
-# echo "MDC: Starting MQTT generator ..."
-# ./mqtt_generator.sh &
+echo "DT: Un-mounting em63_share ..."
+umount em63_share/
+sleep 1

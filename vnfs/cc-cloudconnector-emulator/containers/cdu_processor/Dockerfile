@@ -1,4 +1,4 @@
-#  Copyright (c) 2018 5GTANGO, Weidmüller, Paderborn University
+#  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither the name of the SONATA-NFV, 5GTANGO, Weidmüller, Paderborn University
+# Neither the name of the SONATA-NFV, 5GTANGO, Paderborn University
 # nor the names of its contributors may be used to endorse or promote
 # products derived from this software without specific prior written
 # permission.
@@ -32,39 +32,35 @@ RUN apt-get update && apt-get install -y \
     iproute \
     inetutils-ping \
     software-properties-common \
-    iptables \
     python3-pip \
-    smbclient \
-    cifs-utils
+    libboost-python-dev \
+    libcurl4-openssl-dev
 
-# install required python libs
-RUN pip3 install matplotlib
-RUN pip3 install python-statemachine
-RUN pip3 install flask
+# install latest mosquitto
+RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+RUN apt-get update
+RUN apt-get install -y mosquitto-clients
 
-# digital twin tool
-ADD IMMS_APP IMMS_APP
-# folder for euromap communication
-ADD em63_share em63_share
+# install releveant python stuff
+RUN pip3 install azure-iothub-device-client
+RUN pip3 install paho-mqtt
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
-ADD stop.sh stop.sh
-RUN chmod +x stop.sh
 
-# configuration
-ENV DT_WEB_LISTEN 0.0.0.0
-ENV DT_WEB_PORT 15001
-ENV DT_EM63_SHARE /em63_share
-# mdc in emulator: 30.0.3.2 local testing: 172.17.0.2
-ENV DT_EM63_SHARE_HOST 30.0.3.2
+# add VNF CC app
+ADD CC_VNF CC_VNF
+
+ENV IFLOCAL data
+
+# MQTT config
+ENV MQTT_BROKER_HOST 30.0.1.1
+ENV MQTT_BROKER_PORT 1883
+# only for dummy MQTT generator not for MDC APP
+ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"
-ENV VIM_EMU_CMD_STOP "./stop.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash
-
-# DT's webinterface port
-EXPOSE 15001
