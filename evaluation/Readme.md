@@ -14,8 +14,10 @@ This directory contains scripts for evaluations and plotting
 ## Usage
 
 ```bash
-python3 eval.py
+python3 measure_runtimes.py (-n <runs>)
 ```
+
+Optionally specify with `-n` how many runs per NS should be executed and measured (default is one).
 
 
 ## Other
