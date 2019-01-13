@@ -16,7 +16,7 @@ RUN apt update && \
     add-apt-repository -y ppa:oisf/suricata-stable && \
     # Update the repos and install Suricata
     apt update && \
-    apt install -y suricata
+    apt install -y suricata && \
     # Install Filebeat
     apt install -y filebeat
 
@@ -27,6 +27,9 @@ RUN chmod 0644 /etc/filebeat/filebeat.yml
 
 # Copy the suricata config to its config location
 ADD suricata.yaml /etc/suricata/suricata.yaml
+
+# eth0 is hardcoded in suricata (recognized as a bug)
+RUN grep -rl eth0 /etc | xargs sed -i 's/eth0/ens3/g'
 
 # Start the Suricata/Filebeat service when the container is started
 CMD service suricata start && service filebeat start && tail -F /var/log/suricata/suricata.log

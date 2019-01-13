@@ -1,27 +1,29 @@
 # SELK
 
-This page guides you through the process to deploy a combination of Suricata-IDS with ELK 
+This page guides you through the process to deploy a combination of Suricata-IDS with ELK using the following methods:
+* Docker deployment - to run individual (yet integrated by configuration) Docker images 
+* Docker Compose deployment - a tool for defining and running multi-container Docker applications
+* Kompose deployment
 
 
-# Suricata-IDS
+## Build the Suricata-IDS image
 
-## Build the image
-
-`$ docker build -t suricata .`
+`$ docker build --no-cache -t suricata .`
 
 
-# Get the ELK official images
+## Get the ELK official images
 
-`$ docker pull docker.elastic.co/logstash/logstash:6.5.4` or
+`$ docker pull docker.elastic.co/logstash/logstash:6.5.4` or simply 
 `$ docker pull logstash:6.5.4`
 
-`$ docker pull docker.elastic.co/elasticsearch/elasticsearch:6.5.4` or
+`$ docker pull docker.elastic.co/elasticsearch/elasticsearch:6.5.4` or simply 
 `$ docker pull elasticsearch:6.5.4`
 
-`$ docker pull docker.elastic.co/kibana/kibana:6.5.4` or
+`$ docker pull docker.elastic.co/kibana/kibana:6.5.4` or simply 
 `$ docker pull kibana:6.5.4`
 
-# Run the containers
+
+## Run the containers
 
 // Run Kibana Docker image: https://hub.docker.com/_/kibana
 
@@ -36,5 +38,20 @@ This page guides you through the process to deploy a combination of Suricata-IDS
 
 `$ docker run --rm -d -e xpack.monitoring.elasticsearch.url="http://localhost:9200" --hostname=logstash --name=logstash --network=host -v ~/tng-industrial-pilot/vnfs/ids-suricata/logstash.conf:/usr/share/logstash/config/logstash.conf -t docker.elastic.co/logstash/logstash:6.5.4`
 
-`$ docker run --network=host --hostname=suricata --name=suricata -it suricata`
+`$ docker run -d --rm --network=host --hostname=suricata --name=suricata -t suricata` followed by: `docker exec -it CONT_ID bash` to log into the running container
+
+
+## SELK Manual deployment via Docker Compose
+
+`$ docker-compose up`
+
+
+## Convert 'docker-compose.yml' file to a Kubernetes resources file using Kompose
+
+`$ kompose convert -f docker-compose.yml -o k8s-selk.yml`
+
+
+## SELK Manual deployment via Kubernetes
+
+`$ kompose --file k8s-selk.yml up`
 
