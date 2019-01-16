@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y \
 
 # install required python libs
 RUN pip3 install matplotlib
+RUN pip3 install plotly
 RUN pip3 install python-statemachine
 RUN pip3 install flask
 

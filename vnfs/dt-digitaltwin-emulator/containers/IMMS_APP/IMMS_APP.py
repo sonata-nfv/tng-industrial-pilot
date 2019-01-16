@@ -70,7 +70,7 @@
     Select Setup -> Machine State -> Select Idle
 """
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import math
 import re
 import os
@@ -84,7 +84,9 @@ from flask import Flask, render_template, request
 from em63 import rmFile 
 #from flask_restful import Api
 #from gevent.pywsgi import WSGIServer
-
+import plotly
+import plotly.graph_objs as go
+import numpy as np
 
 app = Flask(__name__)
 
@@ -209,6 +211,14 @@ def setup():
 def monitoring():
     return render_template('monitoring.html');
 
+@app.route('/plotActSimPara')
+def plotActSimPara():
+    return render_template('plotActSimPara.html');
+
+@app.route('/plotActCntCyc')
+def plotActCntCyc():
+    return render_template('plotActCntCyc.html');
+
 @app.route('/resultSimPara', methods=['GET', 'POST'])
 def resultSimPara():
     global varATActSimPara1, varATActSimPara2period, varATActSimPara2amplitude, varATActSimPara2phase, varATActSimPara2offset, varPlotATActSimPara
@@ -322,7 +332,9 @@ def production():
             sinPlotX = []
             sinPlotY = []
             sinPlotY2 = []
-            plt.show()
+            sinPlotY3 = []
+# Remove plot by matplot 
+#            plt.show()
         while varActCntPrt<varSetCntPrt:
             varActStsMach = '0A000'
             if varFormState=='formStatepause':
@@ -335,9 +347,11 @@ def production():
             varATActSimPara2 = make_ATActSimPara2(t1)
             if varPlotATActSimPara == 1:
                 # Append content to list for graph plotting
-                sinPlotX.append(float(t1))
+                # sinPlotX.append(float(t1))
+                sinPlotX.append(datetime.datetime.now())
                 sinPlotY.append(float(varATActSimPara2))
                 sinPlotY2.append(float(varATActSimPara1))
+                sinPlotY3.append(float(varActTimCyc))
             
             # Part/Cycle counter
             varActCntCyc = varActCntCyc + 1
@@ -350,20 +364,24 @@ def production():
             
             valEM63print()
             if varPlotATActSimPara == 1:
-                # Plot Graph
-                plt.plot(sinPlotX, sinPlotY, marker='o', color='darkorange')
-                plt.plot(sinPlotX, sinPlotY2, marker='o', color='black')
-                plt.ylabel('Parameter Values: @ActSimPara1, @ActSimPara2')
-                plt.xlabel('Time')
-                plt.pause(0.05)
+                plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3)
+# Remove plot by matplot 
+#            if varPlotATActSimPara == 1:
+#                # Plot Graph
+#                plt.plot(sinPlotX, sinPlotY, marker='o', color='darkorange')
+#                plt.plot(sinPlotX, sinPlotY2, marker='o', color='black')
+#                plt.ylabel('Parameter Values: @ActSimPara1, @ActSimPara2')
+#                plt.xlabel('Time')
+#                plt.pause(0.05)
             
             
             if varActCntPrt>=varSetCntPrt:
                 print("Job finished...")
-                if varPlotATActSimPara == 1:
-                    plt.plot(sinPlotX, sinPlotY)
-                    plt.plot(sinPlotX, sinPlotY2)
-                    plt.show()
+# Remove plot by matplot 
+#                if varPlotATActSimPara == 1:
+#                    plt.plot(sinPlotX, sinPlotY)
+#                    plt.plot(sinPlotX, sinPlotY2)
+#                    plt.show()
                 return;
 
 def finished():
@@ -807,6 +825,44 @@ def main():
                 x=1
         IMM1.e_finished()
         IMM1.e_reset()
+
+def plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3):
+    plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
+    plotActCnt(sinPlotY3)
+
+def plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2):   
+    x=np.array(sinPlotX)
+    y=np.array(sinPlotY)
+    y2=np.array(sinPlotY2)
+    
+    trace1 = go.Scatter(
+                x=x, 
+                y=y,
+                mode = 'lines+markers',
+                name = '@ActSimPara1'
+                )
+    trace2 = go.Scatter(
+                x=x, 
+                y=y2,
+                mode = 'lines+markers',
+                name = '@ActSimPara2'
+                )
+    
+    plotly.offline.plot({
+        "data": [trace1, trace2],
+        "layout": go.Layout(title="Parameters")
+    }, filename='templates/plotActSimPara.html', auto_open=False)
+
+    
+    
+def plotActCnt(sinPlotY3):
+    x=np.array(sinPlotY3)
+    #data = [go.Histogram(x=x, histnorm='probability')]
+    #plotly.offline.plot(data,  filename='ActCntCyc2.html', auto_open=False)
+    plotly.offline.plot({
+        "data": [go.Histogram(x=x, histnorm='probability')],
+        "layout": go.Layout(title="ActCntCyc")
+    }, filename='templates/plotActCntCyc.html', auto_open=False)
 
 if __name__ == "__main__":
     main()
