@@ -37,6 +37,8 @@ RUN apt-get update && apt-get install -y \
     smbclient \
     cifs-utils
 
+ENV LC_ALL C.UTF-8
+
 # install required python libs
 RUN pip3 install matplotlib
 RUN pip3 install plotly
