@@ -5,13 +5,15 @@ This directory contains scripts for evaluations and plotting
 ## Setup
 
 1. Install vim-emu and the smart manufacturing VNFs
-1. Install `pandas`
+1. Install `pandas`, [`tng-sdk-package`](https://github.com/sonata-nfv/tng-sdk-package) inside a python3 virtualenv, which is later used to run the evaluation script
 1. Install tng-sdk-benchmark
     * Clone: `git clone git@github.com:sonata-nfv/tng-sdk-benchmark.git`
     * Install with Python 2 (globally): `sudo python setup.py install`
 1. Start server for starting/stopping emulation (incl. in tng-sdk-benchmark): `sudo tng-bench-emusrv`
 
 ## Usage
+
+Activate the virtualenv, in which `pandas` and `tng-sdk-package` are installed.
 
 ```bash
 python3 measure_runtimes.py (-n <runs>)
