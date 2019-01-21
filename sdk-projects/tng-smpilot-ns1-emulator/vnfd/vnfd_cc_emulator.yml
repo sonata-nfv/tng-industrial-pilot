@@ -41,7 +41,7 @@ cloudnative_deployment_units:
         port: 5555  # TODO change
   - id: cdu02
     # CDU2: processor
-    image: 'ubuntu:trusty'
+    image: 'sonatanfv/vnf-cc-processor:vimemu'
     connection_points:
       - id: mgmt
         port: 22

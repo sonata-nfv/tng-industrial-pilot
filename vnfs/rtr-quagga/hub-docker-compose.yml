@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+
+  quagga:
+    image: cumulusnetworks/quagga
+    networks:
+      - default
+    ports:
+     - "2600:2600" # ZEBRA SRV
+     - "2601:2601" # ZEBRA VTY
+     - "2602:2602" # RIPd
+     - "2603:2603" # RIPNGd
+     - "2604:2604" # OSPFd
+     - "2605:2605" # BGPd
+     - "2606:2606" # OSPF6d
+     - "2607:2607" # 
+     - "2608:2608" # ISISd
+     - "2609:2609" # BADELd
+
+networks:
+  default:
+    external:
+      name: tango
+

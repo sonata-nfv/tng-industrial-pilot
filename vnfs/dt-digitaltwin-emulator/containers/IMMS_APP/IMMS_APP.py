@@ -70,19 +70,23 @@
     Select Setup -> Machine State -> Select Idle
 """
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import math
 import re
 import os
+import sys
 import time
 import datetime
 import threading
+import argparse
 from statemachine import StateMachine, State
 from flask import Flask, render_template, request
 from em63 import rmFile 
 #from flask_restful import Api
 #from gevent.pywsgi import WSGIServer
-
+import plotly
+import plotly.graph_objs as go
+import numpy as np
 
 app = Flask(__name__)
 
@@ -207,6 +211,14 @@ def setup():
 def monitoring():
     return render_template('monitoring.html');
 
+@app.route('/plotActSimPara')
+def plotActSimPara():
+    return render_template('plotActSimPara.html');
+
+@app.route('/plotActCntCyc')
+def plotActCntCyc():
+    return render_template('plotActCntCyc.html');
+
 @app.route('/resultSimPara', methods=['GET', 'POST'])
 def resultSimPara():
     global varATActSimPara1, varATActSimPara2period, varATActSimPara2amplitude, varATActSimPara2phase, varATActSimPara2offset, varPlotATActSimPara
@@ -320,7 +332,9 @@ def production():
             sinPlotX = []
             sinPlotY = []
             sinPlotY2 = []
-            plt.show()
+            sinPlotY3 = []
+# Remove plot by matplot 
+#            plt.show()
         while varActCntPrt<varSetCntPrt:
             varActStsMach = '0A000'
             if varFormState=='formStatepause':
@@ -333,9 +347,11 @@ def production():
             varATActSimPara2 = make_ATActSimPara2(t1)
             if varPlotATActSimPara == 1:
                 # Append content to list for graph plotting
-                sinPlotX.append(float(t1))
+                # sinPlotX.append(float(t1))
+                sinPlotX.append(datetime.datetime.now())
                 sinPlotY.append(float(varATActSimPara2))
                 sinPlotY2.append(float(varATActSimPara1))
+                sinPlotY3.append(float(varActTimCyc))
             
             # Part/Cycle counter
             varActCntCyc = varActCntCyc + 1
@@ -348,20 +364,24 @@ def production():
             
             valEM63print()
             if varPlotATActSimPara == 1:
-                # Plot Graph
-                plt.plot(sinPlotX, sinPlotY, marker='o', color='darkorange')
-                plt.plot(sinPlotX, sinPlotY2, marker='o', color='black')
-                plt.ylabel('Parameter Values: @ActSimPara1, @ActSimPara2')
-                plt.xlabel('Time')
-                plt.pause(0.05)
+                plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3)
+# Remove plot by matplot 
+#            if varPlotATActSimPara == 1:
+#                # Plot Graph
+#                plt.plot(sinPlotX, sinPlotY, marker='o', color='darkorange')
+#                plt.plot(sinPlotX, sinPlotY2, marker='o', color='black')
+#                plt.ylabel('Parameter Values: @ActSimPara1, @ActSimPara2')
+#                plt.xlabel('Time')
+#                plt.pause(0.05)
             
             
             if varActCntPrt>=varSetCntPrt:
                 print("Job finished...")
-                if varPlotATActSimPara == 1:
-                    plt.plot(sinPlotX, sinPlotY)
-                    plt.plot(sinPlotX, sinPlotY2)
-                    plt.show()
+# Remove plot by matplot 
+#                if varPlotATActSimPara == 1:
+#                    plt.plot(sinPlotX, sinPlotY)
+#                    plt.plot(sinPlotX, sinPlotY2)
+#                    plt.show()
                 return;
 
 def finished():
@@ -433,8 +453,9 @@ def valEM63print():
     print("SetCntMld = ", varSetCntMld)
     print("SetCntPrt = ", varSetCntPrt)
     print("SetTimCyc = ", varSetTimCyc)
-    print("\n")   
-    return;
+    print("\n")
+    sys.stdout.flush()  
+    return
 
     
 def run_EM63():
@@ -593,7 +614,8 @@ def run_EM63():
         txtRSP = '00000001 PROCESSED "EXECUTE ' + jobFile + '";'
         f_rspFile.write(txtRSP)
         f_rspFile.close()
-        #print("Response file was written: ", rspFile)
+        print("Response file was written: ", rspFile)
+        sys.stdout.flush()
     
 class vIMM(StateMachine):
     # Simplified IMM states
@@ -672,9 +694,6 @@ class vIMM(StateMachine):
         return;
 
 
-
-    
-
 def waitForProduction():
     global varFormState
     while 0<1:
@@ -684,28 +703,166 @@ def waitForProduction():
             time.sleep(1)
 
 
+def autostart_production(args):
+    """
+    Autostart the production based on the
+    given command line arguments.
+    """
+    global varATActSimPara1, varATActSimPara2period, varATActSimPara2amplitude, varATActSimPara2phase, varATActSimPara2phaseStr, varATActSimPara2offset, varSetCntMld, varSetCntPrt, varSetTimCyc, varFormState
+    print("Autostarting the production ...")
+    ## set variables based on args
+    # simulation parameter
+    varATActSimPara1 = int(args.varATActSimPara1)
+    varATActSimPara2period = float(args.varATActSimPara2period)
+    varATActSimPara2amplitude = float(args.varATActSimPara2amplitude)
+    varATActSimPara2phase = float(args.varATActSimPara2phase)
+    varATActSimPara2phaseStr = str(args.varATActSimPara2phase)
+    varATActSimPara2offset = float(args.varATActSimPara2offset)
+    # production params
+    varSetCntMld = int(args.varSetTimCyc)
+    varSetCntPrt = int(args.varSetCntPrt)
+    varSetTimCyc = float(args.varSetTimCyc)
+    # finally go to productions state
+    varFormState = "formStateproduction"
 
 
-# Instantiate	
-IMM1 = vIMM()
-start_webapp()
-start_EM63()
+#
+# Command line argument parser
+#
+def parse_args(manual_args=None):
+    """
+    CLI interface definition.
+    """
+    parser = argparse.ArgumentParser(
+        description="IMMS ('DigitalTwin' Application)")
 
-while 0<1:
-    IMM1.e_setting()
-    waitForProduction()
-    IMM1.e_start()
-    x=1
-    while x==1:
-        x=0
-        production()
-        if IMM1.is_s_pause:
-            waitForProduction()
-            IMM1.e_proceed()
-            x=1
-        if IMM1.is_s_error:
-            waitForProduction()
-            IMM1.e_confirm()
-            x=1
-    IMM1.e_finished()
-    IMM1.e_reset()
+    parser.add_argument(
+        "-a",
+        "--autostart",
+        help="Automatically start production.",
+        required=False,
+        default=False,
+        dest="autostart",
+        action="store_true")
+
+    parser.add_argument(
+        "--varATActSimPara1",
+        required=False,
+        default=5)
+
+    parser.add_argument(
+        "--varATActSimPara2period",
+        required=False,
+        default=10.0)
+
+    parser.add_argument(
+        "--varATActSimPara2amplitude",
+        required=False,
+        default=1.0)
+
+    parser.add_argument(
+        "--varATActSimPara2phase",
+        required=False,
+        default=0)
+
+    parser.add_argument(
+        "--varATActSimPara2offset",
+        required=False,
+        default=1.0)
+
+    parser.add_argument(
+        "--varPlotATActSimPara",
+        required=False,
+        default=False)
+
+    parser.add_argument(
+        "--varSetCntMld",
+        required=False,
+        default=10)
+
+    parser.add_argument(
+        "--varSetCntPrt",
+        required=False,
+        default=10000)
+
+    parser.add_argument(
+        "--varSetTimCyc",
+        required=False,
+        default=1.0)
+
+    if manual_args is not None:
+        return parser.parse_args(manual_args)
+    return parser.parse_args()
+
+
+def main():
+    # Parse CLI arguments
+    args = parse_args()
+    print("Starting IMMS with arguments: {}".format(args))
+    # Instantiate
+    IMM1 = vIMM()
+    start_webapp()
+    start_EM63()
+
+    if args.autostart:
+        autostart_production(args)
+
+    while 0<1:
+        IMM1.e_setting()
+        waitForProduction()
+        IMM1.e_start()
+        x=1
+        while x==1:
+            x=0
+            production()
+            if IMM1.is_s_pause:
+                waitForProduction()
+                IMM1.e_proceed()
+                x=1
+            if IMM1.is_s_error:
+                waitForProduction()
+                IMM1.e_confirm()
+                x=1
+        IMM1.e_finished()
+        IMM1.e_reset()
+
+def plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3):
+    plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
+    plotActCnt(sinPlotY3)
+
+def plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2):   
+    x=np.array(sinPlotX)
+    y=np.array(sinPlotY)
+    y2=np.array(sinPlotY2)
+    
+    trace1 = go.Scatter(
+                x=x, 
+                y=y,
+                mode = 'lines+markers',
+                name = '@ActSimPara1'
+                )
+    trace2 = go.Scatter(
+                x=x, 
+                y=y2,
+                mode = 'lines+markers',
+                name = '@ActSimPara2'
+                )
+    
+    plotly.offline.plot({
+        "data": [trace1, trace2],
+        "layout": go.Layout(title="Parameters")
+    }, filename='templates/plotActSimPara.html', auto_open=False)
+
+    
+    
+def plotActCnt(sinPlotY3):
+    x=np.array(sinPlotY3)
+    #data = [go.Histogram(x=x, histnorm='probability')]
+    #plotly.offline.plot(data,  filename='ActCntCyc2.html', auto_open=False)
+    plotly.offline.plot({
+        "data": [go.Histogram(x=x, histnorm='probability')],
+        "layout": go.Layout(title="ActCntCyc")
+    }, filename='templates/plotActCntCyc.html', auto_open=False)
+
+if __name__ == "__main__":
+    main()

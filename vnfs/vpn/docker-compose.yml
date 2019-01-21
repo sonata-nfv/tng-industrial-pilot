@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+
+  openvpn:
+    image: "kylemanna/openvpn"
+    networks:
+      - default
+    ports:
+      - "443:443/tcp"
+      - "1194:1194/udp"
+    environment:
+      - OVPN_DATA="/etc/openvpn"
+    command: 
+
+volumes:
+  ${OVPN_DATA}:
+
+networks:
+  default:
+    external:
+      name: tango
+
+configs:
+  ovpn_config:
+    - '${OVPN_DATA}:/etc/openvpn'
+
+# https://hub.docker.com/r/kylemanna/openvpn/

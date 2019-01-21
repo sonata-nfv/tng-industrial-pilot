@@ -1,3 +1,5 @@
+vnfs/cc-cloudconnector-emulator/containers/cdu_processor/CC_VNF/azure_connection_string.secret
+*.secret
 deploy_rdev.sh
 *.tgo
 local_backups/

@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+
+  snort:
+    image: https://github.com/sonata-nfv/tng-industrial-pilot/tree/master/vnfs/ids-snort/tng-docker-compose.yml
+    networks:
+      - default
+    #ports:
+     #- ":" ### to be confgured by the Rules
+
+networks:
+  default:
+    external:
+      name: tango
+

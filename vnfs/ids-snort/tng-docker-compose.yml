@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+  snort:
+    image: "registry.sonata-nfv.eu:5000/tng-snort"
+    networks:
+      - default
+    #ports:
+     #- ":" ### to be confgured by the Rules
+
+networks:
+  default:
+    external:
+      name: tango
+
