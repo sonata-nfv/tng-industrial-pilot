@@ -4,7 +4,7 @@
 FROM ubuntu
 
 # File Author
-MAINTAINER smart-industry-pilot@5gtango.eu
+MAINTAINER sm-pilot@5gtango.eu
 
 # Update the repos and install tools
 RUN apt update && \

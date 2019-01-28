@@ -27,7 +27,7 @@ This page guides you through the process to deploy a combination of Suricata-IDS
 
 // Run Elasticsearch Docker image: https://www.elastic.co/guide/en/elasticsearch/reference/6.4/docker.html
 
-`$ docker run --rm -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --hostname=elasticsearch --name=elasticsearch --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:6.5.4`
+`$ docker run --rm -d -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --hostname=elastic --name=elastic --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:6.5.4`
 
 
 // Run Kibana Docker image: https://hub.docker.com/_/kibana
