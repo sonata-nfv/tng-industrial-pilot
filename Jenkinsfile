@@ -18,11 +18,13 @@ pipeline {
         stage('Service packaging') {
             steps {
                 echo 'Stage: Service packaging...'
+                sh "pipeline/build/install-sdk.sh"
                 sh "pipeline/build/pack.sh"
             }
         }
         stage('VNF publication') {
             when {
+                // only push the master branch to DockerHub
                 branch 'master'
             }
             steps {
