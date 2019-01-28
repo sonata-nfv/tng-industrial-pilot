@@ -18,7 +18,7 @@
 This repository is connected to a [Jenkins job](https://jenkins.sonata-nfv.eu/view/PIPELINE/job/tng-industrial-pilot/), which automatically builds and publishes the VNFs as well as SDK projects.
 
 * VNFs are outomatically published on DockerHub: [sonatanfv at DockerHub.com](https://hub.docker.com/u/sonatanfv)
-* 5GTANGO packages are available in Jenkins: TODO
+* 5GTANGO packages are available in Jenkins: [tng-industrial-pilot/job/master/](https://jenkins.sonata-nfv.eu/view/PIPELINE/job/tng-industrial-pilot/job/master/)
 
 ## How to (manually) create 5GTANGO packages
 
