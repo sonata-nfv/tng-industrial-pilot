@@ -39,9 +39,8 @@ cloudnative_deployment_units:
       - id: data
         port: 5555  # TODO change
       - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
-        interface: ipv4
-        address: "30.0.1.254/24"  # FIXME only works on emulator
-        type: external
+        #interface: ipv4
+        #address: "30.0.1.254/24"  # FIXME only works on emulator
         port: 9999
         
 connection_points:

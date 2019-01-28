@@ -8,6 +8,9 @@ description: "Edge analytics engine (EAE) CNF"
 cloudnative_deployment_units:
   - id: "cdu01"
     image: "sonatanfv/vnf-eae:k8s"
+    connection_points:
+      - id: "data"
+        port: 9999
 connection_points:
   - id: "data"
     interface: "ipv4"
