@@ -47,21 +47,11 @@ network_functions:
     vnf_version: '0.1'
 
 connection_points:
-  - id: mgmt
-    interface: ipv4
-    type: management
   - id: data
     interface: ipv4
     type: external
     
 virtual_links:
-  - id: mgmt-2-vnfs
-    connectivity_type: E-LAN
-    connection_points_reference:
-      - mgmt
-      - 'vnf_dt:mgmt'
-      - 'vnf_mdc:mgmt'
-      - 'vnf_rtr:mgmt'
   - id: vnfs-2-data
     connectivity_type: E-LAN
     connection_points_reference:
