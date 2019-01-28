@@ -8,36 +8,24 @@ description: "Cloud connector (CC) CNF"
 
 cloudnative_deployment_units:
   - id: "cdu01"
-    image: sonatanfv/vnf-cc-broker:vimemu
+    image: sonatanfv/vnf-cc-broker:k8s
     connection_points:
-      - id: "processor"
-        port: 5555
+      - id: "data"
+        port: 1883  # MQTT broker
   - id: "cdu02"
-    image: sonatanfv/vnf-cc-processor:vimemu
+    image: sonatanfv/vnf-cc-processor:k8s
   - id: "cdu03"
     image: ubuntu:trusty
-    connection_points:
-      - id: "mgmt"
-        port: 22
 
 connection_points:
-  - id: "mgmt"
-    interface: "ipv4"
-    type: serviceendpoint
-    port: 22
-  - id: "processor"
+  - id: "data"
     interface: "ipv4"
     type: "serviceendpoint"
-    port: 5555
+    port: 1883
 
 virtual_links:
-  - id: "mgmt"
-    connectivity_type: "E-Tree"
-    connection_points_reference:
-      - "mgmt"
-      - "cdu03:mgmt"
   - id: "data"
     connectivity_type: "E-Tree"
     connection_points_reference:
-      - "processor"
-      - "cdu01:processor"
+      - "data"
+      - "cdu01:data"
