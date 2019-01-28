@@ -7,27 +7,13 @@ author: "Stefan Schneider (Paderborn University)"
 description: "Edge analytics engine (EAE) CNF"
 cloudnative_deployment_units:
   - id: "cdu01"
-    image: "sonatanfv/vnf-eae:vimemu"
-    connection_points:
-      - id: "mgmt"
-        port: 22
-      - id: "data"
-        port: 5555
+    image: "sonatanfv/vnf-eae:k8s"
 connection_points:
-  - id: "mgmt"
-    interface: "ipv4"
-    type: "serviceendpoint"
-    port: 22
   - id: "data"
     interface: "ipv4"
     type: "serviceendpoint"
-    port: 5555
+    port: 9999
 virtual_links:
-  - id: "mgmt"
-    connectivity_type: "E-Tree"
-    connection_points_reference:
-      - "mgmt"
-      - "cdu01:mgmt"   
   - id: "data"
     connectivity_type: "E-Tree"
     connection_points_reference:
