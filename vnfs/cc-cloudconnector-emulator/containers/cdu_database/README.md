@@ -1,1 +1,0 @@
-This folder contains the code/Dockerfile in case of Docker-based VNFs.

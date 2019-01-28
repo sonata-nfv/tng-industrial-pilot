@@ -1,1 +1,0 @@
-This folder contains the FSMs of this VNF.
