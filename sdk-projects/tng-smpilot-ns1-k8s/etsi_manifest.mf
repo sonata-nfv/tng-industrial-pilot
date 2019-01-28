@@ -1,0 +1,17 @@
+ns_product_name: tng-smpilot-ns1-emulator
+ns_provider_id: eu.5gtango
+ns_release_date_time: 2019-01-15T15:01:38Z
+ns_package_version: 0.1
+
+Source: Definitions/nsd/nsd_smpilot_ns1_emulator.yml
+Hash: 1f908a186e33a62f06c3cbf13d8aca2eebc5c4ab22797f069a6cbe86200787e2
+Algorithm: SHA-256
+
+Source: Definitions/vnfd/vnfd_cc_emulator.yml
+Hash: 33c896d2ae6cb4ecf172c37bce746afb1bd42a664388a4a702234534705434de
+Algorithm: SHA-256
+
+Source: Definitions/vnfd/vnfd_eae_emulator.yml
+Hash: 3bf1905d1103876c2b52a997b1a32b24beb6349897d18aa5aa5726a4ba51c744
+Algorithm: SHA-256
+
