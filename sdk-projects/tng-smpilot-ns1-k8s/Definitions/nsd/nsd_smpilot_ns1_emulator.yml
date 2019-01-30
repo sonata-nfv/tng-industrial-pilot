@@ -1,0 +1,27 @@
+---
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
+vendor: "eu.5gtango"
+name: "tng-smpilot-ns1-k8s"
+version: "0.1"
+author: "Manuel Peuster (Paderborn University)"
+description: "Smart manufacturing pilot: Factory edge service (NS1) for K8s."
+network_functions:
+  - vnf_id: "vnf_cc"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "smpilot-cc"
+    vnf_version: "0.1"
+  - vnf_id: "vnf_eae"
+    vnf_name: "smpilot-eae"
+    vnf_vendor: "eu.5gtango"
+    vnf_version: "0.1"
+connection_points:
+  - id: "data"
+    interface: ipv4
+    type: "external"
+virtual_links:
+  - id: "data-2-vnfs"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "data"
+      - "vnf_cc:data"
+      - "vnf_eae:data"

@@ -24,43 +24,20 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-descriptor_schema: >-
-  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
-vendor: eu.5gtango
-name: smpilot-rtr
-version: '0.1'
-author: 'Manuel Peuster (Paderborn University)'
-description: 'Router CNF (only for emulator, wont work on K8s)'
+FROM ubuntu:xenial
+LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
-cloudnative_deployment_units:
-  - id: cdu01
-    image: 'sonatanfv/vnf-rtr-nat:vimemu'
-    connection_points:
-      - id: data
-        port: 5555  # TODO change
-      - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
-        #interface: ipv4
-        #address: "30.0.1.254/24"  # FIXME only works on emulator
-        port: 9999
-        
-connection_points:
-  - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-  - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
-    interface: ipv4
-    type: external
-    port: 9999
-    
-virtual_links:
-  - id: data
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - data
-      - 'cdu01:data'
-  - id: uplink
-    connectivity_type: E-Line
-    connection_points_reference:
-      - uplink
-      - 'cdu01:uplink'
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iproute \
+    inetutils-ping \
+    iptables
+
+ADD start.sh start.sh
+RUN chmod +x start.sh
+
+# configurations
+ENV IFUPLINK uplink
+ENV IFLOCAL data
+
+CMD ./start.sh

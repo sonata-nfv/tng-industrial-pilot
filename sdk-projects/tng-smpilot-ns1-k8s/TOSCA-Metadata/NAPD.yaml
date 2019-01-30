@@ -1,0 +1,27 @@
+description: 'Smart manufacturing pilot: Factory edge service (NS1) for vim-emu.'
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/package-specification/napd-schema.yml
+maintainer: Manuel Peuster (Paderborn University)
+name: tng-smpilot-ns1-emulator
+package_content:
+- algorithm: SHA-256
+  content-type: application/vnd.5gtango.nsd
+  hash: 1f908a186e33a62f06c3cbf13d8aca2eebc5c4ab22797f069a6cbe86200787e2
+  source: Definitions/nsd/nsd_smpilot_ns1_emulator.yml
+  tags:
+  - eu.5gtango
+- algorithm: SHA-256
+  content-type: application/vnd.5gtango.vnfd
+  hash: 33c896d2ae6cb4ecf172c37bce746afb1bd42a664388a4a702234534705434de
+  source: Definitions/vnfd/vnfd_cc_emulator.yml
+  tags:
+  - eu.5gtango
+- algorithm: SHA-256
+  content-type: application/vnd.5gtango.vnfd
+  hash: 3bf1905d1103876c2b52a997b1a32b24beb6349897d18aa5aa5726a4ba51c744
+  source: Definitions/vnfd/vnfd_eae_emulator.yml
+  tags:
+  - eu.5gtango
+package_type: application/vnd.5gtango.package.nsp
+release_date_time: '2019-01-15T15:01:38Z'
+vendor: eu.5gtango
+version: '0.1'
