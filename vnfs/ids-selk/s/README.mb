@@ -1,0 +1,20 @@
+#
+
+## Create a SURICATA Docker Image
+
+`$ docker build --progress=plain --no-cache -t suricata .`
+
+
+## Pre-requirements to run IDS on promiscuos mode
+
+`$ sudo ip link set <INTERFACE> multicast off`
+
+`$ sudo ip link set <INTERFACE> promisc on`
+
+`$ sudo ip link set <INTERFACE> up`
+
+
+## How to run
+
+`$ docker run --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -d suricata`
+
