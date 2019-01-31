@@ -23,44 +23,24 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-
-descriptor_schema: >-
-  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
-vendor: eu.5gtango
-name: smpilot-rtr
-version: '0.1'
-author: 'Manuel Peuster (Paderborn University)'
-description: 'Router CNF (only for emulator, wont work on K8s)'
-
-cloudnative_deployment_units:
-  - id: cdu01
-    image: 'sonatanfv/vnf-rtr-nat:vimemu'
-    connection_points:
-      - id: data
-        port: 5555  # TODO change
-      - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
-        #interface: ipv4
-        #address: "30.0.1.254/24"  # FIXME only works on emulator
-        port: 9999
-        
-connection_points:
-  - id: data
-    interface: ipv4
-    type: serviceendpoint
-    port: 5555  # TODO change
-  - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
-    interface: ipv4
-    type: external
-    port: 9999
-    
-virtual_links:
-  - id: data
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - data
-      - 'cdu01:data'
-  - id: uplink
-    connectivity_type: E-Line
-    connection_points_reference:
-      - uplink
-      - 'cdu01:uplink'
+descriptor_extension: yml
+version: '0.5'
+files:
+  - path: Definitions/nsd/nsd_smpilot_ns1_emulator.yml
+    type: application/vnd.5gtango.nsd
+    tags:
+      - eu.5gtango
+  - path: Definitions/vnfd/vnfd_cc_emulator.yml
+    type: application/vnd.5gtango.vnfd
+    tags:
+      - eu.5gtango
+  - path: Definitions/vnfd/vnfd_eae_emulator.yml
+    type: application/vnd.5gtango.vnfd
+    tags:
+      - eu.5gtango
+package:
+  name: 'tng-smpilot-ns1-k8s'
+  version: '0.1'
+  maintainer: 'Manuel Peuster (Paderborn University)'
+  vendor: 'eu.5gtango'
+  description: 'Smart manufacturing pilot: Factory edge service (NS1) for vim-emu.'

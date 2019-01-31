@@ -1,0 +1,33 @@
+---
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: "eu.5gtango"
+name: "smpilot-cc"
+version: "0.1"
+author: Manuel Peuster (Paderborn University)"
+description: "Cloud connector (CC) CNF"
+
+cloudnative_deployment_units:
+  - id: "cdu01"
+    image: sonatanfv/vnf-cc-broker:k8s
+    connection_points:
+      - id: "data"
+        port: 1883  # MQTT broker
+  - id: "cdu02"
+    image: sonatanfv/vnf-cc-processor:k8s
+    connection_points:
+  - id: "cdu03"
+    image: ubuntu:trusty
+    connection_points:
+
+connection_points:
+  - id: "data"
+    interface: "ipv4"
+    type: "serviceendpoint"
+    port: 1883
+
+virtual_links:
+  - id: "data-link"
+    connectivity_type: "E-Tree"
+    connection_points_reference:
+      - "data"
+      - "cdu01:data"
