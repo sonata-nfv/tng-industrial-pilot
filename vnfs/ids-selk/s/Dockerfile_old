@@ -32,4 +32,10 @@ ADD suricata.yaml /etc/suricata/suricata.yaml
 RUN grep -rl eth0 /etc | xargs sed -i 's/eth0/ens3/g'
 
 # Start the Suricata/Filebeat service when the container is started
-CMD service suricata start && service filebeat start && tail -F /var/log/suricata/suricata.log
+CMD service suricata start && \
+    filebeat modules enable suricata -e && \
+    filebeat modules enable logstash -e && \
+    filebeat modules enable elasticsearch -e && \
+    filebeat setup --template -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]' && \
+    #filebeat setup -e && \
+    service filebeat start

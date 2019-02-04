@@ -16,5 +16,5 @@
 
 ## How to run
 
-`$ docker run --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -d suricata`
+`$ docker run --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -d suricata -i ens3`
 

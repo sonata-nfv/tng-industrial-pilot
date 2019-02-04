@@ -4,9 +4,11 @@ FROM docker.elastic.co/logstash/logstash:6.6.0
 
 MAINTAINER sm-pilot@5gtango.eu
 
-RUN rm -f /usr/share/logstash/pipeline/logstash.conf
-RUN rm -f /usr/share/logstash/config/logstash.yml
+RUN rm -fr /usr/share/logstash/logstash.conf
+ADD ./beats2elastic.conf /usr/share/logstash/beats2elastic.conf
+ADD ./beats2elastic.conf /usr/share/logstash/config/beats2elastic.conf
 
-ADD ./suricata-beats.conf /usr/share/logstash/pipeline/suricata-beats.conf
-ADD ./suricata-beats.conf /usr/share/logstash/config/suricata-beats.conf
+RUN rm -fr /usr/share/logstash/logstash.yml
+ADD ./logstash.yml /usr/share/logstash/logstash.yml
 ADD ./logstash.yml /usr/share/logstash/config/logstash.yml
+
