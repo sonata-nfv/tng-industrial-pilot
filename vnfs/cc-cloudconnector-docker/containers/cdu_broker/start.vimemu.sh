@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -24,27 +25,6 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-FROM ubuntu:xenial
-LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
-
-RUN apt-get update && apt-get install -y \
-    net-tools \
-    iproute \
-    inetutils-ping \
-    software-properties-common
-
-# install latest mosquitto
-RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
-RUN apt-get update
-RUN apt-get install -y mosquitto mosquitto-clients
-
-ADD start.vimemu.sh start.vimemu.sh
-RUN chmod +x start.vimemu.sh
-
-ENV IFLOCAL data
-
-# set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.vimemu.sh"
-
-# this has to be /bin/bash for the emulator
-CMD /bin/bash
+# run mosquitto
+echo "CC-CDU01 (broker): Starting Mosquitto ... (logs: /var/mosquitto.log)"
+mosquitto -v > /var/mosquitto.log 2>&1 &
