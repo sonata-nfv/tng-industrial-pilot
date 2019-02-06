@@ -1,0 +1,59 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+vendor: eu.5gtango
+name: tango-nsd-selk
+version: '0.9'
+author: 5GTANGO Developer
+description: Enhanced IDPS (SELK)
+network_functions:
+- vnf_id: vnf0
+  vnf_vendor: eu.5gtango
+  vnf_name: default-vnf0
+  vnf_version: '0.9'
+connection_points:
+- id: mgmt
+  interface: ipv4
+  type: management
+- id: input
+  interface: ipv4
+  type: external
+- id: output
+  interface: ipv4
+  type: external
+virtual_links:
+- id: mgmt
+  connectivity_type: E-LAN
+  connection_points_reference:
+  - vnf1:mgmt
+  - vnf2:mgmt
+  - mgmt
+- id: input-2-vnf1
+  connectivity_type: E-Line
+  connection_points_reference:
+  - input
+  - vnf1:input
+- connectivity_type: E-Line
+  id: vnf0-2-output
+  connection_points_reference:
+  - vnf0:output
+  - output
+forwarding_graphs:
+- fg_id: fg01
+  number_of_endpoints: 2
+  number_of_virtual_links: 2
+  constituent_virtual_links:
+  - input-2-vnf1
+  - vnf0-2-output
+  constituent_vnfs:
+  - vnf1
+  network_forwarding_paths:
+  - fp_id: fg01:fp01
+    policy: none
+    connection_points:
+    - connection_point_ref: input
+      position: 1
+    - connection_point_ref: vnf1:input
+      position: 2
+    - connection_point_ref: vnf0:output
+      position: 3
+    - connection_point_ref: output
+      position: 4

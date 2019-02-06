@@ -12,5 +12,5 @@
 
 ## How to run
 
-`$ docker run --network=host --hostname=logstash --name=logstash --mount src=suricata,dst=/var/log/suricata/ -d logstash`
+`$ docker run --network=host --hostname=logstash --name=logstash -d logstash`
 
