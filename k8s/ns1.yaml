@@ -1,32 +1,38 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ns2
+  name: ns1
   labels:
-    app: ns2
+    app: ns1
 spec:
   ports:
     - port: 3000
   selector:
-    app: ns2
+    app: ns1
   type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sm-ns2-deployment
+  name: sm-ns1-deployment
   labels:
-    app: ns2
+    app: ns1
 spec:
   selector:
     matchLabels:
-      app: ns2
+      app: ns1
   template:
     metadata:
       labels:
-        app: ns2
+        app: ns1
     spec:
       containers:
+      - name: cc-broker-vnf
+        image: sonatanfv/vnf-cc-broker:k8s
+        ports:
+        - containerPort: 1883
+      - name: cc-processor-vnf
+        image: sonatanfv/vnf-cc-processor:k8s
       - name: eae-vnf
         image: sonatanfv/vnf-eae:k8s
         ports:
