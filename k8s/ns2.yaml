@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns2
+  labels:
+    app: ns2
+spec:
+  # ports:
+    # - name: mqtt
+      # port: 1883
+    # - name: grafana
+      # port: 3000
+  selector:
+    app: ns2
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sm-ns2-deployment
+  labels:
+    app: ns2
+spec:
+  selector:
+    matchLabels:
+      app: ns2
+  template:
+    metadata:
+      labels:
+        app: ns2
+    spec:
+      containers:
+      - name: vnf-dt
+        image: sonatanfv/vnf-dt:k8s
+        imagePullPolicy: Always
+      - name: vnf-mdc
+        image: sonatanfv/vnf-mdc:k8s
+        imagePullPolicy: Always
+        

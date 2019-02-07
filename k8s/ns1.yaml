@@ -30,15 +30,15 @@ spec:
         app: ns1
     spec:
       containers:
-      - name: cc-broker-vnf
+      - name: vnf-cc-broker
         image: sonatanfv/vnf-cc-broker:k8s
         imagePullPolicy: Always
         ports:
         - containerPort: 1883
-      - name: cc-processor-vnf
+      - name: vnf-cc-processor
         image: sonatanfv/vnf-cc-processor:k8s
         imagePullPolicy: Always
-      - name: eae-vnf
+      - name: vnf-eae
         image: sonatanfv/vnf-eae:k8s
         imagePullPolicy: Always
         ports:
