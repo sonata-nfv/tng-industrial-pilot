@@ -4,6 +4,7 @@ metadata:
   name: ns1
   labels:
     app: ns1
+    pilot: sm
 spec:
   ports:
     - name: mqtt
@@ -20,6 +21,7 @@ metadata:
   name: sm-ns1-deployment
   labels:
     app: ns1
+    pilot: sm
 spec:
   selector:
     matchLabels:

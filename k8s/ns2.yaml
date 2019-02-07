@@ -1,25 +1,36 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: ns2
-  labels:
-    app: ns2
-spec:
+# apiVersion: v1
+# kind: Service
+# metadata:
+  # name: ns2
+  # labels:
+    # app: ns2
+    # pilot: sm
+# spec:
   # ports:
-    # - name: mqtt
-      # port: 1883
-    # - name: grafana
-      # port: 3000
-  selector:
-    app: ns2
-  type: LoadBalancer
----
+    # - name: dt
+      # port: 15001
+    # - name: samba139
+      # port: 139
+    # - name: samba445
+      # port: 445
+    # # can't mix TCP and UDP ports in a single LB service
+    # - name: samba137udp
+      # protocol: UDP
+      # port: 137
+    # - name: samba138udp
+      # protocol: UDP
+      # port: 138
+  # selector:
+    # app: ns2
+  # type: LoadBalancer
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sm-ns2-deployment
   labels:
     app: ns2
+    pilot: sm
 spec:
   selector:
     matchLabels:
