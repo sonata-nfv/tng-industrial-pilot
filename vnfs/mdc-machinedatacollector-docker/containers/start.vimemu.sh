@@ -35,7 +35,7 @@ smbd -F -d verbose --log-stdout > /var/smb.log 2>&1 &
 
 echo "MDC: Starting MDC VNF APP ... (logs: /var/mdc.log)"
 cd /MDC_VNF
-python3 MDC_VNF.py > /var/mdc.log 2>&1
+python3 MDC_VNF.py > /var/mdc.log 2>&1 &
 
 # for debugging, we can use this simple MQTT generator
 # echo "MDC: Starting MQTT generator ..."
