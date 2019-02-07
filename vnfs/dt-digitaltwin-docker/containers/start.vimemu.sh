@@ -24,6 +24,12 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-echo "DT: Un-mounting em63_share ..."
-umount em63_share/
-sleep 1
+echo "DT: Wait for MDC ... (3 seconds)"
+sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
+echo "DT: Mount em63_share from MDC ... (logs: /var/mount.log)"
+mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE > /var/mount.log 2>&1
+
+echo "DT: Starting DigitalTwin generator ... (logs: /var/imms.log)"
+cd IMMS_APP
+python3 IMMS_APP.py --autostart > /var/imms.log 2>&1 &
+cd /
