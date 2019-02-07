@@ -6,7 +6,10 @@ metadata:
     app: ns1
 spec:
   ports:
-    - port: 3000
+    - name: mqtt
+      port: 1883
+    - name: grafana
+      port: 3000
   selector:
     app: ns1
   type: LoadBalancer
