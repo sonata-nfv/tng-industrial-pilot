@@ -28,4 +28,4 @@
 sleep 2  # give the broker some time to get up (yes ugly, but avoids race conditions)
 echo "CC-CDU02 (processor): Starting Azure Cloud Connector ... (logs: /var/cc.log)"
 cd /CC_VNF
-python3 CC_VNF.py > /var/cc.log 2>&1
+python3 CC_VNF.py > /var/cc.log 2>&1 &

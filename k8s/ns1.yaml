@@ -29,11 +29,15 @@ spec:
       containers:
       - name: cc-broker-vnf
         image: sonatanfv/vnf-cc-broker:k8s
+        imagePullPolicy: Always
         ports:
         - containerPort: 1883
       - name: cc-processor-vnf
         image: sonatanfv/vnf-cc-processor:k8s
+        imagePullPolicy: Always
       - name: eae-vnf
         image: sonatanfv/vnf-eae:k8s
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
+        

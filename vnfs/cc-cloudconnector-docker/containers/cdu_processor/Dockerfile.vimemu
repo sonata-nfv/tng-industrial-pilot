@@ -45,8 +45,8 @@ RUN apt-get install -y mosquitto-clients
 RUN pip3 install azure-iothub-device-client
 RUN pip3 install paho-mqtt
 
-ADD start.sh start.sh
-RUN chmod +x start.sh
+ADD start.vimemu.sh start.vimemu.sh
+RUN chmod +x start.vimemu.sh
 
 # add VNF CC app
 ADD CC_VNF CC_VNF
@@ -60,7 +60,7 @@ ENV MQTT_BROKER_PORT 1883
 ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
 
 # set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.sh"
+ENV VIM_EMU_CMD "./start.vimemu.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash
