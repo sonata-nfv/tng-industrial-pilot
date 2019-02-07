@@ -50,8 +50,8 @@ ADD IMMS_APP IMMS_APP
 # folder for euromap communication
 ADD em63_share em63_share
 
-ADD start.sh start.sh
-RUN chmod +x start.sh
+ADD start.vimemu.sh start.vimemu.sh
+RUN chmod +x start.vimemu.sh
 ADD stop.sh stop.sh
 RUN chmod +x stop.sh
 
@@ -63,7 +63,7 @@ ENV DT_EM63_SHARE /em63_share
 ENV DT_EM63_SHARE_HOST 30.0.3.2
 
 # set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.sh"
+ENV VIM_EMU_CMD "./start.vimemu.sh"
 ENV VIM_EMU_CMD_STOP "./stop.sh"
 
 # this has to be /bin/bash for the emulator

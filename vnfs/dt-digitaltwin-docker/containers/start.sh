@@ -31,5 +31,5 @@ mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE > /var/mount.l
 
 echo "DT: Starting DigitalTwin generator ... (logs: /var/imms.log)"
 cd IMMS_APP
-python3 IMMS_APP.py --autostart > /var/imms.log 2>&1 &
+python3 IMMS_APP.py --autostart > /var/imms.log 2>&1
 cd /
