@@ -1,7 +1,8 @@
 bootstrap.memory_lock: true
 transport.host: localhost
 transport.tcp.port: 9300
-network.host: 0.0.0.0
+network.host: localhost
+network.bind_host: 0.0.0.0
 http.port: 9200
 #xpack.ssl.keystore.path: certs/elastic-certificates.p12
 #xpack.ssl.truststore.path: certs/elastic-certificates.p12

@@ -12,5 +12,16 @@
 
 ## How to run
 
-`$ docker run --network=host --hostname=logstash --name=logstash -d logstash`
+`$ docker run --rm -d --network=host --hostname=logstash --name=logstash -t logstash`
+
+
+# More info
+
+* [Directory layout of Docker Images](https://www.elastic.co/guide/en/logstash/6.x/dir-layout.html)
+
+` home = /usr/share/logstash`
+` -e path.settings = /usr/share/logstash/config`
+` -e path.config = /usr/share/logstash/pipeline`
+` -e path.plugins = /usr/share/logstash/plugins`
+` -e path.data = /usr/share/logstash/data`
 

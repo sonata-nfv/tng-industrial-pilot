@@ -13,33 +13,30 @@ RUN apt update -y && \
     apt install -y curl && \
     curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.0-amd64.deb && \
     dpkg -i filebeat-6.6.0-amd64.deb && \
-    rm -fr ./filebeat-6.6.0-amd64.deb
+    rm -fr filebeat-6.6.0-amd64.deb
 
 ## STEP 2: CONFIGURE FILEBEAT
 
-RUN rm -f /usr/share/filebeat/filebeat.yml
-ADD ./filebeat.yml /usr/share/filebeat/filebeat.yml
-RUN chown root /usr/share/filebeat/filebeat.yml
-RUN chmod 0644 /usr/share/filebeat/filebeat.yml
+RUN rm -f /etc/filebeat/filebeat.yml
+ADD filebeat.yml /etc/filebeat/filebeat.yml
+RUN chown root:root /etc/filebeat/filebeat.yml
+RUN chmod go-w /etc/filebeat/filebeat.yml
 
 ## STEP 3: CONFIGURE FILEBEAT TO USE LOGSTASH
 # The recommended index template file for Filebeat is installed by the Filebeat packages. 
 # If you accept the default configuration in the filebeat.yml config file, Filebeat loads the template automatically 
-
-RUN filebeat modules enable logstash
-RUN filebeat modules enable suricata
-
-#RUN filebeat setup --template -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
-
 ## STEP 4:
-
 ## STEP 5: Set up the Kibana dashboars
+
+RUN /usr/share/filebeat/bin/filebeat modules enable suricata
+RUN /usr/share/filebeat/bin/filebeat setup --dashboards 
+RUN /usr/share/filebeat/bin/filebeat setup --pipelines --modules suricata
+RUN /usr/share/filebeat/bin/filebeat setup --template
  
-CMD filebeat setup && filebeat -e
-#    -E output.logstash.enabled=false \
-#    -E output.elasticsearch.hosts=['localhost:9200'] \
-#    -E setup.kibana.host=localhost:5601
+
+#CMD /usr/share/filebeat/bin/filebeat -e -c /etc/filebeat/filebeat.yml -E output.elasticsearch.enabled=false -E output.logstash.enabled=true -E output.logstash.hosts=['localhost:5044']
 
 # Start the Filebeat service 
-#CMD service filebeat start
-
+ENTRYPOINT ["/usr/share/filebeat/bin/filebeat"]
+CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","output.logstash.hosts=['localhost:5044']"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
