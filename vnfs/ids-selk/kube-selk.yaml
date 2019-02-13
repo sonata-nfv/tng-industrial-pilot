@@ -1,6 +1,10 @@
 apiVersion: v1
 items:
 - apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: sm-pilot-dev
+- apiVersion: v1
   kind: Service
   metadata:
     annotations:
@@ -156,7 +160,7 @@ items:
             value: '"2"'
           - name: xpack.monitoring.elasticsearch.url
             value: '"http://localhost:9200"'
-          image: docker.elastic.co/logstash/logstash:6.6.0
+          image: arocha/logstash:6.6.0
           name: logstash
           resources: {}
           volumeMounts:
@@ -202,11 +206,10 @@ items:
           io.kompose.service: suricata-ids
       spec:
         containers:
-        - image: ce7suricata
+        - image: arocha/ce7suricata:4.1.2
           name: suricata
           resources: {}
         restartPolicy: Always
   status: {}
 kind: List
 metadata: {}
-

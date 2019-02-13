@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: suricata-ids-deployment
+  labels:
+    app: suricata-ids
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: suricata-ids
+  template:
+    metadata:
+      labels:
+        app: suricata-ids
+    spec:
+      containers:
+      - name: suricata-ids
+        image: arocha/ce7suricata
+#        ports:
+#        - containerPort: 80
+
