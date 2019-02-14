@@ -1,0 +1,20 @@
+version: '2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    container_name: kibana
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://localhost:9200
+    #volumes:
+      #- ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - 5061:5061
+    networks:
+      - smpnet
+
+networks:
+  smpnet:
+    driver: bridge
+
+# [CREDITS](https://www.elastic.co/guide/en/kibana/current/docker.html)

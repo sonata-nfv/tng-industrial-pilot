@@ -1,9 +1,0 @@
-# Dockerfile with a cusomized configuration for Logstash
-
-FROM docker.elastic.co/logstash/logstash:6.5.4
-
-MAINTAINER sm-pilot@5gtango.eu
-
-RUN rm -f /usr/share/logstash/pipeline/logstash.conf
-
-ADD ./beats2elastic.conf /usr/share/logstash/pipeline/beats2elastic.conf
