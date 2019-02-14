@@ -8,27 +8,27 @@ package:
   maintainer: Name, Company, Contact
   description: SELK - enhanced IDPS
 files:
-- path: tango_vnfd_s.yml
+- path: tng_smp_vnfd_s.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tango_vnfd_f.yml
+- path: tng_smp_vnfd_f.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tango_vnfd_l.yml
+- path: tng_smp_vnfd_l.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tango_vnfd_e.yml
+- path: tng_smp_vnfd_e.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tango_vnfd_k.yml
+- path: tng_smp_vnfd_k.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tango_nsd_selk.yml
+- path: tng_smp_nsd_selk.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.nsd
