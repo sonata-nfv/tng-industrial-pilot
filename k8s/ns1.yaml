@@ -6,14 +6,17 @@ metadata:
     app: ns1
     pilot: sm
 spec:
+  selector:
+    app: ns1
+  # for single-node testing with microk8s; switch to "LoadBalancer" for production
+  type: NodePort
   ports:
     - name: mqtt
       port: 1883
+    # cluster-internal access via port 3000, external via port 30000
     - name: grafana
       port: 3000
-  selector:
-    app: ns1
-  type: LoadBalancer
+      nodePort: 30000
 ---
 apiVersion: apps/v1
 kind: Deployment
