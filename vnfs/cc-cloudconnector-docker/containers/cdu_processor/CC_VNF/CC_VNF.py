@@ -163,7 +163,9 @@ except BaseException as ex:
           .format(azure_conn_string_file, ex))
 
 # Data input from MQTT broker
-broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
+#broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
+# in kubernetes, use the service name "ns1" instead of a fixed IP address
+broker_host = os.getenv("MQTT_BROKER_HOST", "ns1")
 broker_port = os.getenv("MQTT_BROKER_PORT", 1883)
 
 listetopic = []

@@ -30,12 +30,12 @@ route add -net $NETNS1 gw $GATEWAY dev $IFLOCAL
 echo "MDC: Configured route to NS1 over RTR:"
 route -n
 
-echo "MDC: Starting SAMBA server ... (logs: /var/smb.log)"
-smbd -F -d verbose --log-stdout > /var/smb.log 2>&1 &
+echo "MDC: Starting SAMBA server (in background)..."
+smbd -F -d verbose --log-stdout &
 
-echo "MDC: Starting MDC VNF APP ... (logs: /var/mdc.log)"
+echo "MDC: Starting MDC VNF APP ..."
 cd /MDC_VNF
-python3 MDC_VNF.py > /var/mdc.log 2>&1
+python3 MDC_VNF.py
 
 # for debugging, we can use this simple MQTT generator
 # echo "MDC: Starting MQTT generator ..."
