@@ -3,40 +3,16 @@ descriptor_extension: yml
 uuid: 722f27bb-8c1d-4511-a189-e1f14a4502de
 package:
   version: '0.1'
-  name: 5gtango-selk
+  name: 5gtango-smp-sfelk
   vendor: eu.5gtango
-  maintainer: Name, Company, Contact
-  description: SELK - enhanced IDPS
+  maintainer: ALB, sm-pilot@5gtango.pt
+  description: SFELK - enhanced IDPS
 files:
-- path: tng_smp_vnfd_s.yml
+- path: tng_smp_vnfd_sf.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tng_smp_vnfd_f.yml
+- path: tng_smp_vnfd_elk.yml
   tags:
   - eu.5gtango
   type: application/vnd.5gtango.vnfd
-- path: tng_smp_vnfd_l.yml
-  tags:
-  - eu.5gtango
-  type: application/vnd.5gtango.vnfd
-- path: tng_smp_vnfd_e.yml
-  tags:
-  - eu.5gtango
-  type: application/vnd.5gtango.vnfd
-- path: tng_smp_vnfd_k.yml
-  tags:
-  - eu.5gtango
-  type: application/vnd.5gtango.vnfd
-- path: tng_smp_nsd_selk.yml
-  tags:
-  - eu.5gtango
-  type: application/vnd.5gtango.nsd
-#- path: osm_nsd.yml
-#  tags:
-#  - etsi.osm
-#  type: application/vnd.etsi.osm.nsd
-#- path: osm_vnfd0.yml
-#  tags:
-#  - etsi.osm
-#  type: application/vnd.etsi.osm.vnfd
