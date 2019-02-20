@@ -1,18 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ns1
+  name: ns1-eae-service
+  # for easy reference later on
   labels:
-    app: ns1
     pilot: sm
+    ns: ns1
+    cnf: eae
+    cdu: eae
 spec:
+  # to which deployment does this service belong?
   selector:
-    app: ns1
-  # for single-node testing with microk8s; switch to "LoadBalancer" for production
+    cdu: eae
   type: NodePort
   ports:
-    - name: mqtt
-      port: 1883
     # cluster-internal access via port 3000, external via port 30000
     - name: grafana
       port: 3000
@@ -21,31 +22,32 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sm-ns1-deployment
+  name: ns1-eae-deployment
   labels:
-    app: ns1
     pilot: sm
+    ns: ns1
+    cnf: eae
+    cdu: eae
 spec:
   selector:
+    # must match the labels of the template
     matchLabels:
-      app: ns1
+      pilot: sm
+      ns: ns1
+      cnf: eae
+      cdu: eae
+  # the pod(s) to deploy = 1 CDU
   template:
     metadata:
       labels:
-        app: ns1
+        pilot: sm
+        ns: ns1
+        cnf: eae
+        cdu: eae
     spec:
       containers:
-      - name: vnf-cc-broker
-        image: sonatanfv/vnf-cc-broker:k8s
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 1883
-      - name: vnf-cc-processor
-        image: sonatanfv/vnf-cc-processor:k8s
-        imagePullPolicy: Always
       - name: vnf-eae
         image: sonatanfv/vnf-eae:k8s
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
-        
