@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns1-cc-broker-service
+  # for easy reference later on
+  labels:
+    pilot: sm
+    ns: ns1
+    cnf: cc
+    cdu: cc-broker
+spec:
+  # to which deployment does this service belong?
+  selector:
+    cdu: cc-broker
+  type: NodePort
+  ports:
+    - name: mqtt
+      port: 1883
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns1-cc-broker-deployment
+  labels:
+    pilot: sm
+    ns: ns1
+    cnf: cc
+    cdu: cc-broker
+spec:
+  selector:
+    # must match the labels of the template
+    matchLabels:
+      pilot: sm
+      ns: ns1
+      cnf: cc
+      cdu: cc-broker
+  # the pod(s) to deploy = 1 CDU
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns1
+        cnf: cc
+        cdu: cc-broker
+    spec:
+      containers:
+      - name: vnf-cc-broker
+        image: sonatanfv/vnf-cc-broker:k8s
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1883
