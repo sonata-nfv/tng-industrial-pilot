@@ -1,10 +1,13 @@
 # apiVersion: v1
 # kind: Service
 # metadata:
-  # name: ns2
+  # name: ns2-dt-service
+  # # for easy reference later on
   # labels:
-    # app: ns2
     # pilot: sm
+    # ns: ns2
+    # cnf: dt
+    # cdu: dt
 # spec:
   # ports:
     # - name: dt
@@ -20,31 +23,34 @@
     # - name: samba138udp
       # protocol: UDP
       # port: 138
-  # selector:
-    # app: ns2
-  # type: LoadBalancer
-# ---
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sm-ns2-deployment
+  name: ns2-dt-deployment
   labels:
-    app: ns2
     pilot: sm
+    ns: ns2
+    cnf: dt
+    cdu: dt
 spec:
   selector:
+    # must match the labels of the template
     matchLabels:
-      app: ns2
+      pilot: sm
+      ns: ns2
+      cnf: dt
+      cdu: dt
+  # the pod(s) to deploy = 1 CDU
   template:
     metadata:
       labels:
-        app: ns2
+        pilot: sm
+        ns: ns2
+        cnf: dt
+        cdu: dt
     spec:
       containers:
       - name: vnf-dt
         image: sonatanfv/vnf-dt:k8s
         imagePullPolicy: Always
-      - name: vnf-mdc
-        image: sonatanfv/vnf-mdc:k8s
-        imagePullPolicy: Always
-        
