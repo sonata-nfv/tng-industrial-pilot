@@ -1,6 +1,6 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
-name: tng-smp-nsd-sfelk
+name: tng-smp-nsd-selk
 version: '0.6'
 author: 5GTANGO Developer
 description: Enhanced IDPS (SF+ELK)
