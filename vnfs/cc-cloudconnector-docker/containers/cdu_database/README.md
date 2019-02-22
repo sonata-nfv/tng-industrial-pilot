@@ -1,1 +1,1 @@
-This folder contains the code/Dockerfile in case of Docker-based VNFs.
+This CDU runs the Prometheus time series database.

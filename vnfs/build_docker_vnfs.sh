@@ -28,6 +28,10 @@ docker build -t $target_repo/vnf-rtr-nat:vimemu -f rtr-nat-ubuntu-docker/contain
 docker build -t $target_repo/vnf-cc-broker:vimemu -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_broker/
 # CC-CDU02: processor
 docker build -t $target_repo/vnf-cc-processor:vimemu -f cc-cloudconnector-docker/containers/cdu_processor/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_processor/
+# CC-CDU03: pushgateway
+docker build -t $target_repo/vnf-cc-pushgateway:vimemu -f cc-cloudconnector-docker/containers/cdu_pushgateway/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_pushgateway/
+# CC-CDU04: database
+docker build -t $target_repo/vnf-cc-database:vimemu -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_database/
 # MDC
 docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-docker/containers/Dockerfile.vimemu mdc-machinedatacollector-docker/containers/
 # DT
