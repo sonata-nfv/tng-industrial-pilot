@@ -11,8 +11,10 @@ metadata:
 spec:
   # to which deployment does this service belong?
   selector:
+    pilot: sm
+    ns: ns1
+    cnf: cc
     cdu: cc-broker
-  type: NodePort
   ports:
     - name: mqtt
       port: 1883
