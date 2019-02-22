@@ -27,11 +27,14 @@
 FROM ubuntu:xenial
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
+# wget, curl are just for debugging; may be removed later on
 RUN apt-get update && apt-get install -y \
     net-tools \
     iproute \
     inetutils-ping \
-    software-properties-common
+    software-properties-common \
+	wget \
+	curl
 
 # install latest mosquitto
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
