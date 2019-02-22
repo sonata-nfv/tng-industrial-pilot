@@ -27,6 +27,7 @@
 FROM ubuntu:xenial
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
+# wget, curl, dnsutils are just for debugging; may be removed later on
 RUN apt-get update && apt-get install -y \
     net-tools \
     iproute \
@@ -34,7 +35,10 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     python3-pip \
     libboost-python-dev \
-    libcurl4-openssl-dev
+    libcurl4-openssl-dev \
+	wget \
+	curl \
+	dnsutils
 
 # install latest mosquitto
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
