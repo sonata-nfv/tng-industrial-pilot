@@ -34,11 +34,5 @@
 FROM grafana/grafana
 LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 
-# wget, curl, dnsutils are just for debugging; may be removed later on
-RUN apt-get update && apt-get install -y \
-	wget \
-	curl \
-	dnsutils
-
 
 CMD ./start.sh
