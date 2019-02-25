@@ -48,6 +48,7 @@ def on_message(client, userdata, message):
     global payload3, payload4
     payload_str = str(message.payload.decode("utf-8"))
     topic_str = str(message.topic)
+    # TODO call Prometheus client push here!
     msgstr = build_message(topic_str, payload_str)
     
     if topic_str == topicstr3:
