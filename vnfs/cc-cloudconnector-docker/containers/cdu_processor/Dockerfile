@@ -48,6 +48,7 @@ RUN apt-get install -y mosquitto-clients
 # install releveant python stuff
 RUN pip3 install azure-iothub-device-client
 RUN pip3 install paho-mqtt
+RUN pip3 install prometheus_client
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
