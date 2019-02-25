@@ -34,7 +34,7 @@ class CcPrometheusClient(object):
     def __init__(self):
         self.registry = CollectorRegistry()
         self.metrics = dict()
-        self.gw_host = os.environ.get("PUSH_GATEWAY", "localhost:9091")
+        self.gw_host = os.getenv("PUSH_GATEWAY", "localhost:9091")
 
     def push(self, metric, value):
         # if we do not have a collector for the given metric yet, we create one
@@ -45,9 +45,12 @@ class CcPrometheusClient(object):
             self.metrics[metric] = m
         m = self.metrics[metric]
         print("CPC: Setting metric '{}' to {}".format(metric, value))
-        m.set(float(value))
-        print("CPC: Pushing to gateway: {}".format(self.gw_host))
-        push_to_gateway(self.gw_host, job="cc", registry=self.registry)
+        try:
+            m.set(float(value))
+            print("CPC: Pushing to gateway: {}".format(self.gw_host))
+            push_to_gateway(self.gw_host, job="cc", registry=self.registry)
+        except BaseException as ex:
+            print("CPC: Error, couldn't push to Prometheus: {}".format(ex))
 
 
 if __name__ == "__main__":
