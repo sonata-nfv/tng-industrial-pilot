@@ -27,8 +27,9 @@ spec:
     ports:
     - containerPort: 5044
   - name: suricata
-    image: arocha/ce7suricata:4.1.2
+    image: jasonish/suricata
     imagePullPolicy: IfNotPresent
+    args: ["-i eth0"]
     #volumeMounts:
     #- name: suricata-logs
     #  mountPath: /var/logs/suricata
