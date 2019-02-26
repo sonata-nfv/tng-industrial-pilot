@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: suricata-ids-deployment
+  namespace: smp-dev
+  name: suricata-ids
   labels:
     app: suricata-ids
 spec:
@@ -16,7 +17,18 @@ spec:
     spec:
       containers:
       - name: suricata-ids
-        image: arocha/ce7suricata
-#        ports:
-#        - containerPort: 80
-
+        image: arocha/ce7suricata:4.1.2
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - /usr/sbin/suricata
+          - -c
+          - suricata.yaml
+          - -s
+          - signatures.rules
+          - -i
+          - eth0
+#      - name: filebeat
+#        image: arocha/u16filebeat:6.6.0
+#        imagePullPolicy: IfNotPresent

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kibana-deployment
+  name: kibana
   labels:
     app: kibana
 spec:
@@ -19,3 +19,18 @@ spec:
         image: docker.elastic.co/kibana/kibana:6.6.0
         ports:
         - containerPort: 5601
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: smp-dev
+  name: kibana
+  labels:
+    name: kibana
+spec:
+  ports:
+  - port: 5601
+    targetPort: 5601
+    name: kibana
+  selector:
+    name: kibana

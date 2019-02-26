@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: smp-dev
   name: filebeat-deployment
   labels:
     app: filebeat
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
       - name: filebeat
-        image: arocha/u16filebeat
+        image: arocha/u16filebeat:6.6.0
+        imagePullPolicy: IfNotPresent
 #       ports:
 #       - containerPort: 80
-

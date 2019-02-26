@@ -3,9 +3,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   namespace: smp-dev
-  name: ns3-elk
+  name: ns3-selk
   labels:
-    name: ns3-elk
+    name: ns3-selk
 spec:
   volumes:
   - name: suricata-logs
@@ -22,20 +22,41 @@ spec:
     ports:
     - containerPort: 5601
   - name: logstash
-    image: arocha/ce7logstash
+    image: arocha/ce7logstash:6.6.0
     imagePullPolicy: IfNotPresent
     ports:
     - containerPort: 5044
-  hostname: ns3-elk
+  - name: suricata
+    image: arocha/ce7suricata:4.1.2
+    imagePullPolicy: IfNotPresent
+    #volumeMounts:
+    #- name: suricata-logs
+    #  mountPath: /var/logs/suricata
+  - name: filebeat
+    image: arocha/u16filebeat:6.6.0
+    imagePullPolicy: IfNotPresent
+    #volumeMounts:
+    #- name: suricata-logs
+    #  mountPath: /var/logs/suricata
+
+  restartPolicy: Always
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 8.8.8.8
+      - 9.9.9.9
+  hostname: ns3-selk
   subdomain: smp
 ---
 apiVersion: v1
 kind: Service
 metadata:
   namespace: smp-dev
-  name: ns3-elk
+  name: ns3-selk
   labels:
-    name: ns3-elk
+    name: ns3-selk
 spec:
   ports:
     # the port that this service should serve on
@@ -49,39 +70,4 @@ spec:
     targetPort: 5044
     name: logstash
   selector:
-    name: ns3-elk
----
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: smp-dev
-  name: ns3-sf
-  labels:
-    name: ns3-sf
-spec:
-  volumes:
-  - name: suricata-logs
-    emptyDir: {}
-  containers:
-  - name: suricata
-    image: arocha/ce7suricata
-    imagePullPolicy: IfNotPresent
-    #volumeMounts:
-    #- name: suricata-logs
-    #  mountPath: /var/logs/suricata
-  - name: filebeat
-    image: arocha/u16filebeat
-    imagePullPolicy: IfNotPresent
-    #volumeMounts:
-    #- name: suricata-logs
-    #  mountPath: /var/logs/suricata
-  restartPolicy: Always
-  hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
-  dnsPolicy: "None"
-  dnsConfig:
-    nameservers:
-      - 8.8.8.8
-      - 9.9.9.9
-  hostname: ns3-sf
-  subdomain: smp
+    name: ns3-selk
