@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: smp-dev
+  name: ns3-elk
+  labels:
+    name: ns3-elk
+spec:
+  volumes:
+  - name: suricata-logs
+    emptyDir: {}
+  containers:
+  - name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 9200
+  - name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 5601
+  - name: logstash
+    image: arocha/ce7logstash
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 5044
+  hostname: ns3-elk
+  subdomain: smp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: smp-dev
+  name: ns3-elk
+  labels:
+    name: ns3-elk
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 9200
+    targetPort: 9200
+    name: elasticsearch
+  - port: 5601
+    targetPort: 5601
+    name: kibana
+  - port: 5044
+    targetPort: 5044
+    name: logstash
+  selector:
+    name: ns3-elk
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: smp-dev
+  name: ns3-sf
+  labels:
+    name: ns3-sf
+spec:
+  volumes:
+  - name: suricata-logs
+    emptyDir: {}
+  containers:
+  - name: suricata
+    image: arocha/ce7suricata
+    imagePullPolicy: IfNotPresent
+    #volumeMounts:
+    #- name: suricata-logs
+    #  mountPath: /var/logs/suricata
+  - name: filebeat
+    image: arocha/u16filebeat
+    imagePullPolicy: IfNotPresent
+    #volumeMounts:
+    #- name: suricata-logs
+    #  mountPath: /var/logs/suricata
+  restartPolicy: Always
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 8.8.8.8
+      - 9.9.9.9
+  hostname: ns3-sf
+  subdomain: smp
