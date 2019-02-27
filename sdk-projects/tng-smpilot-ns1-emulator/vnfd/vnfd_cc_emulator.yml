@@ -45,7 +45,7 @@ cloudnative_deployment_units:
         port: 5555  # TODO change
   - id: cdu03
     # CDU3: database
-    image: 'ubuntu:trusty'
+    image: 'sonatanfv/vnf-cc-database:vimemu'
     connection_points:
       - id: data
         port: 5555  # TODO change

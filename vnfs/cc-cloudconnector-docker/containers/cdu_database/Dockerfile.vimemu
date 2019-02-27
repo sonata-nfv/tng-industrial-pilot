@@ -34,15 +34,21 @@ RUN apt-get update && apt-get install -y \
     inetutils-ping \
     software-properties-common \
     git \
-    golang
+    nginx \
+    curl
 
 # install Prometheus from source
 # see https://www.techrepublic.com/article/how-to-install-the-prometheus-monitoring-system-on-ubuntu-16-04/
-RUN mkdir /go
-ENV GOPATH /go
-RUN go get github.com/prometheus/prometheus/cmd/...
+RUN mkdir /etc/prometheus
+RUN mkdir /var/lib/prometheus
+RUN curl -LO https://github.com/prometheus/prometheus/releases/download/v2.0.0/prometheus-2.0.0.linux-amd64.tar.gz
+RUN tar xvf prometheus-2.0.0.linux-amd64.tar.gz
+RUN cp prometheus-2.0.0.linux-amd64/prometheus /usr/local/bin/
+RUN cp prometheus-2.0.0.linux-amd64/promtool /usr/local/bin/
+RUN cp -r prometheus-2.0.0.linux-amd64/consoles /etc/prometheus
+RUN cp -r prometheus-2.0.0.linux-amd64/console_libraries /etc/prometheus
 
-ADD prometheus.yml /etc/prometheus/
+ADD prometheus.vimemu.yml /etc/prometheus/prometheus.yml
 ADD start.vimemu.sh start.vimemu.sh
 RUN chmod +x start.vimemu.sh
 

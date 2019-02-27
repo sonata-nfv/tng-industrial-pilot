@@ -44,4 +44,4 @@ scrape_configs:
     scrape_interval: 5s
     honor_labels: true
     static_configs:
-      - targets: ['172.0.0.1:9091']
+      - targets: ['30.0.0.4:9091']  # TODO change this for non vim-emu deployment
