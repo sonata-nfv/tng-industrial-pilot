@@ -77,9 +77,9 @@ items:
           image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
           name: elasticsearch
           ports:
-          - containerPort: 9200
-          - containerPort: 9300
-            protocol: UDP
+          - containerPort: 9200 # for REST API
+          - containerPort: 9300 # for Nodes communicate
+            protocol: TCP
           resources: {}
           volumeMounts:
           - mountPath: /usr/share/elasticsearch/data

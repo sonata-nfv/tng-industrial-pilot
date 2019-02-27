@@ -3,29 +3,70 @@ apiVersion: v1
 kind: Pod
 metadata:
   namespace: smp-dev
-  name: ns3-selk
+  name: ns3-elk
   labels:
-    name: ns3-selk
+    name: ns3-elk
+spec:
+  volumes:
+  - name: esdata
+    emptyDir: {}
+  containers:
+  - name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ES_JAVA_OPTS
+      value: -Xms1g -Xmx1g
+    - name: bootstrap.memory_lock
+      value: "true"
+    - name: discovery.type
+      value: single-node
+    ports:
+    - containerPort: 9200 # for REST API
+      protocol: TCP
+    - containerPort: 9300 # for Nodes communication
+      protocol: TCP
+  - name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ELASTICSEARCH_URL
+      value: '"http://elasticsearch:9200"'
+    ports:
+    - containerPort: 5601
+  - name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: PIPELINE_WORKERS
+      value: '"2"'
+    - name: xpack.monitoring.elasticsearch.url
+      value: '"http://elasticsearch:9200"'
+    ports:
+    - containerPort: 5044
+  restartPolicy: Always
+  #hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 8.8.8.8
+      - 9.9.9.9
+  hostname: ns3-elk
+  subdomain: smp
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: smp-dev
+  name: ns3-sf
+  labels:
+    name: ns3-sf
 spec:
   volumes:
   - name: suricata-logs
     emptyDir: {}
   containers:
-  - name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
-    imagePullPolicy: IfNotPresent
-    ports:
-    - containerPort: 9200
-  - name: kibana
-    image: docker.elastic.co/kibana/kibana:6.6.0
-    imagePullPolicy: IfNotPresent
-    ports:
-    - containerPort: 5601
-  - name: logstash
-    image: arocha/ce7logstash:6.6.0
-    imagePullPolicy: IfNotPresent
-    ports:
-    - containerPort: 5044
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
@@ -34,22 +75,22 @@ spec:
     #- name: suricata-logs
     #  mountPath: /var/logs/suricata
   - name: filebeat
-    image: arocha/u16filebeat:6.6.0
+    image: docker.elastic.co/beats/filebeat:6.6.1
     imagePullPolicy: IfNotPresent
     #volumeMounts:
     #- name: suricata-logs
     #  mountPath: /var/logs/suricata
-
   restartPolicy: Always
-  hostNetwork: true
+  #hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
   dnsPolicy: "None"
   dnsConfig:
     nameservers:
       - 8.8.8.8
       - 9.9.9.9
-  hostname: ns3-selk
+  hostname: ns3-sf
   subdomain: smp
+
 ---
 apiVersion: v1
 kind: Service
