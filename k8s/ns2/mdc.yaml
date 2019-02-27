@@ -54,3 +54,10 @@ spec:
       - name: vnf-mdc
         image: sonatanfv/vnf-mdc:k8s
         imagePullPolicy: Always
+        env:
+        # this needs to be set by the SP dynamically!
+        # we will change the var name to vendor.name.version.cdu_id
+        - name: MQTT_BROKER_HOST
+          value: ns1-cc-broker-service
+        - name: MQTT_BROKER_PORT
+          value: "1883"
