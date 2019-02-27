@@ -49,6 +49,12 @@ cloudnative_deployment_units:
     connection_points:
       - id: data
         port: 5555  # TODO change
+  - id: cdu04
+    # CDU4: pushgateway
+    image: 'sonatanfv/vnf-cc-pushgateway:vimemu'
+    connection_points:
+      - id: data
+        port: 5555  # TODO change
 connection_points:
   - id: data
     interface: ipv4
@@ -62,3 +68,4 @@ virtual_links:
       - 'cdu01:data'
       - 'cdu02:data'
       - 'cdu03:data'
+      - 'cdu04:data'
