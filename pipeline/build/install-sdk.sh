@@ -5,17 +5,17 @@
 sudo pip3 uninstall --yes tngsdk.project
 sudo pip3 uninstall --yes tngsdk.validate
 sudo pip3 uninstall --yes tngsdk.package
+rm -rf venv_sdk
 set -e
-sudo pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-project.git
-#sudo pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-validation.git
-git clone https://github.com/sonata-nfv/tng-sdk-validation.git
-cd tng-sdk-validation
-sudo python3 setup.py develop
-cd ..
-sudo pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-package
+virtualenv -p /usr/bin/python3 venv_sdk
+source venv_sdk/bin/activate
+pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-project.git
+pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-validation.git
+pip3 install --upgrade git+https://github.com/sonata-nfv/tng-sdk-package
 
 tng-project -h
 tng-validate -h
 tng-package -h
-
+which tng-project
 which tng-validate
+which tng-package
