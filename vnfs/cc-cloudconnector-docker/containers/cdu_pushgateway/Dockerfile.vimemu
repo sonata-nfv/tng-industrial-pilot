@@ -24,9 +24,23 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-FROM prom/pushgateway
+FROM ubuntu:xenial
 
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
+
+RUN apt-get update && apt-get install -y \
+    net-tools \
+    iproute \
+    inetutils-ping \
+    software-properties-common \
+    git \
+    nginx \
+    curl
+
+# install Prometheus from source
+RUN mkdir /pushgateway
+RUN curl -LO https://github.com/prometheus/pushgateway/releases/download/v0.7.0/pushgateway-0.7.0.linux-amd64.tar.gz
+RUN tar -xvf pushgateway-0.7.0.linux-amd64.tar.gz
 
 ADD start.vimemu.sh start.vimemu.sh
 RUN chmod +x start.vimemu.sh

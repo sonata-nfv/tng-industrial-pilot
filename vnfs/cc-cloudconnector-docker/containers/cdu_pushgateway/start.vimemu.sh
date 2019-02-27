@@ -26,5 +26,5 @@
 # partner consortium (www.5gtango.eu).
 
 echo "CC-CDU04 (pushgateway): Starting Prometheus Pushgateway ... (logs: /var/pg.log)"
-cd /pushgateway
-/bin/pushgateway > /var/pg.log 2>&1 &
+cd pushgateway-0.7.0.linux-amd64/
+./pushgateway > /var/pg.log 2>&1 &
