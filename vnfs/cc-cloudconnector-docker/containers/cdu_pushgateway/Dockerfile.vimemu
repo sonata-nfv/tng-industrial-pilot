@@ -28,4 +28,11 @@ FROM prom/pushgateway
 
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
-# ADD prometheus.yml /etc/prometheus/
+ADD start.vimemu.sh start.vimemu.sh
+RUN chmod +x start.vimemu.sh
+
+# set entry point for emulator (configuration script)
+ENV VIM_EMU_CMD "./start.vimemu.sh"
+
+# this has to be /bin/bash for the emulator
+CMD /bin/bash
