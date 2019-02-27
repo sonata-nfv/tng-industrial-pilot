@@ -53,7 +53,7 @@ connection_points:
     
 virtual_links:
   - id: vnfs-2-data
-    connectivity_type: E-LAN
+    connectivity_type: E-Tree
     connection_points_reference:
       - data
       - 'vnf_dt:data'
