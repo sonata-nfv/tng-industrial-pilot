@@ -35,12 +35,12 @@ cloudnative_deployment_units:
     image: 'sonatanfv/vnf-eae:vimemu'
     connection_points:
       - id: data
-        port: 5555  # TODO change
+        # port: 5555  # TODO change
 connection_points:
   - id: data
     interface: ipv4
     type: serviceendpoint
-    port: 5555  # TODO change
+    # port: 5555  # TODO change
 virtual_links: 
   - id: data
     connectivity_type: E-Tree
