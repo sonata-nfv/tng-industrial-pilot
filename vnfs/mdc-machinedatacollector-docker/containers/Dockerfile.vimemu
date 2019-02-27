@@ -63,11 +63,11 @@ RUN chmod 777 em63_share
 
 # network config
 ENV IFLOCAL data
-ENV NETNS1 30.0.1.0/24
-ENV GATEWAY 30.0.3.3
+ENV NETNS1 30.0.0.0/24
+ENV GATEWAY 30.0.1.3
 
 # MQTT config
-ENV MQTT_BROKER_HOST 30.0.1.1
+ENV MQTT_BROKER_HOST 30.0.0.1
 ENV MQTT_BROKER_PORT 1883
 # only for dummy MQTT generator not for MDC APP
 ENV TOPIC machines/molding-042/sensors/temp
