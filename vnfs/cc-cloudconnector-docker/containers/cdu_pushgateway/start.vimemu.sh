@@ -1,3 +1,4 @@
+#!/bin/bash
 #  Copyright (c) 2018 5GTANGO, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -24,36 +25,6 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-FROM ubuntu:xenial
-
-LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
-
-RUN apt-get update && apt-get install -y \
-    net-tools \
-    iproute \
-    inetutils-ping \
-    software-properties-common \
-    git \
-    nginx \
-    curl
-
-# install Prometheus from source
-# see https://www.techrepublic.com/article/how-to-install-the-prometheus-monitoring-system-on-ubuntu-16-04/
-RUN mkdir /etc/prometheus
-RUN mkdir /var/lib/prometheus
-RUN curl -LO https://github.com/prometheus/prometheus/releases/download/v2.0.0/prometheus-2.0.0.linux-amd64.tar.gz
-RUN tar xvf prometheus-2.0.0.linux-amd64.tar.gz
-RUN cp prometheus-2.0.0.linux-amd64/prometheus /usr/local/bin/
-RUN cp prometheus-2.0.0.linux-amd64/promtool /usr/local/bin/
-RUN cp -r prometheus-2.0.0.linux-amd64/consoles /etc/prometheus
-RUN cp -r prometheus-2.0.0.linux-amd64/console_libraries /etc/prometheus
-
-ADD prometheus.vimemu.yml /etc/prometheus/prometheus.yml
-ADD start.vimemu.sh start.vimemu.sh
-RUN chmod +x start.vimemu.sh
-
-# set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.vimemu.sh"
-
-# this has to be /bin/bash for the emulator
-CMD /bin/bash
+echo "CC-CDU04 (pushgateway): Starting Prometheus Pushgateway ... (logs: /var/pg.log)"
+cd pushgateway-0.7.0.linux-amd64/
+./pushgateway > /var/pg.log 2>&1 &
