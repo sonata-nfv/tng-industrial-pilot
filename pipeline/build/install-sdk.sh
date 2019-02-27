@@ -3,6 +3,7 @@
 # We need the 5GTANGO SDK tools to package the projects.
 # uninstall SDK if present (to ensure we have the latest version)
 rm -rf venv_sdk
+rm -rf ~/.tng-schema/  # ensure latest schemas
 set -e
 virtualenv -p /usr/bin/python3 venv_sdk
 source venv_sdk/bin/activate
