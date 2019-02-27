@@ -2,9 +2,6 @@
 #
 # We need the 5GTANGO SDK tools to package the projects.
 # uninstall SDK if present (to ensure we have the latest version)
-sudo pip3 uninstall --yes tngsdk.project
-sudo pip3 uninstall --yes tngsdk.validate
-sudo pip3 uninstall --yes tngsdk.package
 rm -rf venv_sdk
 set -e
 virtualenv -p /usr/bin/python3 venv_sdk
