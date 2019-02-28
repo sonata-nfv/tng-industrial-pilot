@@ -24,9 +24,14 @@
 <hr/>
 
 <p>@ActSimPara2 (sine function)</p>
+
+<div id="div1" style="float:left; height:100%; width:100%">
+<div id="div1left" style="float:left; width:25%;">
+
 <p>Periodic time (sec.) 
 <select name="formATActSimPara2period">
-<option value="10" selected>10</option>
+<option value="20" selected>20</option>
+<option value="10">10</option>
 <option value="5">5</option>
 <option value="2">2</option>
 <option value="1">1</option>
@@ -74,9 +79,17 @@
 </select>         
 </p>
 
+</div>
+<div id="div1right" style="float:left; width:75%;">
+<img src="{{ url_for('static', filename='img/sinedesc.jpg') }}" alt="Sine curve description" width="95%">
+</div>
+</div> 
+
+<p>&nbsp;</p>
+
 <hr/>
 
-<p> <input type="radio" name ="formPlotATActSimPara" value="1" />Plot @ActSimPara1 and @ActSimPara2<br/> Close the plot window when continuing production after pause or confirming machine error.</p>
+<p> <input type="radio" name ="formPlotATActSimPara" value="1" />Plot @ActSimPara1 and @ActSimPara2</p>
 <p> <input type="radio" name ="formPlotATActSimPara" value="0" checked/>Do not plot</p>
 
 <hr/>
@@ -102,24 +115,45 @@
 
 <div id="machinestate" class="city" style="display:none">
 <h3>Machine State</h3>
-<p>Change the machine state:</p>
+
+<p>Actual machine state (currently not supported):</p>
+<p><input type="radio" name="isformState" value="isformStateidle" disabled>Idle</p>
+<p><input type="radio" name="isformState" value="isformStatesetup" disabled>Set up</p>
+<p><input type="radio" name="isformState" value="isformStateproduction" disabled>Production</p>
+<p><input type="radio" name="isformState" value="isformStateerror" disabled>Machine Error</p>
+<p><input type="radio" name="isformState" value="isformStatepause" disabled>Pause</p>
+<p><input type="radio" name="isformState" value="isformStatefinished" disabled>Job Completed</p>
+
+<hr/>
+<p>Set new machine state:</p>
 <ul>
 <li>Select <b>Idle</b> when a job was finished.</li>
 <li>Select <b>Machine Error</b> to simulate a machine error.</li>
 <li>Select <b>Pause</b> to pause the machine.</li>
 <li>Select <b>Production</b> to start production or continue after pause or machine error.</li>
 </ul>
+
+<div id="div2" style="float:left; height:100%; width:100%; background-color:#eeeeee;">
+<div id="div2left" style="float:left; width:35%;">
+
 <form action = "resultState" method = "POST">
-<hr/>
-<p> <input type="radio" name="formState" value="formStateidle" checked>Idle</p>
+
+<p><input type="radio" name="formState" value="formStateidle" checked>Idle</p>
 <p><input type="radio" name="formState" value="formStatesetup" disabled>Set up (not selectable)</p>
 <p><input type="radio" name="formState" value="formStateproduction">Production</p>
-<p> <input type="radio" name="formState" value="formStateerror">Machine Error</p>
+<p><input type="radio" name="formState" value="formStateerror">Machine Error</p>
 <p><input type="radio" name="formState" value="formStatepause">Pause</p>
 <p><input type="radio" name="formState" value="formStatefinished" disabled>Job Completed (not selectable)</p>
-<hr/>
+
 <p><input type = "submit" value = "submitState" /></p>
-</form>	
+</form>
+</div>
+<div id="div2right" style="float:left; width:65%;">
+<img src="{{ url_for('static', filename='img/statemachine.png') }}" alt="Statemachine description" width="50%">
+</div>
+<p>&nbsp;</p>
+<hr/>
+</div> 
 </div>
 
 <div id="network" class="city" style="display:none">
