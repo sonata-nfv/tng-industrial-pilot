@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # Copyright (c) 2018 5GTANGO, Weidmüller, Paderborn University
 # ALL RIGHTS RESERVED.
 #
@@ -23,6 +25,15 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
+"""
+    File name: em63.py
+    Description: Contains features for using Euromap 63 communication protocol.
+    Version: 2019-02-28
+    Python Version 3.6.7
+    Editor: Spyder (indentation characters: 4 spaces)
+    Maintainer: Marcel Müller <Marcel.Mueller@weidmueller.com>
+    Copyright: 2018, Marcel Müller, Weidmüller Group, Detmold, Germany
+"""
 import os
 
 
@@ -31,6 +42,6 @@ def rmFile(filename):
     if os.path.exists(filename):
         try:
             os.remove(filename)
-        except:
+        except OSError:
             print("Exception detected while deleting a file: ", filename)
             pass
