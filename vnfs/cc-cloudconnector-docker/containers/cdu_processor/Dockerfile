@@ -58,7 +58,7 @@ ADD CC_VNF CC_VNF
 
 ENV IFLOCAL data
 
-# only for dummy MQTT generator not for MDC APP
-ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
+# by default, don't try to connect to Azure; Use "True" to enable
+ENV ENABLE_CLOUD_CONNECTION False
 
 CMD ./start.sh

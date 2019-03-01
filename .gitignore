@@ -1,4 +1,5 @@
 vnfs/cc-cloudconnector-emulator/containers/cdu_processor/CC_VNF/azure_connection_string.secret
+vnfs/cc-cloudconnector-emulator/containers/cdu_processor/CC_VNF/keys.json
 *.secret
 deploy_rdev.sh
 *.tgo
