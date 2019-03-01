@@ -231,6 +231,7 @@ payload10 = ""
 # payload1=0
 # payload2=0
 
+
 # MQTT parameters for Azure IoT Hub; replaces connectionstring
 device_key = ''  # primary key of device
 iot_hub_name = ''  # Name of IoT Hub
@@ -238,13 +239,20 @@ device_id = ''  # Name of device to connect to
 sas_token = ''  # SAS token
 cc_config_file = 'keys.json'
 path_to_root_cert = "digicert.cer"
-r = cc_config(cc_config_file)
-if r > 0:
-    sys.exit(1)
+enable_cloud_conn = os.getenv("ENABLE_CLOUD_CONNECTION", "False")
 
+if enable_cloud_conn == "True":
+	r = cc_config(cc_config_file)
+	if r > 0:
+		sys.exit(1)
+else:
+	print("Cloud connection disabled. Not reading json.keys. ENABLE_CLOUD_CONNECTION = {}".format(enable_cloud_conn))
+
+	
 # Data input from MQTT broker
 broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
 broker_port = os.getenv("MQTT_BROKER_PORT", 1883)
+
 
 listetopic = []
 listepayload = []
@@ -261,21 +269,26 @@ print("Subscribing to MQTT broker's topic", "WIMMS/EM63/#")
 print("---------------------------------------------")
 clientB.subscribe("WIMMS/EM63/#")
 
+
 # MQTT for Azure IoT Hub
-clientA = azure_mqtt.Client(client_id=device_id, protocol=azure_mqtt.MQTTv311)
-clientA.on_connect = on_connectA
-clientA.on_disconnect = on_disconnectA
-clientA.on_publish = on_publishA
-clientA.username_pw_set(username=iot_hub_name +
-                        ".azure-devices.net/" + device_id, password=sas_token)
-clientA.tls_set(ca_certs=None,
-                certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
-                tls_version=ssl.PROTOCOL_TLSv1, ciphers=None)
-# clientA.tls_set(ca_certs=path_to_root_cert,
-#                 certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
-#                 tls_version=ssl.PROTOCOL_TLSv1, ciphers=None)
-clientA.tls_insecure_set(False)
-clientA.connect(iot_hub_name+".azure-devices.net", port=8883)
+if enable_cloud_conn == "True":
+	clientA = azure_mqtt.Client(client_id=device_id, protocol=azure_mqtt.MQTTv311)
+	clientA.on_connect = on_connectA
+	clientA.on_disconnect = on_disconnectA
+	clientA.on_publish = on_publishA
+	clientA.username_pw_set(username=iot_hub_name +
+							".azure-devices.net/" + device_id, password=sas_token)
+	clientA.tls_set(ca_certs=None,
+					certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
+					tls_version=ssl.PROTOCOL_TLSv1, ciphers=None)
+	# clientA.tls_set(ca_certs=path_to_root_cert,
+	#                 certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
+	#                 tls_version=ssl.PROTOCOL_TLSv1, ciphers=None)
+	clientA.tls_insecure_set(False)
+	clientA.connect(iot_hub_name+".azure-devices.net", port=8883)
+else:
+	print("Cloud connection disabled. Not connecting to Azure. ENABLE_CLOUD_CONNECTION = {}".format(enable_cloud_conn))
+	
 sys.stdout.flush()
 sys.stderr.flush()
 
