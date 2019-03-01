@@ -58,6 +58,9 @@ ADD CC_VNF CC_VNF
 
 ENV IFLOCAL data
 
+# address of the pushgateway for prometheus (cdu04)
+ENV PUSH_GATEWAY localhost:9091
+
 # by default, don't try to connect to Azure; Use "True" to enable
 ENV ENABLE_CLOUD_CONNECTION False
 

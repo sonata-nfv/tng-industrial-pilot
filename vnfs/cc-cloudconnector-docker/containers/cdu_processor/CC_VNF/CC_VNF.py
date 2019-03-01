@@ -43,6 +43,7 @@ import paho.mqtt.client as paho
 from paho.mqtt import client as azure_mqtt
 import ssl
 from SASGenerator import SASGenerator as sas
+from prometheus import CcPrometheusClient
 
 
 def cc_config(config_file):
@@ -126,16 +127,20 @@ def on_publishA(client, userdata, mid):
 
 # MQTT function
 def on_message(client, userdata, message):
-    global payload3, payload4
+    global payload3, payload4, cc_dbc
     payload_str = str(message.payload.decode("utf-8"))
     topic_str = str(message.topic)
+    # push message to local database
+    # print(cc_dbc)
+    cc_dbc.push_to_db(topic_str, payload_str)
+    # construct a message for cloud backend
     msgstr = build_message(topic_str, payload_str)
-
+    # transform data
     if topic_str == topicstr3:
         payload3 = float(payload_str)
     if topic_str == topicstr4:
         payload4 = float(payload_str)
-
+    # send message to cloud backend
     if msgstr != 0:
         send_message(msgstr)
 
@@ -248,7 +253,9 @@ if enable_cloud_conn == "True":
 else:
 	print("Cloud connection disabled. Not reading json.keys. ENABLE_CLOUD_CONNECTION = {}".format(enable_cloud_conn))
 
-	
+# Setup Prometheus client for edge DB
+cc_dbc = CcPrometheusClient()	
+
 # Data input from MQTT broker
 broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
 broker_port = os.getenv("MQTT_BROKER_PORT", 1883)

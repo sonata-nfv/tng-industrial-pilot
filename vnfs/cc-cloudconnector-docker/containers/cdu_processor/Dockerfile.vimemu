@@ -60,6 +60,9 @@ ENV MQTT_BROKER_PORT 1883
 # only for dummy MQTT generator not for MDC APP
 ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
 
+# address of the pushgateway for prometheus (cdu04)
+ENV PUSH_GATEWAY 30.0.0.4:9091
+
 # by default, don't try to connect to Azure; Use "True" to enable
 ENV ENABLE_CLOUD_CONNECTION False
 
