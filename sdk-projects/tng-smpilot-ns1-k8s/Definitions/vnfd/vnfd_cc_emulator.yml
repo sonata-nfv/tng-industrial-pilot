@@ -14,10 +14,10 @@ cloudnative_deployment_units:
         port: 1883  # MQTT broker
   - id: "cdu02"
     image: sonatanfv/vnf-cc-processor:k8s
-    connection_points:
+    connection_points: []
   - id: "cdu03"
     image: ubuntu:trusty
-    connection_points:
+    connection_points: []
 
 connection_points:
   - id: "data"
