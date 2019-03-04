@@ -33,17 +33,29 @@ RUN apt-get update && apt-get install -y \
     iproute \
     inetutils-ping \
     software-properties-common \
-    git \
-    nginx \
-    curl
+    python3-pip \
+    libboost-python-dev \
+    libcurl4-openssl-dev
 
-# install Prometheus from source
-RUN mkdir /pushgateway
-RUN curl -LO https://github.com/prometheus/pushgateway/releases/download/v0.7.0/pushgateway-0.7.0.linux-amd64.tar.gz
-RUN tar -xvf pushgateway-0.7.0.linux-amd64.tar.gz
+# install latest mosquitto
+RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+RUN apt-get update
+RUN apt-get install -y mosquitto-clients
+
+# install releveant python stuff
+RUN pip3 install paho-mqtt
+RUN pip3 install prometheus_client
 
 ADD start.vimemu.sh start.vimemu.sh
 RUN chmod +x start.vimemu.sh
+
+ADD mqttexporter mqttexporter
+
+# MQTT config
+ENV MQTT_BROKER_HOST 30.0.0.1
+ENV MQTT_BROKER_PORT 1883
+ENV MQTT_TOPIC WIMMS/EM63/#
+ENV PROMETHEUS_EXPORTER_PORT 9089
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.vimemu.sh"

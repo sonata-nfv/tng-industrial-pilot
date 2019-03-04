@@ -37,11 +37,11 @@ global:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
-    scrape_interval: 5s
+    scrape_interval: 10s
     static_configs:
       - targets: ['localhost:9090']
   - job_name: 'pushgateway'
-    scrape_interval: 5s
-    honor_labels: true
+    scrape_interval: 1s
+    # honor_labels: true
     static_configs:
-      - targets: ['30.0.0.4:9091']  # TODO change this for non vim-emu deployment
+      - targets: ['30.0.0.3:9089']  # TODO change this for non vim-emu deployment
