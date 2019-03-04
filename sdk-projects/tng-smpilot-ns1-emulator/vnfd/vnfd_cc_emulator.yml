@@ -44,19 +44,17 @@ cloudnative_deployment_units:
       - id: data
         # port: 5555  # TODO change
   - id: cdu03
-    # CDU3: database
+    # CDU3: mqttexporter
+    image: 'sonatanfv/vnf-cc-mqttexporter:vimemu'
+    connection_points:
+      - id: data
+  - id: cdu04
+    # CDU4: database
     image: 'sonatanfv/vnf-cc-database:vimemu'
     connection_points:
       - id: data
         port: 9090
         publish: {9090: 9090}
-  - id: cdu04
-    # CDU4: pushgateway
-    image: 'sonatanfv/vnf-cc-pushgateway:vimemu'
-    connection_points:
-      - id: data
-        port: 9091
-        publish: {9091: 9091}
 connection_points:
   - id: data
     interface: ipv4

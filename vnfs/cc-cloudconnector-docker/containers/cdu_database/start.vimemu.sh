@@ -25,5 +25,5 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-echo "CC-CDU03 (database): Starting Prometheus ... (logs: /var/pm.log)"
+echo "CC-CDU04 (database): Starting Prometheus ... (logs: /var/pm.log)"
 prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles > /var/pm.log 2>&1 &

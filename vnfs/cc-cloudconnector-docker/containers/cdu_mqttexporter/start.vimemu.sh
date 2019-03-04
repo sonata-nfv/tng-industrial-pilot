@@ -25,6 +25,6 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-echo "CC-CDU04 (pushgateway): Starting Prometheus Pushgateway ... (logs: /var/pg.log)"
-cd pushgateway-0.7.0.linux-amd64/
-./pushgateway > /var/pg.log 2>&1 &
+echo "CC-CDU03 (mqttexporter): Starting MQTT Prometheus Exporter ... (logs: /var/mqe.log)"
+cd mqttexporter/
+python3 mqttexporter.py > /var/mqe.log 2>&1 &
