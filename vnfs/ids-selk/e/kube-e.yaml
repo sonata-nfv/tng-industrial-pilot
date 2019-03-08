@@ -35,9 +35,17 @@ metadata:
   labels:
     name: elasticsearch
 spec:
-  ports:
-  - port: 9200
-    targetPort: 9200
-    name: elasticsearch
   selector:
     name: elasticsearch
+  ports:
+  - protocol: TCP
+    port: 9200
+    targetPort: 9200
+    name: elasticsearch
+#  clusterIP: 10.244.171.239
+#  loadBalancerIP: 78.11.24.19
+#  type: LoadBalancer
+#status:
+#  loadBalancer:
+#    ingress:
+#    - ip: 146.148.47.155
