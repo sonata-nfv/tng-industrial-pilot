@@ -10,9 +10,9 @@ spec:
   - name: suricata-ids
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
-    args: ["-i eth0"]
+    args: ["-i enp3s0"]
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.0
     imagePullPolicy: IfNotPresent
   restartPolicy: Never
-#  hostNetwork: true
+  hostNetwork: true
