@@ -31,7 +31,7 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: ELASTICSEARCH_URL
-      value: '"http://elasticsearch:9200"'
+      value: '"http://localhost:9200"'
     ports:
     - containerPort: 5601
   - name: logstash
@@ -41,7 +41,7 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: '"http://elasticsearch:9200"'
+      value: '"http://localhost:9200"'
     ports:
     - containerPort: 5044
   hostNetwork: false
@@ -62,23 +62,23 @@ metadata:
   labels:
     name: ns3-sf
 spec:
-#  volumes:
-#  - name: suricata-logs
-#    emptyDir: {}  
+  volumes:
+  - name: suricata-logs
+    emptyDir: {}  
   containers:
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
     args: ["-i enp3s0"]
- #   volumeMounts:
- #   - name: suricata-logs
- #     mountPath: /var/log/suricata
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /var/log/suricata
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.1
     imagePullPolicy: IfNotPresent
- #   volumeMounts:
- #   - name: suricata-logs
- #     mountPath: /var/log/suricata
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /usr/share/filebeat/logs
   restartPolicy: Never
   hostNetwork: true
 #  dnsPolicy: ClusterFirstWithHostNet
