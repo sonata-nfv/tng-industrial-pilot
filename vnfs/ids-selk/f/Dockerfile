@@ -11,9 +11,9 @@ MAINTAINER sm-pilot@5gtango.eu
 # 
 RUN apt update -y && \
     apt install -y curl && \
-    curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.0-amd64.deb && \
-    dpkg -i filebeat-6.6.0-amd64.deb && \
-    rm -fr filebeat-6.6.0-amd64.deb
+    curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.2-amd64.deb && \
+    dpkg -i filebeat-6.6.2-amd64.deb && \
+    rm -fr filebeat-6.6.2-amd64.deb
 
 ## STEP 2: CONFIGURE FILEBEAT
 

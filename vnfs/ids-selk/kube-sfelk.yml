@@ -3,12 +3,14 @@ apiVersion: v1
 kind: Pod
 metadata:
   namespace: smp-dev
-  name: ns3-elk
+  name: ns3sfelk
   labels:
-    name: ns3-elk
+    name: ns3sfelk
 spec:
   volumes:
   - name: esdata
+    emptyDir: {}
+  - name: suricata-logs
     emptyDir: {}
   containers:
   - name: elasticsearch
@@ -31,7 +33,7 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: ELASTICSEARCH_URL
-      value: '"http://ns3-elk.smp-dev.svc.cluster.local:9200"'
+      value: '"http://ns3sfelk:9200"'
     ports:
     - containerPort: 5601
   - name: logstash
@@ -41,11 +43,28 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: '"http://ns3-elk.smp-dev.svc.cluster.local:9200"'
+      value: '"http://ns3sfelk:9200"'
     ports:
     - containerPort: 5044
     - containerPort: 9600
-  hostname: ns3-elk
+  - name: suricata
+    image: jasonish/suricata
+    imagePullPolicy: IfNotPresent
+    args: ["-i enp3s0"]
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /var/log/suricata
+  - name: filebeat
+    image: docker.elastic.co/beats/filebeat:6.6.2
+    imagePullPolicy: IfNotPresent
+#    args: [setup -E setup.kibana.host=ns3sfelk:5601 -E output.elasticsearch.hosts=["ns3sfelk:9200"]
+    env:
+      - name: ELASTICSEARCH_HOSTS
+        value: ns3sfelk
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /usr/share/filebeat/logs
+  hostname: ns3sfelk
   hostNetwork: false
 #  dnsPolicy: ClusterFirstWithHostNet
 # dnsPolicy: "None"
@@ -57,52 +76,15 @@ spec:
 #    - smp-dev.svc.cluster.local
 #    - my.dns.search.suffix
 #  subdomain: smp-dev
----
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: smp-dev
-  name: ns3-sf
-  labels:
-    name: ns3-sf
-spec:
-  volumes:
-  - name: suricata-logs
-    emptyDir: {}  
-  containers:
-  - name: suricata
-    image: jasonish/suricata
-    imagePullPolicy: IfNotPresent
-    args: ["-i enp3s0"]
-    volumeMounts:
-    - name: suricata-logs
-      mountPath: /var/log/suricata
-  - name: filebeat
-    image: docker.elastic.co/beats/filebeat:6.6.2
-    imagePullPolicy: IfNotPresent
-    args: [setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts=["elasticsearch:9200"]
-    volumeMounts:
-    - name: suricata-logs
-      mountPath: /usr/share/filebeat/logs
-  restartPolicy: Never
-  hostNetwork: true
-#  dnsPolicy: ClusterFirstWithHostNet
-#  dnsPolicy: "None"
-#  dnsConfig:
-#    nameservers:
-#      - 8.8.8.8
-#      - 9.9.9.9
-#  hostname: ns3-sf
-#  subdomain: smp
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   namespace: smp-dev
-  name: ns3-elk
+  name: ns3sfelk
   labels:
-    name: ns3-elk
+    name: ns3sfelk
 spec:
   ports:
   - port: 9200
@@ -115,4 +97,4 @@ spec:
     targetPort: 5044
     name: logstash
   selector:
-    name: ns3-elk
+    name: ns3sfelk

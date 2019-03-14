@@ -26,25 +26,25 @@ items:
             value: '["localhost:9200"]'
           - name: setup.kibana.host
             value: kibana:5601
-          image: docker.elastic.co/beats/filebeat:6.6.0
+          image: docker.elastic.co/beats/filebeat:6.6.2
           name: filebeat
           resources: {}
           volumeMounts:
           - mountPath: /usr/share/filebeat/data
-            name: f-sdata
+            name: fbdata
         restartPolicy: Always
         volumes:
-        - name: f-sdata
+        - name: fbdata
           persistentVolumeClaim:
-            claimName: f-sdata
+            claimName: fbdata
   status: {}
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
     creationTimestamp: null
     labels:
-      io.kompose.service: f-sdata
-    name: f-sdata
+      io.kompose.service: fbdata
+    name: fbdata
   spec:
     accessModes:
     - ReadWriteOnce
@@ -53,5 +53,9 @@ items:
         storage: 100Mi
   status: {}
 kind: List
-metadata: {}
-
+#metadata: {}
+metadata:
+  namespace: smp-dev
+  name: filebeat-6.6.2-deployment
+  labels:
+    app: filebeat

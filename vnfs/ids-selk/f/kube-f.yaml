@@ -1,23 +1,22 @@
-apiVersion: apps/v1
-kind: Deployment
+---
+apiVersion: v1
+kind: Pod
 metadata:
   namespace: smp-dev
-  name: filebeat-deployment
+  name: ns3-f
   labels:
-    app: filebeat
+    name: ns3-f
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: filebeat
-  template:
-    metadata:
-      labels:
-        app: filebeat
-    spec:
-      containers:
-      - name: filebeat
-        image: arocha/u16filebeat:6.6.0
-        imagePullPolicy: IfNotPresent
-#       ports:
-#       - containerPort: 80
+  volumes:
+  - name: fbdata
+    emptyDir: {}
+  containers:
+  - name: filebeat
+#      image: arocha/u16filebeat:6.6.0
+    image: docker.elastic.co/beats/filebeat:6.6.2
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ELASTICSEARCH_HOSTS
+      value: localhost
+    - name: LOGSTASH_HOSTS
+      value: localhost
