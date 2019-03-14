@@ -32,8 +32,10 @@ spec:
     image: docker.elastic.co/kibana/kibana:6.6.1
     imagePullPolicy: IfNotPresent
     env:
-    - name: ELASTICSEARCH_URL
-      value: '"http://ns3sfelk:9200"'
+    - name: elasticsearch.hosts
+      value: ["http://localhost:9200"]
+    - name: server.name
+      value: localhost
     ports:
     - containerPort: 5601
   - name: logstash
@@ -43,7 +45,7 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: '"http://ns3sfelk:9200"'
+      value: http://localhost:9200
     ports:
     - containerPort: 5044
     - containerPort: 9600
@@ -57,15 +59,19 @@ spec:
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
-#    args: [setup -E setup.kibana.host=ns3sfelk:5601 -E output.elasticsearch.hosts=["ns3sfelk:9200"]
+    #args: [
+    #  setup -E setup.kibana.host=localhost:5601 -E output.logstash.hosts=["localhost:5044"]
+    #]
     env:
-      - name: ELASTICSEARCH_HOSTS
-        value: ns3sfelk
+    - name: output.logstash.hosts
+      value: ["localhost:9200"]
+    - name: setup.kibana.host
+      value: localhost:5601
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
   hostname: ns3sfelk
-  hostNetwork: false
+  hostNetwork: true
 #  dnsPolicy: ClusterFirstWithHostNet
 # dnsPolicy: "None"
 # dnsConfig:
