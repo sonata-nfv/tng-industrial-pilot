@@ -12,6 +12,11 @@ spec:
     emptyDir: {}
   - name: suricata-logs
     emptyDir: {}
+  hostAliases:
+  - ip: "127.0.0.1"
+    hostnames:
+    - "logstash"
+    - "elasticsearch"
   containers:
   - name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
@@ -33,7 +38,7 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: elasticsearch.hosts
-      value: ["http://localhost:9200"]
+      value: http://localhost:9200
     - name: server.name
       value: localhost
     ports:
@@ -64,7 +69,7 @@ spec:
     #]
     env:
     - name: output.logstash.hosts
-      value: ["localhost:9200"]
+      value: localhost:9200
     - name: setup.kibana.host
       value: localhost:5601
     volumeMounts:
