@@ -49,7 +49,7 @@ spec:
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
-    args: ["-i eth0"]
+    args: ["-i enp3s0"]
     #volumeMounts:
     #- name: suricata-logs
     #  mountPath: /var/logs/suricata

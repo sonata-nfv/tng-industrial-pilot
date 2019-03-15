@@ -10,17 +10,17 @@ spec:
   volumes:
   - name: esdata
     emptyDir: {}
-  hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-    - "logstash.smp-dev.svc.cluster.local"
-    - "logstash"
-    hostnames:
-    - "elasticsearch.smp-dev.svc.cluster.local"
-    - "elasticsearch"
-    hostnames:
-    - "kibana.smp-dev.svc.cluster.local"
-    - "kibana"
+#  hostAliases:
+#  - ip: "127.0.0.1"
+#    hostnames:
+#    - "logstash.smp-dev.svc.cluster.local"
+#    - "logstash"
+#    hostnames:
+#    - "ns3elk.smp-dev.svc.cluster.local"
+#    - "elasticsearch"
+#    hostnames:
+#    - "kibana.smp-dev.svc.cluster.local"
+#    - "kibana"
   containers:
   - name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
@@ -41,10 +41,10 @@ spec:
     image: docker.elastic.co/kibana/kibana:6.6.1
     imagePullPolicy: IfNotPresent
     env:
-    - name: elasticsearch.hosts
-      value: http://elasticsearch:9200
+    - name: elasticsearch
+      value: http://ns3elk:9200
     - name: server.name
-      value: kibana
+      value: localhost
     ports:
     - containerPort: 5601
   - name: logstash
@@ -54,18 +54,17 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: http://elasticsearch:9200
+      value: http://ns3elk:9200
     ports:
     - containerPort: 5044
     - containerPort: 9600
   hostname: ns3elk
   hostNetwork: false
   dnsPolicy: ClusterFirst
-# dnsPolicy: "None"
 # dnsConfig:
-#    nameservers:
-#    - 8.8.8.8
-#    - 9.9.9.9
+#   nameservers:
+#   - 8.8.8.8
+#   - 9.9.9.9
 #   searches:
 #    - smp-dev.svc.cluster.local
 #    - my.dns.search.suffix
@@ -84,20 +83,21 @@ spec:
   volumes:
   - name: suricata-logs
     emptyDir: {}
-  hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-    - "logstash"
-    - "logstash.smp-dev.svc.cluster.local"
-    hostnames:
-    - "elasticsearch"
-    - "elasticsearch.smp-dev.svc.cluster.local"
+#  hostAliases:
+#  - ip: "127.0.0.1"
+#    hostnames:
+#    - "logstash"
+#    - "logstash.smp-dev.svc.cluster.local"
+#    hostnames:
+#    - "elasticsearch"
+#    - "ns3elk.smp-dev.svc.cluster.local"
   containers:
 
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
-    args: ["-i enp3s0"]
+    #args: ["-i enp3s0"]
+    args: ["-i eth0"]
     volumeMounts:
     - name: suricata-logs
       mountPath: /var/log/suricata
@@ -108,11 +108,13 @@ spec:
       "setup", 
       "-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=kibana:5601",
+      "-E", "setup.kibana.host=ns3elk:5601",
       #"-E", "setup.template.enabled=false",
 #      "-E", "output.elasticsearch.enabled=false",
 #      "-E", "output.logstash.enabled=true",
 #      "-E", "output.logstash.hosts=[logstash:5044]",
+      "-E", "output.elasticsearch.enabled=true",
+      "-E", "output.elasticsearch.hosts=[ns3elk:9200]",
       "-e",
       "&&",
       "filebeat",
@@ -123,20 +125,23 @@ spec:
     env:
     - name: output.logstash.hosts
       value: logstash:5044
+    - name: output.elasticsearch.hosts
+      value: ns3elk:9200
     - name: setup.kibana.host
-      value: kibana:5601
+      value: ns3elk:5601
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
   hostname: ns3sf
-  hostNetwork: true
+  hostNetwork: false
 #  dnsPolicy: ClusterFirstWithHostNet
-  dnsPolicy: "None"
-# dnsConfig:
+  dnsPolicy: ClusterFirst
+#  dnsPolicy: "None"
+#  dnsConfig:
 #    nameservers:
 #    - 8.8.8.8
 #    - 9.9.9.9
-#   searches:
+#    searches:
 #    - smp-dev.svc.cluster.local
 #    - my.dns.search.suffix
 #  subdomain: smp-dev
@@ -163,3 +168,21 @@ spec:
     name: logstash
   selector:
     name: ns3elk
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: smp-dev
+  name: ns3kib
+  labels:
+    name: ns3kib
+spec:
+  type: NodePort
+  ports:
+  - port: 5601
+    targetPort: 5601
+    nodePort: 30056 
+    name: kibana
+  selector:
+    name: ns3kib
