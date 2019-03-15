@@ -38,9 +38,9 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: elasticsearch.hosts
-      value: http://localhost:9200
+      value: http://elasticsearch:9200
     - name: server.name
-      value: localhost
+      value: kibana
     ports:
     - containerPort: 5601
   - name: logstash
@@ -50,7 +50,7 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: http://localhost:9200
+      value: http://elasticsearch:9200
     ports:
     - containerPort: 5044
     - containerPort: 9600
@@ -64,14 +64,21 @@ spec:
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
-    #args: [
-    #  setup -E setup.kibana.host=localhost:5601 -E output.logstash.hosts=["localhost:5044"]
-    #]
+    args: [
+      "setup", 
+      "-c", "/usr/share/filebeat/filebeat.yml",
+      "-E", "setup.kibana.host=kibana:5601",
+      "-E", "setup.template.enabled=false",
+      "-E", "output.elasticsearch.enabled=false",
+      "-E", "output.logstash.enabled=true",
+      "-E", "output.logstash.hosts=[logstash:5044]",
+      "-e"
+    ]
     env:
     - name: output.logstash.hosts
-      value: localhost:9200
+      value: logstash:5044
     - name: setup.kibana.host
-      value: localhost:5601
+      value: kibana:5601
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
