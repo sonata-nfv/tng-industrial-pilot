@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-dev
+  namespace: alb-prd
   name: ns3elk
   labels:
     name: ns3elk
@@ -10,17 +10,6 @@ spec:
   volumes:
   - name: esdata
     emptyDir: {}
-#  hostAliases:
-#  - ip: "127.0.0.1"
-#    hostnames:
-#    - "logstash.smp-dev.svc.cluster.local"
-#    - "logstash"
-#    hostnames:
-#    - "ns3elk.smp-dev.svc.cluster.local"
-#    - "elasticsearch"
-#    hostnames:
-#    - "kibana.smp-dev.svc.cluster.local"
-#    - "kibana"
   containers:
   - name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
@@ -42,9 +31,9 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: elasticsearch
-      value: http://ns3elk:9200
+      value: http://ns3e:30092
     - name: server.name
-      value: localhost
+      value: kibana
     ports:
     - containerPort: 5601
   - name: logstash
@@ -54,28 +43,20 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: http://ns3elk:9200
+      value: http://ns3e:30092
     ports:
     - containerPort: 5044
     - containerPort: 9600
   hostname: ns3elk
   hostNetwork: false
-  dnsPolicy: ClusterFirst
-# dnsConfig:
-#   nameservers:
-#   - 8.8.8.8
-#   - 9.9.9.9
-#   searches:
-#    - smp-dev.svc.cluster.local
-#    - my.dns.search.suffix
-#  subdomain: smp-dev
+#  dnsPolicy: ClusterFirst
 
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-dev
+  namespace: alb-prd
   name: ns3sf
   labels:
     name: ns3sf
@@ -83,21 +64,12 @@ spec:
   volumes:
   - name: suricata-logs
     emptyDir: {}
-#  hostAliases:
-#  - ip: "127.0.0.1"
-#    hostnames:
-#    - "logstash"
-#    - "logstash.smp-dev.svc.cluster.local"
-#    hostnames:
-#    - "elasticsearch"
-#    - "ns3elk.smp-dev.svc.cluster.local"
   containers:
-
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
     #args: ["-i enp3s0"]
-    args: ["-i eth0"]
+    args: ["-i enp3s0"]
     volumeMounts:
     - name: suricata-logs
       mountPath: /var/log/suricata
@@ -108,75 +80,79 @@ spec:
       "setup", 
       "-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=ns3elk:5601",
-      #"-E", "setup.template.enabled=false",
-#      "-E", "output.elasticsearch.enabled=false",
+      "-E", "setup.kibana.host=ns3k:30056",
+      "-E", "setup.template.enabled=true",
+      "-E", "output.elasticsearch.enabled=true",
 #      "-E", "output.logstash.enabled=true",
 #      "-E", "output.logstash.hosts=[logstash:5044]",
       "-E", "output.elasticsearch.enabled=true",
-      "-E", "output.elasticsearch.hosts=[ns3elk:9200]",
+      "-E", "output.elasticsearch.hosts=[ns3e:30092]",
       "-e",
-      "&&",
-      "filebeat",
-      "modules", 
-      "enable",
-      "suricata"
+#      "&&",
+#      "filebeat",
+#      "modules", 
+#      "enable",
+#      "suricata"
     ]
     env:
     - name: output.logstash.hosts
-      value: logstash:5044
+      value: ns3l:30044
     - name: output.elasticsearch.hosts
-      value: ns3elk:9200
+      value: ns3e:30092
     - name: setup.kibana.host
-      value: ns3elk:5601
+      value: ns3k:30056
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
   hostname: ns3sf
-  hostNetwork: false
-#  dnsPolicy: ClusterFirstWithHostNet
-  dnsPolicy: ClusterFirst
-#  dnsPolicy: "None"
-#  dnsConfig:
-#    nameservers:
-#    - 8.8.8.8
-#    - 9.9.9.9
-#    searches:
-#    - smp-dev.svc.cluster.local
-#    - my.dns.search.suffix
-#  subdomain: smp-dev
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
 
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-dev
-  name: ns3elk
+  namespace: alb-prd
+  name: ns3l
   labels:
-    name: ns3elk
+    name: ns3l
 spec:
+  type: NodePort
+  ports:
+  - port: 5044
+    targetPort: 5044
+    nodePort: 30044 
+    name: logstash
+  selector:
+    name: ns3l
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: alb-prd
+  name: ns3e
+  labels:
+    name: ns3e
+spec:
+  type: NodePort
   ports:
   - port: 9200
     targetPort: 9200
+    nodePort: 30092
     name: elasticsearch
-  - port: 5601
-    targetPort: 5601
-    name: kibana
-  - port: 5044
-    targetPort: 5044
-    name: logstash
   selector:
-    name: ns3elk
+    name: ns3e
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-dev
-  name: ns3kib
+  namespace: alb-prd
+  name: ns3k
   labels:
-    name: ns3kib
+    name: ns3k
 spec:
   type: NodePort
   ports:
@@ -185,4 +161,5 @@ spec:
     nodePort: 30056 
     name: kibana
   selector:
-    name: ns3kib
+    name: ns3k
+
