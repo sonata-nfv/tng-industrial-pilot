@@ -16,6 +16,7 @@ spec:
     cnf: eae
     cdu: eae
   # internal and external access through the LB at port 3000 (mapped to random nodePort)
+  # this requires MetalLB (or another LB) to be installed and configured
   type: LoadBalancer
   ports:
     - name: grafana

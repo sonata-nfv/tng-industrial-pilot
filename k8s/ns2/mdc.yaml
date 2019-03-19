@@ -15,7 +15,8 @@ spec:
     ns: ns2
     cnf: mdc
     cdu: mdc
-  type: NodePort
+  # this requires MetalLB (or another LB) to be installed and configured
+  type: LoadBalancer
   ports:
     - name: samba139
       protocol: TCP
@@ -23,12 +24,6 @@ spec:
     - name: samba445
       protocol: TCP
       port: 445
-    - name: samba137
-      protocol: UDP
-      port: 137
-    - name: samba138
-      protocol: UDP
-      port: 138
 ---
 apiVersion: apps/v1
 kind: Deployment
