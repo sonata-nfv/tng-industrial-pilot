@@ -15,12 +15,12 @@ spec:
     ns: ns1
     cnf: eae
     cdu: eae
-  type: NodePort
+  # internal and external access through the LB at port 3000 (mapped to random nodePort)
+  # this requires MetalLB (or another LB) to be installed and configured
+  type: LoadBalancer
   ports:
-    # cluster-internal access via port 3000, external via port 30000
     - name: grafana
       port: 3000
-      nodePort: 30000
 ---
 apiVersion: apps/v1
 kind: Deployment

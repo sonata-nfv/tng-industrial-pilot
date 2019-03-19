@@ -15,10 +15,10 @@ spec:
     ns: ns2
     cnf: mdc
     cdu: mdc
-  type: NodePort
-  # this only works when setting a custom --service-node-port-range 
-  # minikube start --extra-config=apiserver.service-node-port-range=137-445
+  # this requires MetalLB (or another LB) to be installed and configured
+  type: LoadBalancer
   ports:
+    # don't need the UDP ports
     - name: samba139
       protocol: TCP
       port: 139
@@ -26,15 +26,6 @@ spec:
     - name: samba445
       protocol: TCP
       port: 445
-      nodePort: 445
-    - name: samba137
-      protocol: UDP
-      port: 137
-      nodePort: 137
-    - name: samba138
-      protocol: UDP
-      port: 138
-      nodePort: 138
 ---
 apiVersion: apps/v1
 kind: Deployment
