@@ -3,7 +3,7 @@ descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/mast
 vendor: "eu.5gtango"
 name: "tng-smpilot-ns1-k8s"
 version: "0.1"
-author: "Manuel Peuster (Paderborn University)"
+author: "Stefan Schneider (Paderborn University)"
 description: "Smart manufacturing pilot: Factory edge service (NS1) for K8s."
 network_functions:
   - vnf_id: "vnf_cc"
