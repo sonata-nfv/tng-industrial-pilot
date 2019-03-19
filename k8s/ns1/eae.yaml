@@ -1,3 +1,4 @@
+# 1 CNF = 1 service and 1 deployment (=1 pod) with separate containers per CDU
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,14 +8,12 @@ metadata:
     pilot: sm
     ns: ns1
     cnf: eae
-    cdu: eae
 spec:
   # to which deployment does this service belong?
   selector:
     pilot: sm
     ns: ns1
     cnf: eae
-    cdu: eae
   # internal and external access through the LB at port 3000 (mapped to random nodePort)
   # this requires MetalLB (or another LB) to be installed and configured
   type: LoadBalancer
@@ -30,7 +29,6 @@ metadata:
     pilot: sm
     ns: ns1
     cnf: eae
-    cdu: eae
 spec:
   selector:
     # must match the labels of the template
@@ -38,15 +36,12 @@ spec:
       pilot: sm
       ns: ns1
       cnf: eae
-      cdu: eae
-  # the pod(s) to deploy = 1 CDU
   template:
     metadata:
       labels:
         pilot: sm
         ns: ns1
         cnf: eae
-        cdu: eae
     spec:
       containers:
       - name: vnf-eae
