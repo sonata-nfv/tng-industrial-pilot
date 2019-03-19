@@ -3,7 +3,7 @@ descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/maste
 vendor: "eu.5gtango"
 name: "smpilot-cc"
 version: "0.1"
-author: Manuel Peuster (Paderborn University)"
+author: "Manuel Peuster (Paderborn University)"
 description: "Cloud connector (CC) CNF"
 
 cloudnative_deployment_units:
@@ -16,14 +16,19 @@ cloudnative_deployment_units:
     image: sonatanfv/vnf-cc-processor:k8s
     connection_points: []
   - id: "cdu03"
-    image: ubuntu:trusty
+    image: sonatanfv/vnf-cc-mqttexporter:k8s
     connection_points: []
+  - id: "cdu04"
+    image: sonatanfv/vnf-cc-database:k8s
+    connection_points:
+      - id: "data"
+        port: 9090
 
 connection_points:
   - id: "data"
     interface: "ipv4"
     type: "serviceendpoint"
-    port: 1883
+    #port: 1883
 
 virtual_links:
   - id: "data-link"
@@ -31,3 +36,6 @@ virtual_links:
     connection_points_reference:
       - "data"
       - "cdu01:data"
+      #- "cdu02:data"
+      #- "cdu03:data"
+      - "cdu04:data"

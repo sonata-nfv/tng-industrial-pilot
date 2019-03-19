@@ -5,17 +5,20 @@ name: "smpilot-eae"
 version: "0.1"
 author: "Stefan Schneider (Paderborn University)"
 description: "Edge analytics engine (EAE) CNF"
+
 cloudnative_deployment_units:
   - id: "cdu01"
     image: "sonatanfv/vnf-eae:k8s"
     connection_points:
       - id: "data"
-        port: 9999
+        port: 3000
+        
 connection_points:
   - id: "data"
     interface: "ipv4"
     type: "serviceendpoint"
-    port: 9999
+    port: 3000
+    
 virtual_links:
   - id: "data"
     connectivity_type: "E-Tree"
