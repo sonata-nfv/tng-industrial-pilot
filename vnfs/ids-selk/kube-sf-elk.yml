@@ -10,6 +10,14 @@ spec:
   volumes:
   - name: esdata
     emptyDir: {}
+  - name: logstash-beats
+    hostPath:
+      path: "~/tng-industrial-pilot/vnfs/ids-selk/l/beats2elastic.conf"
+      type: File
+  - name: logstash-config
+    hostPath:
+      path: "~/tng-industrial-pilot/vnfs/ids-selk/l/logstash.yml"
+      type: File
   containers:
   - name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
@@ -43,12 +51,19 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: PIPELINE_WORKERS
-      value: '"2"'
+      value: "2"
     - name: xpack.monitoring.elasticsearch.url
       value: http://localhost:9200
     ports:
     - containerPort: 5044
     - containerPort: 9600
+#    command: "logstash"
+#   args: []
+    volumeMounts:
+    - mountPath: /usr/share/logstash/pipeline/beats2elastic.conf
+      name: logstash-beats
+    - mountPath: /usr/share/logstash/config/logstash.yml
+      name: logstash-config
   hostname: ns3elk
   hostNetwork: false
   dnsPolicy: None
@@ -99,9 +114,9 @@ spec:
  #     "-E", "setup.template.fields=/usr/share/filebeat/fields.yml",
       #"-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=127.0.0.1:30056",
+      "-E", "setup.kibana.host=localhost:30056",
       "-E", "output.elasticsearch.enabled=false",
-#      "-E", "output.elasticsearch.hosts=[127.0.0.1:30092]",
+#      "-E", "output.elasticsearch.hosts=[localhost:30092]",
       "-E", "output.logstash.enabled=true",
       "-E", "output.logstash.hosts=[localhost:30044]",
       "-e",
