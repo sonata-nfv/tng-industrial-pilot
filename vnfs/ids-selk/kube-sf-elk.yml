@@ -30,10 +30,10 @@ spec:
     image: docker.elastic.co/kibana/kibana:6.6.1
     imagePullPolicy: IfNotPresent
     env:
-    - name: elasticsearch
-      value: http://ns3e:30092
-    - name: server.name
-      value: kibana
+    - name: ELASTICSEARCH_HOSTS
+      value: "http://ns3e.alb-prd.svc.cluster.local:9200"
+    - name: SERVER_NAME
+      value: "kibana"
     ports:
     - containerPort: 5601
   - name: logstash
@@ -43,14 +43,25 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: http://ns3e:30092
+      value: http://ns3e.alb-prd.svc.cluster.local:30092
     ports:
     - containerPort: 5044
     - containerPort: 9600
   hostname: ns3elk
   hostNetwork: false
-#  dnsPolicy: ClusterFirst
-
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 10.96.0.10 # Calico plugin
+      - 10.240.144.10 # Flannel plugin
+      - 8.8.8.8 # External name resolution
+    searches:
+      - alb-prd.svc.cluster.local
+      - svc.cluster.local
+    options:
+      - name: ndots
+        value: "2"
+      - name: edns0
 
 ---
 apiVersion: v1
@@ -80,13 +91,13 @@ spec:
       "setup", 
       "-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=ns3k:30056",
+      "-E", "setup.kibana.host=ns3k.alb-prd.svc.cluster.local:30056",
       "-E", "setup.template.enabled=true",
       "-E", "output.elasticsearch.enabled=true",
 #      "-E", "output.logstash.enabled=true",
 #      "-E", "output.logstash.hosts=[logstash:5044]",
       "-E", "output.elasticsearch.enabled=true",
-      "-E", "output.elasticsearch.hosts=[ns3e:30092]",
+      "-E", "output.elasticsearch.hosts=[ns3e.alb-prd.svc.cluster.local:30092]",
       "-e",
 #      "&&",
 #      "filebeat",
@@ -96,11 +107,11 @@ spec:
     ]
     env:
     - name: output.logstash.hosts
-      value: ns3l:30044
+      value: ns3l.alb-prd.svc.cluster.local:30044
     - name: output.elasticsearch.hosts
-      value: ns3e:30092
+      value: ns3e.alb-prd.svc.cluster.local:30092
     - name: setup.kibana.host
-      value: ns3k:30056
+      value: ns3k.alb-prd.svc.cluster.local:30056
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
@@ -162,4 +173,3 @@ spec:
     name: kibana
   selector:
     name: ns3k
-
