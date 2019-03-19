@@ -86,37 +86,31 @@ spec:
     volumeMounts:
     - name: suricata-logs
       mountPath: /var/log/suricata
+    securityContext:
+      privileged: true
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
+    command: ["/usr/share/filebeat/filebeat"]
     args: [
-      "setup", 
-      "-c", "/usr/share/filebeat/filebeat.yml",
+ #     "setup", 
+ #     "--template",
+ #     "-E", "setup.template.enabled=false",
+ #     "-E", "setup.template.fields=/usr/share/filebeat/fields.yml",
+      #"-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=localhost:30056",
-      "-E", "setup.template.enabled=true",
-      "-E", "output.elasticsearch.enabled=true",
-#      "-E", "output.logstash.enabled=true",
-#      "-E", "output.logstash.hosts=[logstash:5044]",
-      "-E", "output.elasticsearch.enabled=true",
-      "-E", "output.elasticsearch.hosts=[localhost:30092]",
+      "-E", "setup.kibana.host=127.0.0.1:30056",
+      "-E", "output.elasticsearch.enabled=false",
+#      "-E", "output.elasticsearch.hosts=[127.0.0.1:30092]",
+      "-E", "output.logstash.enabled=true",
+      "-E", "output.logstash.hosts=[localhost:30044]",
       "-e",
-#      "&&",
-#      "filebeat",
-#      "modules", 
-#      "enable",
-#      "suricata"
     ]
-    env:
-#    - name: output.logstash.hosts
-#      value: localhost:30044
-    - name: output.elasticsearch.hosts
-      value: localhost:30092
-    - name: setup.kibana.host
-      value: localhost:30056
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
+    securityContext:
+      privileged: true
   hostname: ns3sf
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
@@ -138,7 +132,7 @@ spec:
     nodePort: 30044 
     #name: logstash
   selector:
-    name: ns3l
+    name: ns3elk
 
 ---
 apiVersion: v1
@@ -156,7 +150,7 @@ spec:
     nodePort: 30092
     #name: elasticsearch
   selector:
-    name: ns3e
+    name: ns3elk
 
 ---
 apiVersion: v1
@@ -174,4 +168,4 @@ spec:
     nodePort: 30056 
     #name: kibana
   selector:
-    name: ns3k
+    name: ns3elk
