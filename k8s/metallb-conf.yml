@@ -1,3 +1,4 @@
+# used for one-time configuration and setup of MetalLB, which is used as LoadBalancer for external access of EAE and MDC
 apiVersion: v1
 kind: ConfigMap
 metadata:
