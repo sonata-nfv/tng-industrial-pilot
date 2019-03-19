@@ -14,9 +14,14 @@ spec:
     pilot: sm
     ns: ns1
     cnf: cc
+  # this requires MetalLB (or another LB) to be installed and configured
+  # required for external access of the Prometheus DB
+  type: LoadBalancer
   ports:
     - name: mqtt-broker
       port: 1883
+    - name: prometheus-db
+      port: 9090
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,8 +55,19 @@ spec:
         image: sonatanfv/vnf-cc-processor:k8s
         imagePullPolicy: Always
         env:
-        # since both CDUs are in the same pod, they can communicate via localhost
+        # since the broker is in the same pod, they can communicate via localhost
         - name: MQTT_BROKER_HOST
           value: localhost
         - name: MQTT_BROKER_PORT
           value: "1883"
+      - name: vnf-cc-mqttexporter
+        image: sonatanfv/vnf-cc-mqttexporter:k8s
+        imagePullPolicy: Always
+        env:
+        - name: MQTT_BROKER_HOST
+          value: localhost
+        - name: MQTT_BROKER_PORT
+          value: "1883"
+      - name: vnf-cc-database
+        image: sonatanfv/vnf-cc-database:k8s
+        imagePullPolicy: Always
