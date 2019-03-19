@@ -22,7 +22,7 @@ items:
       spec:
         containers:
         - env:
-          - name: output.logstash.hosts
+          - name: output.elasticsearch.hosts
             value: '["localhost:9200"]'
           - name: setup.kibana.host
             value: kibana:5601
