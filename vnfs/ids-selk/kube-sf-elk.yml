@@ -31,7 +31,7 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: ELASTICSEARCH_HOSTS
-      value: "http://ns3e.alb-prd.svc.cluster.local:9200"
+      value: "http://localhost:9200"
     - name: SERVER_NAME
       value: "kibana"
     ports:
@@ -43,7 +43,7 @@ spec:
     - name: PIPELINE_WORKERS
       value: '"2"'
     - name: xpack.monitoring.elasticsearch.url
-      value: http://ns3e.alb-prd.svc.cluster.local:30092
+      value: http://localhost:9200
     ports:
     - containerPort: 5044
     - containerPort: 9600
@@ -91,13 +91,13 @@ spec:
       "setup", 
       "-c", "/usr/share/filebeat/filebeat.yml",
       "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=ns3k.alb-prd.svc.cluster.local:30056",
+      "-E", "setup.kibana.host=localhost:30056",
       "-E", "setup.template.enabled=true",
       "-E", "output.elasticsearch.enabled=true",
 #      "-E", "output.logstash.enabled=true",
 #      "-E", "output.logstash.hosts=[logstash:5044]",
       "-E", "output.elasticsearch.enabled=true",
-      "-E", "output.elasticsearch.hosts=[ns3e.alb-prd.svc.cluster.local:30092]",
+      "-E", "output.elasticsearch.hosts=[localhost:30092]",
       "-e",
 #      "&&",
 #      "filebeat",
@@ -107,11 +107,11 @@ spec:
     ]
     env:
     - name: output.logstash.hosts
-      value: ns3l.alb-prd.svc.cluster.local:30044
+      value: localhost:30044
     - name: output.elasticsearch.hosts
-      value: ns3e.alb-prd.svc.cluster.local:30092
+      value: localhost:30092
     - name: setup.kibana.host
-      value: ns3k.alb-prd.svc.cluster.local:30056
+      value: localhost:30056
     volumeMounts:
     - name: suricata-logs
       mountPath: /usr/share/filebeat/logs
@@ -134,7 +134,7 @@ spec:
   - port: 5044
     targetPort: 5044
     nodePort: 30044 
-    name: logstash
+    #name: logstash
   selector:
     name: ns3l
 
@@ -152,7 +152,7 @@ spec:
   - port: 9200
     targetPort: 9200
     nodePort: 30092
-    name: elasticsearch
+    #name: elasticsearch
   selector:
     name: ns3e
 
@@ -170,6 +170,6 @@ spec:
   - port: 5601
     targetPort: 5601
     nodePort: 30056 
-    name: kibana
+    #name: kibana
   selector:
     name: ns3k
