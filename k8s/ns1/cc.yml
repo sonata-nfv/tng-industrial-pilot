@@ -1,0 +1,57 @@
+# 1 CNF = 1 service and 1 deployment (=1 pod) with separate containers per CDU
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns1-cc-service
+  # for easy reference later on
+  labels:
+    pilot: sm
+    ns: ns1
+    cnf: cc
+spec:
+  # to which deployment does this service belong?
+  selector:
+    pilot: sm
+    ns: ns1
+    cnf: cc
+  ports:
+    - name: mqtt-broker
+      port: 1883
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns1-cc-deployment
+  labels:
+    pilot: sm
+    ns: ns1
+    cnf: cc
+spec:
+  selector:
+    # must match the labels of the template
+    matchLabels:
+      pilot: sm
+      ns: ns1
+      cnf: cc
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns1
+        cnf: cc
+    spec:
+      containers:
+      - name: vnf-cc-broker
+        image: sonatanfv/vnf-cc-broker:k8s
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1883
+      - name: vnf-cc-processor
+        image: sonatanfv/vnf-cc-processor:k8s
+        imagePullPolicy: Always
+        env:
+        # since both CDUs are in the same pod, they can communicate via localhost
+        - name: MQTT_BROKER_HOST
+          value: localhost
+        - name: MQTT_BROKER_PORT
+          value: "1883"

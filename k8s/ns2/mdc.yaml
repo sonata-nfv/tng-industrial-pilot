@@ -1,3 +1,4 @@
+# 1 CNF = 1 service and 1 deployment (=1 pod) with separate containers per CDU
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,14 +8,12 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: mdc
-    cdu: mdc
 spec:
   # to which deployment does this service belong?
   selector:
     pilot: sm
     ns: ns2
     cnf: mdc
-    cdu: mdc
   # this requires MetalLB (or another LB) to be installed and configured
   type: LoadBalancer
   ports:
@@ -22,7 +21,6 @@ spec:
     - name: samba139
       protocol: TCP
       port: 139
-      nodePort: 139
     - name: samba445
       protocol: TCP
       port: 445
@@ -35,7 +33,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: mdc
-    cdu: mdc
 spec:
   selector:
     # must match the labels of the template
@@ -43,7 +40,6 @@ spec:
       pilot: sm
       ns: ns2
       cnf: mdc
-      cdu: mdc
   # the pod(s) to deploy = 1 CDU
   template:
     metadata:
@@ -51,16 +47,14 @@ spec:
         pilot: sm
         ns: ns2
         cnf: mdc
-        cdu: mdc
     spec:
       containers:
       - name: vnf-mdc
         image: sonatanfv/vnf-mdc:k8s
         imagePullPolicy: Always
         env:
-        # this needs to be set by the SP dynamically!
-        # we will change the var name to vendor.name.version.cdu_id
+        # the k8s service names of all CNFs need to be set by the SP dynamically
         - name: MQTT_BROKER_HOST
-          value: ns1-cc-broker-service
+          value: ns1-cc-service
         - name: MQTT_BROKER_PORT
           value: "1883"
