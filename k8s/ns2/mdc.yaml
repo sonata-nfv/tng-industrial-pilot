@@ -18,9 +18,11 @@ spec:
   # this requires MetalLB (or another LB) to be installed and configured
   type: LoadBalancer
   ports:
+    # don't need the UDP ports
     - name: samba139
       protocol: TCP
       port: 139
+      nodePort: 139
     - name: samba445
       protocol: TCP
       port: 445
