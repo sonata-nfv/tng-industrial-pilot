@@ -1,8 +1,48 @@
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-static-configfile
+  namespace: smp-ns3
+  labels:
+    app: ns3elk
+data:
+  beats2elastic.conf: | 
+    input {
+      beats {
+        port => 5044
+        #codec => json
+        #type => "SuricataIDPS"
+      }
+    }
+    filter {
+      if [type] == "syslog" {
+        grok {
+          match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+          add_field => [ "received_at", "%{@timestamp}" ]
+          add_field => [ "received_from", "%{host}" ]
+        }
+        syslog_pri { }
+        date {
+          match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+        }
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["http://localhost:9200"]
+        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        manage_template => false
+        document_type => "%{[@metadata][type]}"
+      }
+      stdout { codec => rubydebug }
+    }
+
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: alb-prd
+  namespace: smp-ns3
   name: ns3elk
   labels:
     name: ns3elk
@@ -52,11 +92,13 @@ spec:
     ports:
     - containerPort: 5044
     - containerPort: 9600
-#    command: "logstash"
-#   args: []
     volumeMounts:
     - mountPath: /usr/share/logstash/pipeline
-      name: logstash-hostdir
+      name: logstash-config
+  volumes:  
+  - name: logstash-config
+    configMap:  
+      name: logstash-static-configfile  
   hostname: ns3elk
   hostNetwork: false
   dnsPolicy: None
@@ -66,7 +108,7 @@ spec:
       - 10.240.144.10 # Flannel plugin
       - 8.8.8.8 # External name resolution
     searches:
-      - alb-prd.svc.cluster.local
+      - smp-ns3.svc.cluster.local
       - svc.cluster.local
     options:
       - name: ndots
@@ -77,7 +119,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: alb-prd
+  namespace: smp-ns3
   name: ns3sf
   labels:
     name: ns3sf
@@ -128,7 +170,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: alb-prd
+  namespace: smp-ns3
   name: ns3l
   labels:
     name: ns3l
@@ -138,7 +180,11 @@ spec:
   - port: 5044
     targetPort: 5044
     nodePort: 30044 
-    #name: logstash
+    name: logstash-beats-inputs
+  - port: 9600
+    targetPort: 9600
+    nodePort: 30096
+    name: logstash-api-endpoint
   selector:
     name: ns3elk
 
@@ -146,7 +192,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: alb-prd
+  namespace: smp-ns3
   name: ns3e
   labels:
     name: ns3e
@@ -164,7 +210,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: alb-prd
+  namespace: smp-ns3
   name: ns3k
   labels:
     name: ns3k
