@@ -71,3 +71,5 @@ spec:
       - name: vnf-cc-database
         image: sonatanfv/vnf-cc-database:k8s
         imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
