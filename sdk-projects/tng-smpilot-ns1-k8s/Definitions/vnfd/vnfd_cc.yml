@@ -6,36 +6,53 @@ version: "0.1"
 author: "Manuel Peuster (Paderborn University)"
 description: "Cloud connector (CC) CNF"
 
+# loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: "cdu01"
     image: sonatanfv/vnf-cc-broker:k8s
     connection_points:
-      - id: "data"
-        port: 1883  # MQTT broker
+      - id: "int-mqtt"
+        port: 1883
   - id: "cdu02"
     image: sonatanfv/vnf-cc-processor:k8s
     connection_points: []
+    parameters:
+      env:
+        MQTT_BROKER_HOST: localhost
+        MQTT_BROKER_PORT: 1883
   - id: "cdu03"
     image: sonatanfv/vnf-cc-mqttexporter:k8s
     connection_points: []
+    parameters:
+      env:
+        MQTT_BROKER_HOST: localhost
+        MQTT_BROKER_PORT: 1883
   - id: "cdu04"
     image: sonatanfv/vnf-cc-database:k8s
     connection_points:
-      - id: "data"
+      - id: "int-prometheus"
         port: 9090
 
+# corresponds to the k8s service layer: connection to the outside world
 connection_points:
-  - id: "data"
+  - id: "mqtt"
     interface: "ipv4"
     type: "serviceendpoint"
-    #port: 1883
+    port: 1883
+  - id: "prometheus"
+    interface: "ipv4"
+    type: "serviceendpoint"
+    port: 9090
 
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links:
-  - id: "data-link"
+  - id: "mqtt-link"
     connectivity_type: "E-Tree"
     connection_points_reference:
-      - "data"
-      - "cdu01:data"
-      #- "cdu02:data"
-      #- "cdu03:data"
-      - "cdu04:data"
+      - "mqtt"
+      - "cdu01:int-mqtt"
+  - id: "prometheus-link"
+    connectivity_type: "E-Tree"
+    connection_points_reference:
+      - "prometheus"
+      - "cdu04:int-prometheus"

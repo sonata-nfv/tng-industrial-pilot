@@ -6,22 +6,25 @@ version: "0.1"
 author: "Stefan Schneider (Paderborn University)"
 description: "Edge analytics engine (EAE) CNF"
 
+# loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: "cdu01"
     image: "sonatanfv/vnf-eae:k8s"
     connection_points:
-      - id: "data"
+      - id: "int-grafana"
         port: 3000
-        
+     
+# corresponds to the k8s service layer: connection to the outside world     
 connection_points:
-  - id: "data"
+  - id: "grafana"
     interface: "ipv4"
     type: "serviceendpoint"
     port: 3000
     
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links:
-  - id: "data"
+  - id: "grafana-link"
     connectivity_type: "E-Tree"
     connection_points_reference:
-      - "data"
-      - "cdu01:data"
+      - "grafana"
+      - "cdu01:int-grafana"
