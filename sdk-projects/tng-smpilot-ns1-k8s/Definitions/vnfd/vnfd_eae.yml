@@ -40,10 +40,7 @@ cloudnative_deployment_units:
     connection_points:
       - id: "int-grafana"
         port: 3000
-        parameters:
-          # TODO: need the k8s service name of the CC to connect to prometheus (should be added automatically by the SP)
-          env: []
-            
+    # TODO: need the k8s service name of the CC to connect to prometheus (should be added automatically by the SP)
             
      
 # corresponds to the k8s service layer: connection to the outside world     
