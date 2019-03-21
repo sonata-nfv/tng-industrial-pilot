@@ -32,25 +32,42 @@ version: '0.1'
 author: 'Stefan Schneider (Paderborn University)'
 description: 'Machine data collector (MDC) CNF'
 
+# loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: cdu01
     image: 'sonatanfv/vnf-mdc:k8s'
     connection_points:
-      - id: samba139
+      - id: "int-samba139"
         port: 139
-      - id: samba445
+      - id: "int-samba445"
         port: 445
-        
+    parameters:
+      env:
+        # FIXME: this should point to the k8s service layer of the CC
+        # the SP should add an env variable that contains this k8s service name
+        MQTT_BROKER_HOST: ns1-cc-service
+        MQTT_BROKER_PORT: 1883
+                
+# corresponds to the k8s service layer: connection to the outside world     
 connection_points:
-  - id: data
+  - id: samba139
     interface: ipv4
     type: serviceendpoint
-    # port: 5555  # TODO change
+    port: 139
+  - id: samba445
+    interface: ipv4
+    type: serviceendpoint
+    port: 445
     
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links: 
-  - id: data
+  - id: "samba139-link"
     connectivity_type: E-Tree
     connection_points_reference:
-      - data
-      - 'cdu01:samba139'
-      - 'cdu01:samba445'
+      - samba139
+      - 'cdu01:int-samba139'
+  - id: "samba445-link"
+    connectivity_type: E-Tree
+    connection_points_reference:
+      - samba445
+      - 'cdu01:int-samba445'

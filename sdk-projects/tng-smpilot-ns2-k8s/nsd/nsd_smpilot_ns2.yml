@@ -39,31 +39,21 @@ network_functions:
     vnf_version: '0.1'
 
 connection_points:
-  - id: data
+  - id: samba139
+    interface: ipv4
+    type: external
+  - id: samba445
     interface: ipv4
     type: external
     
 virtual_links:
-  - id: vnfs-2-data
+  - id: "samba139-link"
     connectivity_type: E-Tree
     connection_points_reference:
-      - data
-      - 'vnf_mdc:data'
-
-# vim-emu LLCM requires this section, but ignores many parts of it
-forwarding_graphs:
-  - fg_id: fg01
-    number_of_endpoints: 1
-    number_of_virtual_links: 1
-    constituent_virtual_links:
-      - vnfs-2-data
-    constituent_vnfs:
-      - vnf_mdc
-    network_forwarding_paths:
-      - fp_id: 'fg01:fp01'
-        policy: none
-        connection_points:
-          - connection_point_ref: 'vnf_mdc:data'
-            position: 1
-          - connection_point_ref: 'data'
-            position: 2
+      - samba139
+      - "vnf_mdc:samba139"
+  - id: "samba445-link"
+    connectivity_type: E-Tree
+    connection_points_reference:
+      - samba445
+      - "vnf_mdc:samba445"
