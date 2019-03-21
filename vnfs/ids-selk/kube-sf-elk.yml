@@ -38,6 +38,40 @@ data:
       stdout { codec => rubydebug }
     }
 
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: filebeat-static-configfile
+  namespace: smp-ns3
+  labels:
+    app: ns3sf
+data:
+  filebeat.yml: | 
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+      - /var/log/suricata/eve.json
+    filebeat.config.modules:
+      strict.perms: false
+      path: ${path.config}/modules.d/*.yml
+      reload.enabled: true
+    setup.dashboards:
+      enabled: true
+    setup.template:
+      enabled: false
+      fields: "/usr/share/filebeat/fields.yml"
+      settings.index.number_of_shards: 3
+    setup.kibana:
+      host: "localhost:30056"
+    output.elasticsearch:
+      enabled: false
+      hosts: [localhost:30092]
+    output.logstash:
+      enabled: true
+      hosts: ["localhost:30044"]
+
 ---
 apiVersion: v1
 kind: Pod
@@ -50,9 +84,9 @@ spec:
   volumes:
   - name: esdata
     emptyDir: {}
-  - name: logstash-hostdir
-    hostPath:
-      path: "/C/Users/arocha/git/tng-industrial-pilot/vnfs/ids-selk/l/pipeline"
+  - name: logstash-config
+    configMap:  
+      name: logstash-static-configfile
   containers:
   - name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
@@ -95,10 +129,6 @@ spec:
     volumeMounts:
     - mountPath: /usr/share/logstash/pipeline
       name: logstash-config
-  volumes:  
-  - name: logstash-config
-    configMap:  
-      name: logstash-static-configfile  
   hostname: ns3elk
   hostNetwork: false
   dnsPolicy: None
@@ -127,6 +157,9 @@ spec:
   volumes:
   - name: suricata-logs
     emptyDir: {}
+  - name: filebeat-config
+    configMap:  
+      name: filebeat-static-configfile
   containers:
   - name: suricata
     image: jasonish/suricata
@@ -141,30 +174,23 @@ spec:
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
-    command: ["/usr/share/filebeat/filebeat"]
-    args: [
- #     "setup", 
- #     "--template",
- #     "-E", "setup.template.enabled=false",
- #     "-E", "setup.template.fields=/usr/share/filebeat/fields.yml",
+    #command: ["/usr/share/filebeat/filebeat"]
+    #args: [
+      #"setup", 
+      #"--template",
       #"-c", "/usr/share/filebeat/filebeat.yml",
-      "-E", "setup.dashboards.enabled=true",
-      "-E", "setup.kibana.host=localhost:30056",
-      "-E", "output.elasticsearch.enabled=false",
-#      "-E", "output.elasticsearch.hosts=[localhost:30092]",
-      "-E", "output.logstash.enabled=true",
-      "-E", "output.logstash.hosts=[localhost:30044]",
-      "-e",
-    ]
+      #"-e",
+    #]
     volumeMounts:
     - name: suricata-logs
-      mountPath: /usr/share/filebeat/logs
+      mountPath: /usr/share/filebeat/logs/
+    - name: filebeat-config
+      mountPath: /usr/share/filebeat/config
     securityContext:
-      privileged: true
+      privileged: false
   hostname: ns3sf
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
-
 
 ---
 apiVersion: v1
@@ -183,7 +209,7 @@ spec:
     name: logstash-beats-inputs
   - port: 9600
     targetPort: 9600
-    nodePort: 30096
+    nodePort: 30097
     name: logstash-api-endpoint
   selector:
     name: ns3elk

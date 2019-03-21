@@ -3,9 +3,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   namespace: smp-dev
-  name: ns3-f
+  name: ns3f
   labels:
-    name: ns3-f
+    name: ns3f
 spec:
   volumes:
   - name: fbdata
