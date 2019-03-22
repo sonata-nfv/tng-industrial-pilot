@@ -49,6 +49,7 @@ spec:
       port: 1883
     - name: prometheus-db
       port: 9090
+      nodePort: 30090
 ---
 apiVersion: apps/v1
 kind: Deployment

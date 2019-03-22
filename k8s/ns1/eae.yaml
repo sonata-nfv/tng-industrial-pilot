@@ -47,6 +47,7 @@ spec:
   ports:
     - name: grafana
       port: 3000
+      nodePort: 30000
 ---
 apiVersion: apps/v1
 kind: Deployment
