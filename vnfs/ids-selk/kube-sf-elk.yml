@@ -12,25 +12,12 @@ data:
       beats {
         port => 5044
         codec => json
-        type => "SuricataIDPS"
-      }
-    }
-    filter {
-      if [type] == "syslog" {
-        grok {
-          match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
-          add_field => [ "received_at", "%{@timestamp}" ]
-          add_field => [ "received_from", "%{host}" ]
-        }
-        syslog_pri { }
-        date {
-          match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-        }
+        #type => "SuricataIDPS"
       }
     }
     output {
       elasticsearch {
-        hosts => ["http://localhost:9200"]
+        hosts => ["localhost:9200"]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
         manage_template => false
         document_type => "%{[@metadata][type]}"
@@ -58,20 +45,22 @@ data:
         strict.perms: false
         path: ${path.config}/modules.d/*.yml
         reload.enabled: true
+    filebeat.modules:
+    - module: suricata
     setup.dashboards:
-      enabled: true
+      enabled: false
     setup.template:
       enabled: false
       fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "localhost:30056"
+      host: "127.0.0.1:30056"
     output.elasticsearch:
       enabled: false
-      hosts: ["localhost:30092"]
+      hosts: ["127.0.0.1:30092"]
     output.logstash:
       enabled: true
-      hosts: ["localhost:30044"]
+      hosts: ["127.0.0.1:30044"]
 
 ---
 apiVersion: v1
