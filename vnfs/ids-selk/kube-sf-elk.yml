@@ -11,8 +11,8 @@ data:
     input {
       beats {
         port => 5044
-        #codec => json
-        #type => "SuricataIDPS"
+        codec => json
+        type => "SuricataIDPS"
       }
     }
     filter {
@@ -53,10 +53,11 @@ data:
       enabled: true
       paths:
       - /var/log/suricata/eve.json
-    filebeat.config.modules:
-      strict.perms: false
-      path: ${path.config}/modules.d/*.yml
-      reload.enabled: true
+    filebeat.config:
+      modules:
+        strict.perms: false
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: true
     setup.dashboards:
       enabled: true
     setup.template:
@@ -67,7 +68,7 @@ data:
       host: "localhost:30056"
     output.elasticsearch:
       enabled: false
-      hosts: [localhost:30092]
+      hosts: ["localhost:30092"]
     output.logstash:
       enabled: true
       hosts: ["localhost:30044"]
@@ -122,7 +123,7 @@ spec:
     - name: PIPELINE_WORKERS
       value: "2"
     - name: xpack.monitoring.elasticsearch.url
-      value: http://localhost:9200
+      value: "http://localhost:9200"
     ports:
     - containerPort: 5044
     - containerPort: 9600
@@ -164,7 +165,6 @@ spec:
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
-    #args: ["-i enp3s0"]
     args: ["-i enp3s0"]
     volumeMounts:
     - name: suricata-logs
@@ -175,15 +175,15 @@ spec:
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
     #command: ["/usr/share/filebeat/filebeat"]
-    #args: [
+    args: [
       #"setup", 
       #"--template",
-      #"-c", "/usr/share/filebeat/filebeat.yml",
-      #"-e",
-    #]
+      "-c", "/usr/share/filebeat/config/filebeat.yml",
+      "-e",
+    ]
     volumeMounts:
     - name: suricata-logs
-      mountPath: /usr/share/filebeat/logs/
+      mountPath: /var/log/suricata
     - name: filebeat-config
       mountPath: /usr/share/filebeat/config
     securityContext:
