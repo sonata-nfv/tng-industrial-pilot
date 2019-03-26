@@ -10,7 +10,7 @@ data:
   kibana.yml: |
     server.host: "0"
     server.name: kibana
-    elasticsearch.url: http://127.0.0.1:9200
+    elasticsearch.url: http://localhost:9200
     xpack.monitoring.ui.container.elasticsearch.enabled: true
 
 ---  
@@ -72,13 +72,13 @@ data:
       #fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "127.0.0.1:30056"
+      host: "localhost:30056"
     output.elasticsearch:
       enabled: false
-      hosts: ["127.0.0.1:30092"]
+      hosts: ["localhost:30092"]
     output.logstash:
       enabled: true
-      hosts: ["127.0.0.1:30044"]
+      hosts: ["localhost:30044"]
 
 ---
 apiVersion: v1
