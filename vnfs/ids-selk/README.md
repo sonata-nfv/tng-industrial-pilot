@@ -17,33 +17,50 @@ NOTE: ELK exposes its Services as 'nodePort'
 ## Manual deployment of NS3
 
 `// check the K8s configuration settings
+
  $ kubectl config view`
 
 `// change K8s PoP, if necessary
+
  $ kubectl config use-context alb-sta`
 
 `// create a K8s dedicated Namespace, if necessary
+
  $ kubectl create namespace smp-ns3`
 
 `// clone the SM-pilot repo
+
  $ git clone https://github.com/sonata-nfv/tng-industrial-pilot.git
+
  $ cd vnfs/ids-selk`
 
 `// run the deployment of NS3
+
  $ kubectl apply -f kube-sf-elk.git`
 
 `// check the running resources
+
  $ kubectl -n smp-ns3 get svc
+
  $ kubectl -n smp-ns3 get configmap
+
  $ kubectl -n smp-ns3 get pod
+
  $ kubectl -n smp-ns3 describe pod ns3-sf | more
+
  $ kubectl -n smp-ns3 describe pod ns3-elk | more
+
  $ kubectl -n smp-ns3 logs ns3-sf suricata | more
+
  $ kubectl -n smp-ns3 logs ns3-sf filebeat | more
+
  $ kubectl -n smp-ns3 logs ns3-elk logstash | more
+
  $ kubectl -n smp-ns3 logs ns3-elk elasticsearch | more
+
  $ kubectl -n smp-ns3 logs ns3-elk kibana | more`
 
 
 ## SP deployment of NS3
 
+[ToBeDone]
