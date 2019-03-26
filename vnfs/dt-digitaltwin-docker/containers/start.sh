@@ -26,10 +26,10 @@
 # partner consortium (www.5gtango.eu).
 echo "DT: Wait for MDC ... (3 seconds)"
 sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
-echo "DT: Mount em63_share from MDC ... (logs: /var/mount.log)"
-mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE > /var/mount.log 2>&1
+echo "DT: Mount em63_share from MDC ..."
+mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
 
-echo "DT: Starting DigitalTwin generator ... (logs: /var/imms.log)"
+echo "DT: Starting DigitalTwin generator ..."
 cd IMMS_APP
-python3 IMMS_APP.py --autostart > /var/imms.log 2>&1 &
+python3 IMMS_APP.py --autostart
 cd /

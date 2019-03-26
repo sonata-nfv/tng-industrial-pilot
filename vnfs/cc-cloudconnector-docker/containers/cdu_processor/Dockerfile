@@ -27,6 +27,7 @@
 FROM ubuntu:xenial
 LABEL maintainer="Manuel Peuster <manuel@peuster.de>"
 
+# wget, curl, dnsutils are just for debugging; may be removed later on
 RUN apt-get update && apt-get install -y \
     net-tools \
     iproute \
@@ -34,7 +35,10 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     python3-pip \
     libboost-python-dev \
-    libcurl4-openssl-dev
+    libcurl4-openssl-dev \
+	wget \
+	curl \
+	dnsutils
 
 # install latest mosquitto
 RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
@@ -44,6 +48,7 @@ RUN apt-get install -y mosquitto-clients
 # install releveant python stuff
 RUN pip3 install azure-iothub-device-client
 RUN pip3 install paho-mqtt
+RUN pip3 install prometheus_client
 
 ADD start.sh start.sh
 RUN chmod +x start.sh
@@ -53,10 +58,7 @@ ADD CC_VNF CC_VNF
 
 ENV IFLOCAL data
 
-# MQTT config
-ENV MQTT_BROKER_HOST 30.0.1.1
-ENV MQTT_BROKER_PORT 1883
-# only for dummy MQTT generator not for MDC APP
-ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
+# by default, don't try to connect to Azure; Use "True" to enable
+ENV ENABLE_CLOUD_CONNECTION False
 
 CMD ./start.sh

@@ -37,21 +37,21 @@ cloudnative_deployment_units:
     image: 'sonatanfv/vnf-rtr-nat:vimemu'
     connection_points:
       - id: data
-        port: 5555  # TODO change
+        # port: 5555  # TODO change
       - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
         #interface: ipv4
-        #address: "30.0.1.254/24"  # FIXME only works on emulator
-        port: 9999
+        ip: "30.0.0.254/24"  # FIXME only works on emulator
+        # port: 9999
         
 connection_points:
   - id: data
     interface: ipv4
     type: serviceendpoint
-    port: 5555  # TODO change
+    # port: 5555  # TODO change
   - id: uplink  # FIXME this won't work in a K8s CNF, but on the emulator we can do it
     interface: ipv4
     type: external
-    port: 9999
+    # port: 9999
     
 virtual_links:
   - id: data

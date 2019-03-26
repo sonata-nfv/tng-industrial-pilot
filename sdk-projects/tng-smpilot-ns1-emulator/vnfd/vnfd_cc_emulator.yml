@@ -35,43 +35,32 @@ cloudnative_deployment_units:
     # CDU1: broker
     image: 'sonatanfv/vnf-cc-broker:vimemu'
     connection_points:
-      - id: mgmt
-        port: 22
       - id: data
-        port: 5555  # TODO change
+        # port: 5555  # TODO change
   - id: cdu02
     # CDU2: processor
     image: 'sonatanfv/vnf-cc-processor:vimemu'
     connection_points:
-      - id: mgmt
-        port: 22
       - id: data
-        port: 5555  # TODO change
+        # port: 5555  # TODO change
   - id: cdu03
-    # CDU3: database
-    image: 'ubuntu:trusty'
+    # CDU3: mqttexporter
+    image: 'sonatanfv/vnf-cc-mqttexporter:vimemu'
     connection_points:
-      - id: mgmt
-        port: 22
       - id: data
-        port: 5555  # TODO change
+  - id: cdu04
+    # CDU4: database
+    image: 'sonatanfv/vnf-cc-database:vimemu'
+    connection_points:
+      - id: data
+        port: 9090
+        publish: {9090: 9090}
 connection_points:
-  - id: mgmt
-    interface: ipv4
-    type: management
-    port: 22  # TODO change
   - id: data
     interface: ipv4
     type: serviceendpoint
-    port: 5555  # TODO change
+    # port: 5555  # TODO change
 virtual_links:
-  - id: mgmt
-    connectivity_type: E-Tree
-    connection_points_reference:
-      - mgmt
-      - 'cdu01:mgmt'
-      - 'cdu02:mgmt'
-      - 'cdu03:mgmt'
   - id: data
     connectivity_type: E-Tree
     connection_points_reference:
@@ -79,3 +68,4 @@ virtual_links:
       - 'cdu01:data'
       - 'cdu02:data'
       - 'cdu03:data'
+      - 'cdu04:data'

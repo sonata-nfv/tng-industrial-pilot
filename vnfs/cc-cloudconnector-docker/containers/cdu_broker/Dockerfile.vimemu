@@ -38,13 +38,13 @@ RUN apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 RUN apt-get update
 RUN apt-get install -y mosquitto mosquitto-clients
 
-ADD start.sh start.sh
-RUN chmod +x start.sh
+ADD start.vimemu.sh start.vimemu.sh
+RUN chmod +x start.vimemu.sh
 
 ENV IFLOCAL data
 
 # set entry point for emulator (configuration script)
-ENV VIM_EMU_CMD "./start.sh"
+ENV VIM_EMU_CMD "./start.vimemu.sh"
 
 # this has to be /bin/bash for the emulator
 CMD /bin/bash

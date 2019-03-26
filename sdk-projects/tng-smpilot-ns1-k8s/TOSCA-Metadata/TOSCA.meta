@@ -1,9 +1,0 @@
-CSAR-Version: 1.0
-TOSCA-Meta-Version: 1.0
-Entry-Manifest: etsi_manifest.mf
-Created-By: Manuel Peuster (Paderborn University)
-Entry-Definitions: TODO
-
-Content-Type: application/vnd.5gtango.napd
-Name: TOSCA-Metadata/NAPD.yaml
-

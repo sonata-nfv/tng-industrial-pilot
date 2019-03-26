@@ -12,6 +12,10 @@ docker build -t $target_repo/vnf-rtr-nat:k8s -f rtr-nat-ubuntu-docker/containers
 docker build -t $target_repo/vnf-cc-broker:k8s -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile cc-cloudconnector-docker/containers/cdu_broker/
 # CC-CDU02: processor
 docker build -t $target_repo/vnf-cc-processor:k8s -f cc-cloudconnector-docker/containers/cdu_processor/Dockerfile cc-cloudconnector-docker/containers/cdu_processor/
+# CC-CDU03: mqtt exporter
+docker build -t $target_repo/vnf-cc-mqttexporter:k8s -f cc-cloudconnector-docker/containers/cdu_mqttexporter/Dockerfile cc-cloudconnector-docker/containers/cdu_mqttexporter/
+# CC-CDU04: database
+docker build -t $target_repo/vnf-cc-database:k8s -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile cc-cloudconnector-docker/containers/cdu_database/
 # MDC
 docker build -t $target_repo/vnf-mdc:k8s -f mdc-machinedatacollector-docker/containers/Dockerfile mdc-machinedatacollector-docker/containers/
 # DT
@@ -28,6 +32,10 @@ docker build -t $target_repo/vnf-rtr-nat:vimemu -f rtr-nat-ubuntu-docker/contain
 docker build -t $target_repo/vnf-cc-broker:vimemu -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_broker/
 # CC-CDU02: processor
 docker build -t $target_repo/vnf-cc-processor:vimemu -f cc-cloudconnector-docker/containers/cdu_processor/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_processor/
+# CC-CDU03: mqtt exporter
+docker build -t $target_repo/vnf-cc-mqttexporter:vimemu -f cc-cloudconnector-docker/containers/cdu_mqttexporter/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_mqttexporter/
+# CC-CDU04: database
+docker build -t $target_repo/vnf-cc-database:vimemu -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile.vimemu cc-cloudconnector-docker/containers/cdu_database/
 # MDC
 docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-docker/containers/Dockerfile.vimemu mdc-machinedatacollector-docker/containers/
 # DT
