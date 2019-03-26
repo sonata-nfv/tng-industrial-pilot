@@ -111,3 +111,4 @@ ENV/
 .mypy_cache/
 
 
+/home/ubuntu/stack-docker/config/elasticsearch/elasticsearch.keystore

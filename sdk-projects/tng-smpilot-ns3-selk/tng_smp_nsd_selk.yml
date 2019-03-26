@@ -1,0 +1,69 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+vendor: eu.5gtango
+name: tng-smp-nsd-selk
+version: '0.6'
+author: 5GTANGO Developer
+description: Enhanced IDPS (SF+ELK)
+network_functions:
+- vnf_id: vnf0
+  vnf_vendor: eu.5gtango
+  vnf_name: sf-vnf0
+  vnf_version: '0.6'
+- vnf_id: vnf1
+  vnf_vendor: eu.5gtango
+  vnf_name: elk-vnf1
+  vnf_version: '0.6'
+connection_points:
+- id: mgmt
+  interface: ipv4
+  type: management
+- id: wan
+  interface: ipv4
+  type: external
+- id: lan
+  interface: ipv4
+  type: external
+virtual_links:
+- id: mgmt
+  connectivity_type: E-LAN
+  connection_points_reference:
+  - vnf0:mgmt
+  - vnf1:mgmt
+  - mgmt
+- id: wan-2-vnf0
+  connectivity_type: E-Line
+  connection_points_reference:
+  - wan
+  - vnf0:wan
+- connectivity_type: E-Line
+  id: vnf0-2-lan
+  connection_points_reference:
+  - vnf0:lan
+  - lan
+forwarding_graphs:
+- fg_id: fg01
+  number_of_endpoints: 3
+  number_of_virtual_links: 3
+  constituent_virtual_links:
+  - wan-2-vnf0
+  - vnf0-2-vnf1
+  - vnf0-2-lan
+  constituent_vnfs:
+  - vnf0
+  - vnf1
+  network_forwarding_paths:
+  - fp_id: fg01:fp01
+    policy: none
+    connection_points:
+    - connection_point_ref: wan
+      position: 1
+    - connection_point_ref: vnf0:wan
+      position: 2
+    - connection_point_ref: vnf0:lan
+      position: 3
+    - connection_point_ref: vnf0:vnf1
+      position: 4
+    - connection_point_ref: lan
+      position: 5
+    - connection_point_ref: mgmt
+      position: 6
