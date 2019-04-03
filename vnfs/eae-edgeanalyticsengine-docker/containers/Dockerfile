@@ -35,4 +35,6 @@ FROM grafana/grafana
 LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 
 
-CMD ./start.sh
+# set admin password to "tango" (to avoid initial prompt for password change)
+ENV GF_SECURITY_ADMIN_PASSWORD tango
+
