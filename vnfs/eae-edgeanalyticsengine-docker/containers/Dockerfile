@@ -37,6 +37,5 @@ LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 # copy config files for provisioning and pre-configuring the data source and dashboard
 COPY datasource.yml /etc/grafana/provisioning/datasources/datasource.yml
 
-# set admin password to "tango" (to avoid initial prompt for password change)
+# set Grafana admin password to "tango" (to avoid initial prompt for password change)
 ENV GF_SECURITY_ADMIN_PASSWORD tango
-
