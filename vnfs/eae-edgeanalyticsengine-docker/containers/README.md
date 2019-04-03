@@ -6,6 +6,24 @@ The EAE will leverage the existing Grafana Docker container to provide a nice vi
 
 ## Setup
 
+Here, focus on `:k8s` images. Should work similarly for `:vimemu`-tagged images. 
+
+From `vnfs` folder:
+
+### Build and start CC Prometheus DB
+
+```bash
+# build Prometheus CDU
+docker build -t sonatanfv/vnf-cc-database:k8s -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile cc-cloudconnector-docker/containers/cdu_database/
+
+# start
+docker run -d -p 9090:9090 --rm --name vnf-cc-database sonatanfv/vnf-cc-database:k8s
+```
+
+The Prometheus dashboard should now be available at `<docker-machine ip>:9090` (typically `localhost`).
+
+###Build EAE
+
 Build from `vnfs` folder:
 
 ```bash
