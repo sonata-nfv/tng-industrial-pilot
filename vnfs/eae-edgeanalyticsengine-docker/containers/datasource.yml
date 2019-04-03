@@ -1,0 +1,11 @@
+# data source: CC Prometheus DB
+apiVersion: 1
+
+datasources:
+  - name: cc_database
+    type: prometheus
+    access: direct
+    # this URL needs to point to the CC
+    url: 'http://192.168.99.100:9090'
+    jsonData:
+      timeInterval: '1s'
