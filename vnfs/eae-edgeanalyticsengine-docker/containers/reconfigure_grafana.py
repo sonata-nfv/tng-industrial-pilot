@@ -31,13 +31,28 @@
 
 
 import os
-import oyaml as yaml
+import logging
+import oyaml as yaml        # ordered yaml to avoid reordering of config files
 
 
-# TODO: use proper env var name https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Integration-with-SP#update-250319-implementation-in-the-sp
-cc_db_url = os.getenv("CC_URL", "localhost")
-
-# also get port
-# use that to replace the URL in /etc/grafana/provisioning/datasources/datasource.yml
+log = logging.getLogger(__name__)
 
 
+# get the IP and port of the CC's Prometheus DB from env var
+# var name format: vendor_name_version_cp-id_ip/port
+# see https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Integration-with-SP
+cc_db_var_name = "eu.5gtango_smpilot-cc_0.1_prometheus"
+log.info("Reading IP and port of {} from env vars".format(cc_db_var_name))
+cc_db_ip = os.getenv(cc_db_var_name + "_ip", "localhost")
+cc_db_port = os.getenv(cc_db_var_name + "_port", "9090")
+cc_db_url = "http://{}:{}".format(cc_db_ip, cc_db_port)
+
+# use that to replace the URL in the configuration
+datasource_path = "/etc/grafana/provisioning/datasources/datasource.yml"
+log.info("Updating configuration in {} accordingly".format(datasource_path))
+with open(datasource_path) as f:
+    ds = yaml.load(f, Loader=yaml.FullLoader)
+    log.debug("Replacing datasource URL")
+    ds['datasources'][0]['url'] = cc_db_url
+
+log.info("Done updating Grafana configurations")
