@@ -40,6 +40,8 @@ docker run -d -p 3000:3000 --rm --name vnf-eae sonatanfv/vnf-eae:k8s
 
 Visit Grafana GUI at `<docker-host>:3000`. On Linux `localhost` and on Windows typically `192.168.99.100`. Login with admin/admin. Login with `admin`/`tango`.
 
+*TODO: Set env var to point to correct IP and port of CC Prometheus DB.*
+
 ### Stop
 
 ```bash
