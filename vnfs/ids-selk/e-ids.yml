@@ -3,8 +3,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: suricata-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     app: ns3sf
 data:
   suricata.yaml: |
@@ -41,8 +44,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: kibana-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     app: ns3elk
 data:
   kibana.yml: |
@@ -56,8 +62,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     app: ns3elk
 data:
   beats2elastic.conf: | 
@@ -83,8 +92,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: filebeat-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     app: ns3sf
 data:
   filebeat.yml: | 
@@ -124,9 +136,12 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3elk
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3elk
 spec:
   volumes:
@@ -192,7 +207,7 @@ spec:
       - 10.240.144.10 # Flannel plugin
       - 8.8.8.8 # External name resolution
     searches:
-      - smp-ns3.svc.cluster.local
+      - sm.svc.cluster.local
       - svc.cluster.local
     options:
       - name: ndots
@@ -203,9 +218,12 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3sf
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     name: ns3sf
 spec:
   volumes:
@@ -250,9 +268,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3l
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3l
 spec:
   type: NodePort
@@ -272,9 +293,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3e
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3e
 spec:
   type: NodePort
@@ -290,9 +314,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3k
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3k
 spec:
   type: NodePort
