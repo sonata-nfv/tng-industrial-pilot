@@ -1,0 +1,31 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: flannel-etcdctl
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: flannel-etcdctl
+        image: quay.io/coreos/etcd:latest
+        command: ["etcdctl"]
+        args: ["--endpoints=https://127.0.0.1:2379", "--ca-file", "/etc/kubernetes/ssl/kube-ca.pem", "--cert-file", "/etc/kubernetes/ssl/kube-node.pem", "--key-file", "/etc/kubernetes/ssl/kube-node-key.pem", "set", "/flannel2/network/config", '{ "Network": "10.5.0.0/16", "Backend": {"Type": "vxlan", "VNI": 2}}']
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/kubernetes
+      hostNetwork: true
+      restartPolicy: Never
+      tolerations:
+        - key: node-role.kubernetes.io/controlplane
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/etcd
+          operator: Exists
+          effect: NoExecute
+      volumes:
+        - name: certs
+          hostPath:
+            path: /etc/kubernetes
+            type: Directory

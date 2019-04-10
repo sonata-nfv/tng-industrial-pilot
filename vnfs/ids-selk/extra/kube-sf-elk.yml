@@ -140,7 +140,7 @@ spec:
       name: kibana-static-configfile
   containers:
   - name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
     imagePullPolicy: IfNotPresent
     env:
     - name: ES_JAVA_OPTS
@@ -155,7 +155,7 @@ spec:
     - containerPort: 9300 # for Nodes communication
       protocol: TCP
   - name: kibana
-    image: docker.elastic.co/kibana/kibana:6.6.2
+    image: docker.elastic.co/kibana/kibana:6.7.0
     imagePullPolicy: IfNotPresent
     env:
     - name: ELASTICSEARCH_HOSTS
@@ -170,7 +170,7 @@ spec:
     - mountPath: /usr/share/kibana/config
       name: kibana-config
   - name: logstash
-    image: docker.elastic.co/logstash/logstash:6.6.2
+    image: docker.elastic.co/logstash/logstash:6.7.0
     imagePullPolicy: IfNotPresent
     env:
     - name: PIPELINE_WORKERS
@@ -225,7 +225,7 @@ spec:
     securityContext:
       privileged: true
   - name: filebeat
-    image: docker.elastic.co/beats/filebeat:6.6.2
+    image: docker.elastic.co/beats/filebeat:6.7.0
     imagePullPolicy: IfNotPresent
     #command: ["/usr/share/filebeat/filebeat"]
     args: [
