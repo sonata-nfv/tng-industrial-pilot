@@ -2,10 +2,54 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: kibana-static-configfile
-  namespace: smp-ns3
+  name: suricata-static-configfile
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     app: ns3sf
+data:
+  suricata.yaml: |
+    outputs.console:
+      enabled: true
+    outputs.eve-logs:
+      enabled: true
+      filename: eve.json
+      filetype: regular
+      append: no
+      types:
+      - alert:
+        metadata: yes
+        tagged-packets: yes 
+      - http:
+        extended: yes
+      - dns:
+        query: yes
+        answer: yes
+      - tls:
+        extended: yes
+        - files:
+          force-magic: no
+          force-hash: [md5, sha256]
+      - ssh
+      - flow 
+    outputs.files:
+      enabled: true
+      filename: /var/log/suricata/suricata.log
+      level: info
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kibana-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    app: ns3elk
 data:
   kibana.yml: |
     server.host: "0"
@@ -18,8 +62,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     app: ns3elk
 data:
   beats2elastic.conf: | 
@@ -45,8 +92,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: filebeat-static-configfile
-  namespace: smp-ns3
+  namespace: sm
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     app: ns3sf
 data:
   filebeat.yml: | 
@@ -67,26 +117,31 @@ data:
     - module: suricata
     setup.dashboards:
       enabled: false
+      #beat: filebeat
+      #directory: build/kibana
     setup.template:
       #enabled: false
       #fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "localhost:30056"
+      host: "localhost:32056"
     output.elasticsearch:
       enabled: false
-      hosts: ["localhost:30092"]
+      hosts: ["localhost:32092"]
     output.logstash:
       enabled: true
-      hosts: ["localhost:30044"]
+      hosts: ["localhost:32044"]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3elk
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3elk
 spec:
   volumes:
@@ -152,7 +207,7 @@ spec:
       - 10.240.144.10 # Flannel plugin
       - 8.8.8.8 # External name resolution
     searches:
-      - smp-ns3.svc.cluster.local
+      - sm.svc.cluster.local
       - svc.cluster.local
     options:
       - name: ndots
@@ -163,9 +218,12 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3sf
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
     name: ns3sf
 spec:
   volumes:
@@ -190,9 +248,10 @@ spec:
     #command: ["/usr/share/filebeat/filebeat"]
     args: [
       #"setup", 
-      #"--template",
-      "-c", "/usr/share/filebeat/config/filebeat.yml",
+      #"--modules=suricata",
       "-e",
+      "-c",
+      "/usr/share/filebeat/config/filebeat.yml",
     ]
     volumeMounts:
     - name: suricata-logs
@@ -209,20 +268,23 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3l
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3l
 spec:
   type: NodePort
   ports:
   - port: 5044
     targetPort: 5044
-    nodePort: 30044 
+    nodePort: 32044 
     name: logstash-beats-inputs
   - port: 9600
     targetPort: 9600
-    nodePort: 30097
+    nodePort: 32097
     name: logstash-api-endpoint
   selector:
     name: ns3elk
@@ -231,16 +293,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3e
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3e
 spec:
   type: NodePort
   ports:
   - port: 9200
     targetPort: 9200
-    nodePort: 30092
+    nodePort: 32092
     #name: elasticsearch
   selector:
     name: ns3elk
@@ -249,16 +314,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: smp-ns3
+  namespace: sm
   name: ns3k
   labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
     name: ns3k
 spec:
   type: NodePort
   ports:
   - port: 5601
     targetPort: 5601
-    nodePort: 30056 
+    nodePort: 32056 
     #name: kibana
   selector:
     name: ns3elk

@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: sm
+  name: ns2s
+  labels:
+    #pilot: sm
+    #ns: ns3
+    #cnf: ids
+    name: ns2s
+spec:
+  volumes:
+  - name: suricata-logs
+    emptyDir: {}
+  containers:
+  - name: suricata
+    image: jasonish/suricata
+    imagePullPolicy: IfNotPresent
+    #env:
+    #- name:
+    #  value: 
+    args: ["-i enp3s0"]
+    securityContext:
+      privileged: true
+    securityContext:
+      privileged: false
+  hostname: ns2s
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet

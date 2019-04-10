@@ -1,0 +1,20 @@
+version: '2'
+services:
+  suricata:
+    image: arocha/ce7suricata:4.1.2
+    container_name: suricata
+    #environment:
+    volumes:
+      - sdata:/var/log/suricata/
+    networks:
+      - smpnet
+
+volumes:
+  sdata:
+    driver: local
+
+networks:
+  smpnet:
+    driver: bridge
+
+# [CREDITS]()

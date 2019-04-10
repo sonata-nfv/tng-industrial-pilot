@@ -1,0 +1,15 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/suricata/eve.json
+filebeat.config.modules:
+  strict.perms: false
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+setup.template.settings:
+  index.number_of_shards: 3
+setup.kibana:
+  host: "localhost:30056"
+output.logstash:
+  hosts: ["localhost:30044"]
