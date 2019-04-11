@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2e
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elasticsearch
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: elasticsearch
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: elasticsearch
+    spec:
+      volumes:
+      - name: esdata
+        emptyDir: {}
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ES_JAVA_OPTS
+          value: -Xms1g -Xmx1g
+        - name: bootstrap.memory_lock
+          value: "true"
+        - name: discovery.type
+          value: single-node
+        ports:
+        - containerPort: 9200 # for REST API
+          protocol: TCP
+        - containerPort: 9300 # for Nodes communication
+          protocol: TCP
+        #hostname: elasticsearch
+        #hostNetwork: false
+        #dnsPolicy: None
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns2e
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elk
+    name: ns2e
+spec:
+  type: NodePort
+  ports:
+  - port: 9200
+    targetPort: 9200
+    nodePort: 32092
+    #name: elasticsearch
+  selector:
+    name: ns2elk

@@ -1,0 +1,70 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2k
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: kibana
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: kibana
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: kibana
+    spec:
+      volumes:
+      - name: kibana-config
+        configMap:  
+          name: kibana-static-configfile
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:6.6.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://localhost:9200"
+        - name: SERVER_NAME
+          value: "kibana"
+        - name: XPACK_MONITORING_ENABLED 
+          value: "true"
+        ports:
+        - containerPort: 5601
+        volumeMounts:
+        - mountPath: /usr/share/kibana/config
+          name: kibana-config
+        #hostname: kibana
+        #hostNetwork: false
+        #dnsPolicy: None
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns2k
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elk
+    name: ns2k
+spec:
+  type: NodePort
+  ports:
+  - port: 5601
+    targetPort: 5601
+    nodePort: 32056 
+    #name: kibana
+  selector:
+    name: ns2k

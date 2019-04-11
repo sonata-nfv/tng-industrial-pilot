@@ -1,0 +1,109 @@
+
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elk
+    app: ns2elk
+data:
+  beats2elastic.conf: | 
+    input {
+      beats {
+        port => 5044
+        codec => "json_lines"
+        #type => "SuricataIDPS"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["localhost:9200"]
+        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        manage_template => false
+        document_type => "%{[@metadata][type]}"
+      }
+      stdout { codec => rubydebug }
+    }
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2l
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: logstash
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: logstash
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: logstash
+    spec:
+      volumes:
+      - name: esdata
+        emptyDir: {}
+      - name: logstash-config
+        configMap:  
+          name: logstash-static-configfile
+      - name: kibana-config
+        configMap:  
+          name: kibana-static-configfile
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:6.6.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PIPELINE_WORKERS
+          value: "2"
+        - name: xpack.monitoring.elasticsearch.url
+          value: "http://localhost:9200"
+        ports:
+        - containerPort: 5044
+        - containerPort: 9600
+        volumeMounts:
+        - mountPath: /usr/share/logstash/pipeline
+          name: logstash-config
+        #hostname: logstash
+        #hostNetwork: false
+        #dnsPolicy: None
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns2l
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elk
+    name: ns2l
+spec:
+  type: NodePort
+  ports:
+  - port: 5044
+    targetPort: 5044
+    nodePort: 32044 
+    name: logstash-beats-inputs
+  - port: 9600
+    targetPort: 9600
+    nodePort: 32097
+    name: logstash-api-endpoint
+  selector:
+    name: ns2l

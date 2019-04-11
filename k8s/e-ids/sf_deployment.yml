@@ -1,0 +1,148 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: suricata-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
+    app: ns3sf
+data:
+  suricata.yaml: |
+    outputs.console:
+      enabled: true
+    outputs.eve-logs:
+      enabled: true
+      filename: eve.json
+      filetype: regular
+      append: no
+      types:
+      - alert:
+        metadata: yes
+        tagged-packets: yes 
+      - http:
+        extended: yes
+      - dns:
+        query: yes
+        answer: yes
+      - tls:
+        extended: yes
+        - files:
+          force-magic: no
+          force-hash: [md5, sha256]
+      - ssh
+      - flow 
+    outputs.files:
+      enabled: true
+      filename: /var/log/suricata/suricata.log
+      level: info
+
+
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: filebeat-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
+    app: ns3sf
+data:
+  filebeat.yml: | 
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+      - /var/log/suricata/eve.json
+    processors: 
+    - add_host_metadata: ~ 
+    - add_cloud_metadata: ~ 
+    filebeat.config:
+      modules:
+        #strict.perms: false
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: true
+    filebeat.modules:
+    - module: suricata
+    setup.dashboards:
+      enabled: false
+      #beat: filebeat
+      #directory: build/kibana
+    setup.template:
+      #enabled: false
+      #fields: "/usr/share/filebeat/fields.yml"
+      settings.index.number_of_shards: 3
+    setup.kibana:
+      host: "localhost:32056"
+    output.elasticsearch:
+      enabled: false
+      hosts: ["localhost:32092"]
+    output.logstash:
+      enabled: true
+      hosts: ["localhost:32044"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2ids
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: ids
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: ids
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: ids
+    spec:
+      volumes:
+      - name: suricata-logs
+        emptyDir: {}
+      - name: filebeat-config
+        configMap:  
+          name: filebeat-static-configfile
+      containers:
+      - name: suricata
+        image: jasonish/suricata
+        imagePullPolicy: IfNotPresent
+        args: ["-i enp3s0"]
+        volumeMounts:
+        - name: suricata-logs
+          mountPath: /var/log/suricata
+        securityContext:
+          privileged: true
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:6.6.2
+        imagePullPolicy: IfNotPresent
+        #command: ["/usr/share/filebeat/filebeat"]
+        args: [
+          #"setup", 
+          #"--modules=suricata",
+          "-e",
+          "-c",
+          "/usr/share/filebeat/config/filebeat.yml",
+        ]
+        volumeMounts:
+        - name: suricata-logs
+          mountPath: /var/log/suricata
+        - name: filebeat-config
+          mountPath: /usr/share/filebeat/config
+        securityContext:
+          privileged: false
+hostname: ns3sf
+hostNetwork: true
+#dnsPolicy: ClusterFirstWithHostNet

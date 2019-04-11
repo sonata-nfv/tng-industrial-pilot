@@ -1,0 +1,332 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: suricata-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
+    app: ns3sf
+data:
+  suricata.yaml: |
+    outputs.console:
+      enabled: true
+    outputs.eve-logs:
+      enabled: true
+      filename: eve.json
+      filetype: regular
+      append: no
+      types:
+      - alert:
+        metadata: yes
+        tagged-packets: yes 
+      - http:
+        extended: yes
+      - dns:
+        query: yes
+        answer: yes
+      - tls:
+        extended: yes
+        - files:
+          force-magic: no
+          force-hash: [md5, sha256]
+      - ssh
+      - flow 
+    outputs.files:
+      enabled: true
+      filename: /var/log/suricata/suricata.log
+      level: info
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kibana-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    app: ns3elk
+data:
+  kibana.yml: |
+    server.host: "0"
+    server.name: kibana
+    elasticsearch.url: http://localhost:9200
+    xpack.monitoring.ui.container.elasticsearch.enabled: true
+
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    app: ns3elk
+data:
+  beats2elastic.conf: | 
+    input {
+      beats {
+        port => 5044
+        codec => "json_lines"
+        #type => "SuricataIDPS"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["localhost:9200"]
+        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        manage_template => false
+        document_type => "%{[@metadata][type]}"
+      }
+      stdout { codec => rubydebug }
+    }
+
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: filebeat-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
+    app: ns3sf
+data:
+  filebeat.yml: | 
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+      - /var/log/suricata/eve.json
+    processors: 
+    - add_host_metadata: ~ 
+    - add_cloud_metadata: ~ 
+    filebeat.config:
+      modules:
+        #strict.perms: false
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: true
+    filebeat.modules:
+    - module: suricata
+    setup.dashboards:
+      enabled: false
+      #beat: filebeat
+      #directory: build/kibana
+    setup.template:
+      #enabled: false
+      #fields: "/usr/share/filebeat/fields.yml"
+      settings.index.number_of_shards: 3
+    setup.kibana:
+      host: "localhost:32056"
+    output.elasticsearch:
+      enabled: false
+      hosts: ["localhost:32092"]
+    output.logstash:
+      enabled: true
+      hosts: ["localhost:32044"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: sm
+  name: ns3elk
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    name: ns3elk
+spec:
+  volumes:
+  - name: esdata
+    emptyDir: {}
+  - name: logstash-config
+    configMap:  
+      name: logstash-static-configfile
+  - name: kibana-config
+    configMap:  
+      name: kibana-static-configfile
+  containers:
+  - name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ES_JAVA_OPTS
+      value: -Xms1g -Xmx1g
+    - name: bootstrap.memory_lock
+      value: "true"
+    - name: discovery.type
+      value: single-node
+    ports:
+    - containerPort: 9200 # for REST API
+      protocol: TCP
+    - containerPort: 9300 # for Nodes communication
+      protocol: TCP
+  - name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.2
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ELASTICSEARCH_HOSTS
+      value: "http://localhost:9200"
+    - name: SERVER_NAME
+      value: "kibana"
+    - name: XPACK_MONITORING_ENABLED 
+      value: "true"
+    ports:
+    - containerPort: 5601
+    volumeMounts:
+    - mountPath: /usr/share/kibana/config
+      name: kibana-config
+  - name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.2
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: PIPELINE_WORKERS
+      value: "2"
+    - name: xpack.monitoring.elasticsearch.url
+      value: "http://localhost:9200"
+    ports:
+    - containerPort: 5044
+    - containerPort: 9600
+    volumeMounts:
+    - mountPath: /usr/share/logstash/pipeline
+      name: logstash-config
+  hostname: ns3elk
+  hostNetwork: false
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 10.96.0.10 # Calico plugin
+      - 10.240.144.10 # Flannel plugin
+      - 8.8.8.8 # External name resolution
+    searches:
+      - sm.svc.cluster.local
+      - svc.cluster.local
+    options:
+      - name: ndots
+        value: "2"
+      - name: edns0
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: sm
+  name: ns3sf
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: ids
+    name: ns3sf
+spec:
+  volumes:
+  - name: suricata-logs
+    emptyDir: {}
+  - name: filebeat-config
+    configMap:  
+      name: filebeat-static-configfile
+  containers:
+  - name: suricata
+    image: jasonish/suricata
+    imagePullPolicy: IfNotPresent
+    args: ["-i enp3s0"]
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /var/log/suricata
+    securityContext:
+      privileged: true
+  - name: filebeat
+    image: docker.elastic.co/beats/filebeat:6.6.2
+    imagePullPolicy: IfNotPresent
+    #command: ["/usr/share/filebeat/filebeat"]
+    args: [
+      #"setup", 
+      #"--modules=suricata",
+      "-e",
+      "-c",
+      "/usr/share/filebeat/config/filebeat.yml",
+    ]
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /var/log/suricata
+    - name: filebeat-config
+      mountPath: /usr/share/filebeat/config
+    securityContext:
+      privileged: false
+  hostname: ns3sf
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns3l
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    name: ns3l
+spec:
+  type: NodePort
+  ports:
+  - port: 5044
+    targetPort: 5044
+    nodePort: 32044 
+    name: logstash-beats-inputs
+  - port: 9600
+    targetPort: 9600
+    nodePort: 32097
+    name: logstash-api-endpoint
+  selector:
+    name: ns3elk
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns3e
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    name: ns3e
+spec:
+  type: NodePort
+  ports:
+  - port: 9200
+    targetPort: 9200
+    nodePort: 32092
+    #name: elasticsearch
+  selector:
+    name: ns3elk
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sm
+  name: ns3k
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elk
+    name: ns3k
+spec:
+  type: NodePort
+  ports:
+  - port: 5601
+    targetPort: 5601
+    nodePort: 32056 
+    #name: kibana
+  selector:
+    name: ns3elk
