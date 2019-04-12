@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2e
+  name: elasticsearch
   labels:
     pilot: sm
     ns: ns2
@@ -46,23 +46,33 @@ spec:
         #dnsPolicy: None
 
 
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  namespace: sm
-  name: ns2e
+  name: elasticsearch
   labels:
     pilot: sm
     ns: ns2
-    cnf: elk
-    name: ns2e
+    cnf: elasticsearch
+  namespace: sm
 spec:
-  type: NodePort
-  ports:
-  - port: 9200
-    targetPort: 9200
-    nodePort: 32092
-    #name: elasticsearch
   selector:
-    name: ns2elk
+    cnf: elasticsearch
+  ports:
+  - name: es9200
+    protocol: TCP
+    port: 9200
+    targetPort: 9200
+  - name: es9300
+    protocol: TCP
+    port: 9300
+    targetPort: 9300
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

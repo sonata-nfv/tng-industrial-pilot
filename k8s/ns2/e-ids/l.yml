@@ -1,4 +1,3 @@
-
 ---  
 kind: ConfigMap
 apiVersion: v1
@@ -8,8 +7,7 @@ metadata:
   labels:
     pilot: sm
     ns: ns2
-    cnf: elk
-    app: ns2elk
+    cnf: logstash
 data:
   beats2elastic.conf: | 
     input {
@@ -21,7 +19,7 @@ data:
     }
     output {
       elasticsearch {
-        hosts => ["localhost:9200"]
+        hosts => ["elasticsearch:9200"]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
         manage_template => false
         document_type => "%{[@metadata][type]}"
@@ -34,7 +32,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2l
+  name: logstash
   labels:
     pilot: sm
     ns: ns2
@@ -60,9 +58,6 @@ spec:
       - name: logstash-config
         configMap:  
           name: logstash-static-configfile
-      - name: kibana-config
-        configMap:  
-          name: kibana-static-configfile
       containers:
       - name: logstash
         image: docker.elastic.co/logstash/logstash:6.6.2
@@ -71,7 +66,7 @@ spec:
         - name: PIPELINE_WORKERS
           value: "2"
         - name: xpack.monitoring.elasticsearch.url
-          value: "http://localhost:9200"
+          value: "http://elasticsearch:9200"
         ports:
         - containerPort: 5044
         - containerPort: 9600
@@ -82,28 +77,33 @@ spec:
         #hostNetwork: false
         #dnsPolicy: None
 
-
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  namespace: sm
-  name: ns2l
+  name: logstash
   labels:
     pilot: sm
     ns: ns2
-    cnf: elk
-    name: ns2l
+    cnf: logstash
+  namespace: sm
 spec:
-  type: NodePort
-  ports:
-  - port: 5044
-    targetPort: 5044
-    nodePort: 32044 
-    name: logstash-beats-inputs
-  - port: 9600
-    targetPort: 9600
-    nodePort: 32097
-    name: logstash-api-endpoint
   selector:
-    name: ns2l
+    cnf: logstash
+  ports:
+  - name: logstash5044
+    protocol: TCP
+    port: 5044
+    targetPort: 5044
+  - name: logstash9600
+    protocol: TCP
+    port: 9600
+    targetPort: 9600
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

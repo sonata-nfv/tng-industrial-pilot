@@ -1,9 +1,25 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kibana-static-configfile
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: kibana
+  namespace: sm
+data:
+  kibana.yml: |
+    server.host: "0"
+    server.name: kibana
+    elasticsearch.url: http://elasticsearch:9200
+    xpack.monitoring.ui.container.elasticsearch.enabled: true
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2k
+  name: kibana
   labels:
     pilot: sm
     ns: ns2
@@ -33,7 +49,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_HOSTS
-          value: "http://localhost:9200"
+          value: "http://elasticsearch:9200"
         - name: SERVER_NAME
           value: "kibana"
         - name: XPACK_MONITORING_ENABLED 
@@ -48,23 +64,28 @@ spec:
         #dnsPolicy: None
 
 
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  namespace: sm
-  name: ns2k
+  name: kibana
   labels:
     pilot: sm
     ns: ns2
-    cnf: elk
-    name: ns2k
+    cnf: kibana
+  namespace: sm
 spec:
-  type: NodePort
-  ports:
-  - port: 5601
-    targetPort: 5601
-    nodePort: 32056 
-    #name: kibana
   selector:
-    name: ns2k
+    cnf: kibana
+  ports:
+  - protocol: TCP
+    port: 5601
+    targetPort: 5601
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

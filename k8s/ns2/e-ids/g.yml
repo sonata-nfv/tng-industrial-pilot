@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2g
+  name: grafana
   labels:
     pilot: sm
     ns: ns2
@@ -33,23 +33,28 @@ spec:
         - containerPort: 3000
 
 
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  namespace: sm
-  name: ns3k
+  name: grafana
   labels:
     pilot: sm
     ns: ns2
-    cnf: g
-    name: ns3g
+    cnf: grafana
+  namespace: sm
 spec:
-  type: NodePort
-  ports:
-  - port: 5601
-    targetPort: 5601
-    nodePort: 32056 
-    #name: kibana
   selector:
-    name: ns3g
+    cnf: grafana
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

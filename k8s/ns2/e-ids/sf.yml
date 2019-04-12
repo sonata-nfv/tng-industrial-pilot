@@ -8,7 +8,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-    app: ns2sf
 data:
   suricata.yaml: |
     outputs.console:
@@ -50,7 +49,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-    app: ns2sf
 data:
   filebeat.yml: | 
     filebeat.inputs:
@@ -77,13 +75,13 @@ data:
       #fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "localhost:32056"
+      host: "kibana:32056"
     output.elasticsearch:
       enabled: false
-      hosts: ["localhost:32092"]
+      hosts: ["elasticsearch:32092"]
     output.logstash:
       enabled: true
-      hosts: ["localhost:32044"]
+      hosts: ["logstash:32044"]
 
 
 ---
