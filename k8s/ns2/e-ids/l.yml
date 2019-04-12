@@ -60,7 +60,7 @@ spec:
           name: logstash-static-configfile
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:6.6.2
+        image: docker.elastic.co/logstash/logstash:6.7.0
         imagePullPolicy: IfNotPresent
         env:
         - name: PIPELINE_WORKERS
