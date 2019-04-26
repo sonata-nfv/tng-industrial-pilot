@@ -7,7 +7,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-  namespace: sm
 spec:
   replicas: 1
   selector:
