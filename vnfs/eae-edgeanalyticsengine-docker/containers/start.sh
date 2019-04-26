@@ -25,7 +25,4 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-
-echo "EAE: Reconfiguring Grafana based on env vars"
-python3 reconfigure_grafana.py
-echo "EAE: Starting Grafana..."
+# empty for now
