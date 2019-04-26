@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elasticsearch
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: elasticsearch
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: elasticsearch
+    spec:
+      volumes:
+      - name: esdata
+        emptyDir: {}
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ES_JAVA_OPTS
+          value: -Xms1g -Xmx1g
+        - name: bootstrap.memory_lock
+          value: "true"
+        - name: discovery.type
+          value: single-node
+        ports:
+        - containerPort: 9200 # for REST API
+          protocol: TCP
+        - containerPort: 9300 # for Nodes communication
+          protocol: TCP
+        #hostname: elasticsearch
+        #hostNetwork: false
+        #dnsPolicy: None
+
+
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: elasticsearch
+  namespace: sm
+spec:
+  selector:
+    cnf: elasticsearch
+  ports:
+  - name: es9200
+    protocol: TCP
+    port: 9200
+    targetPort: 9200
+  - name: es9300
+    protocol: TCP
+    port: 9300
+    targetPort: 9300
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

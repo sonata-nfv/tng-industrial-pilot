@@ -1,0 +1,109 @@
+---  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: logstash-static-configfile
+  namespace: sm
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: logstash
+data:
+  beats2elastic.conf: | 
+    input {
+      beats {
+        port => 5044
+        codec => "json_lines"
+        #type => "SuricataIDPS"
+      }
+    }
+    output {
+      elasticsearch {
+        hosts => ["elasticsearch:9200"]
+        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+        manage_template => false
+        document_type => "%{[@metadata][type]}"
+      }
+      stdout { codec => rubydebug }
+    }
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: logstash
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: logstash
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: logstash
+    spec:
+      volumes:
+      - name: esdata
+        emptyDir: {}
+      - name: logstash-config
+        configMap:  
+          name: logstash-static-configfile
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:6.7.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PIPELINE_WORKERS
+          value: "2"
+        - name: xpack.monitoring.elasticsearch.url
+          value: "http://elasticsearch:9200"
+        ports:
+        - containerPort: 5044
+        - containerPort: 9600
+        volumeMounts:
+        - mountPath: /usr/share/logstash/pipeline
+          name: logstash-config
+        #hostname: logstash
+        #hostNetwork: false
+        #dnsPolicy: None
+
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: logstash
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: logstash
+  namespace: sm
+spec:
+  selector:
+    cnf: logstash
+  ports:
+  - name: logstash5044
+    protocol: TCP
+    port: 5044
+    targetPort: 5044
+  - name: logstash9600
+    protocol: TCP
+    port: 9600
+    targetPort: 9600
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x

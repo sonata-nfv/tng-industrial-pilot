@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: grafana
+  namespace: sm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: grafana
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        imagePullPolicy: IfNotPresent
+        #env:
+        #- name: ELASTICSEARCH_HOSTS
+        #  value: "http://localhost:9200"
+        ports:
+        - containerPort: 3000
+
+
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: grafana
+  namespace: sm
+spec:
+  selector:
+    cnf: grafana
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  #clusterIP: 10.x.x.x
+  #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
+  type: LoadBalancer
+#status:
+  #loadBalancer:
+    #ingress:
+    #- ip: 172.31.14.x
