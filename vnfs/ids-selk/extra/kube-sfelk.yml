@@ -1,0 +1,130 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: smp-dev
+  name: ns3sfelk
+  labels:
+    name: ns3sfelk
+spec:
+  volumes:
+  - name: esdata
+    emptyDir: {}
+  - name: suricata-logs
+    emptyDir: {}
+  hostAliases:
+  - ip: "127.0.0.1"
+    hostnames:
+    - "logstash"
+    - "logstash"
+    hostnames:
+    - "elasticsearch"
+    - "elasticsearch"
+    hostnames:
+    - "kibana"
+    - "kibana"
+  containers:
+  - name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ES_JAVA_OPTS
+      value: -Xms1g -Xmx1g
+    - name: bootstrap.memory_lock
+      value: "true"
+    - name: discovery.type
+      value: single-node
+    ports:
+    - containerPort: 9200 # for REST API
+      protocol: TCP
+    - containerPort: 9300 # for Nodes communication
+      protocol: TCP
+  - name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: elasticsearch.hosts
+      value: http://elasticsearch:9200
+    - name: server.name
+      value: kibana
+    ports:
+    - containerPort: 5601
+  - name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: PIPELINE_WORKERS
+      value: '"2"'
+    - name: xpack.monitoring.elasticsearch.url
+      value: http://elasticsearch:9200
+    ports:
+    - containerPort: 5044
+    - containerPort: 9600
+  - name: suricata
+    image: jasonish/suricata
+    imagePullPolicy: IfNotPresent
+    args: ["-i enp3s0"]
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /var/log/suricata
+  - name: filebeat
+    image: docker.elastic.co/beats/filebeat:6.6.2
+    imagePullPolicy: IfNotPresent
+    args: [
+      "setup", 
+      "-c", "/usr/share/filebeat/filebeat.yml",
+      "-E", "setup.dashboards.enabled=true",
+      "-E", "setup.kibana.host=kibana:5601",
+      "-E", "setup.template.enabled=false",
+#      "-E", "output.elasticsearch.enabled=false",
+#      "-E", "output.logstash.enabled=true",
+#      "-E", "output.logstash.hosts=[logstash:5044]",
+      "-e",
+      "&&",
+      "filebeat",
+      "modules", 
+      "enable",
+      "suricata"
+    ]
+    env:
+    - name: output.logstash.hosts
+      value: logstash:5044
+    - name: setup.kibana.host
+      value: kibana:5601
+    volumeMounts:
+    - name: suricata-logs
+      mountPath: /usr/share/filebeat/logs
+  hostname: ns3sfelk
+  hostNetwork: true
+#  dnsPolicy: ClusterFirstWithHostNet
+# dnsPolicy: "None"
+# dnsConfig:
+#    nameservers:
+#    - 8.8.8.8
+#    - 9.9.9.9
+#   searches:
+#    - smp-dev.svc.cluster.local
+#    - my.dns.search.suffix
+#  subdomain: smp-dev
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: smp-dev
+  name: ns3sfelk
+  labels:
+    name: ns3sfelk
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+    name: elasticsearch
+  - port: 5601
+    targetPort: 5601
+    name: kibana
+  - port: 5044
+    targetPort: 5044
+    name: logstash
+  selector:
+    name: ns3sfelk

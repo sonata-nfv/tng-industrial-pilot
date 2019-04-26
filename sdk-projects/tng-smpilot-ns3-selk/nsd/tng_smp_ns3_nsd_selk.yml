@@ -1,18 +1,18 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
-name: tng-smp-nsd-selk
-version: '0.6'
+name: tng-smp-ns3-nsd-selk
+version: '0.1'
 author: 5GTANGO Developer
 description: Enhanced IDPS (SF+ELK)
 network_functions:
-- vnf_id: vnf0
-  vnf_vendor: eu.5gtango
-  vnf_name: sf-vnf0
-  vnf_version: '0.6'
 - vnf_id: vnf1
   vnf_vendor: eu.5gtango
-  vnf_name: elk-vnf1
-  vnf_version: '0.6'
+  vnf_name: sf-vnf2
+  vnf_version: '0.1'
+- vnf_id: vnf2
+  vnf_vendor: eu.5gtango
+  vnf_name: elk-vnf2
+  vnf_version: '0.1'
 connection_points:
 - id: mgmt
   interface: ipv4
@@ -27,41 +27,41 @@ virtual_links:
 - id: mgmt
   connectivity_type: E-LAN
   connection_points_reference:
-  - vnf0:mgmt
   - vnf1:mgmt
+  - vnf2:mgmt
   - mgmt
-- id: wan-2-vnf0
+- id: wan-2-vnf1
   connectivity_type: E-Line
   connection_points_reference:
   - wan
-  - vnf0:wan
+  - vnf1:wan
 - connectivity_type: E-Line
-  id: vnf0-2-lan
+  id: vnf1-2-lan
   connection_points_reference:
-  - vnf0:lan
+  - vnf1:lan
   - lan
 forwarding_graphs:
 - fg_id: fg01
   number_of_endpoints: 3
   number_of_virtual_links: 3
   constituent_virtual_links:
-  - wan-2-vnf0
-  - vnf0-2-vnf1
-  - vnf0-2-lan
+  - wan-2-vnf1
+  - vnf1-2-vnf2
+  - vnf1-2-lan
   constituent_vnfs:
-  - vnf0
   - vnf1
+  - vnf2
   network_forwarding_paths:
   - fp_id: fg01:fp01
     policy: none
     connection_points:
     - connection_point_ref: wan
       position: 1
-    - connection_point_ref: vnf0:wan
+    - connection_point_ref: vnf1:wan
       position: 2
-    - connection_point_ref: vnf0:lan
+    - connection_point_ref: vnf1:lan
       position: 3
-    - connection_point_ref: vnf0:vnf1
+    - connection_point_ref: vnf1:vnf2
       position: 4
     - connection_point_ref: lan
       position: 5

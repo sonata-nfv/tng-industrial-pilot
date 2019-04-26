@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: smp-dev
+  name: ns3-elk
+  labels:
+    name: ns3-elk
+spec:
+  volumes:
+  - name: esdata
+    emptyDir: {}
+  - name: suricata-logs
+    emptyDir: {}  
+  containers:
+  - name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ES_JAVA_OPTS
+      value: -Xms1g -Xmx1g
+    - name: bootstrap.memory_lock
+      value: "true"
+    - name: discovery.type
+      value: single-node
+    ports:
+    - containerPort: 9200 # for REST API
+      protocol: TCP
+    - containerPort: 9300 # for Nodes communication
+      protocol: TCP
+  - name: kibana
+    image: docker.elastic.co/kibana/kibana:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: ELASTICSEARCH_URL
+      value: '"http://elasticsearch:9200"'
+    ports:
+    - containerPort: 5601
+  - name: logstash
+    image: docker.elastic.co/logstash/logstash:6.6.1
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: PIPELINE_WORKERS
+      value: '"2"'
+    - name: xpack.monitoring.elasticsearch.url
+      value: '"http://elasticsearch:9200"'
+    ports:
+    - containerPort: 5044
+  restartPolicy: Never
+  hostNetwork: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: smp-dev
+  name: ns3-elk
+  labels:
+    name: ns3-elk
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+    name: elasticsearch
+  - port: 5601
+    targetPort: 5601
+    name: kibana
+  - port: 5044
+    targetPort: 5044
+    name: logstash
+  selector:
+    name: ns3-elk
