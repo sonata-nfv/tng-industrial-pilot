@@ -1,11 +1,11 @@
 apiVersion: 1
 
 providers:
-- name: 'default'
+- name: 'cc_database'
   orgId: 1
   folder: ''
   type: file
   disableDeletion: false
   updateIntervalSeconds: 10 #how often Grafana will scan for changed dashboards
   options:
-    path: ../../docker-prometheus-monitoring_rev7.json
+    path: /var/lib/grafana/dashboards
