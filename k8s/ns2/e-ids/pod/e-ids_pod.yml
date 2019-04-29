@@ -39,53 +39,8 @@ data:
       filename: /var/log/suricata/suricata.log
       level: info
 
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: kibana-static-configfile
-  namespace: sm
-  labels:
-    pilot: sm
-    ns: ns3
-    cnf: elk
-    app: ns3elk
-data:
-  kibana.yml: |
-    server.host: "0"
-    server.name: kibana
-    elasticsearch.url: http://localhost:9200
-    xpack.monitoring.ui.container.elasticsearch.enabled: true
 
----  
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: logstash-static-configfile
-  namespace: sm
-  labels:
-    pilot: sm
-    ns: ns3
-    cnf: elk
-    app: ns3elk
-data:
-  beats2elastic.conf: | 
-    input {
-      beats {
-        port => 5044
-        codec => "json_lines"
-        #type => "SuricataIDPS"
-      }
-    }
-    output {
-      elasticsearch {
-        hosts => ["localhost:9200"]
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-        manage_template => false
-        document_type => "%{[@metadata][type]}"
-      }
-      stdout { codec => rubydebug }
-    }
+
 
 ---  
 kind: ConfigMap
