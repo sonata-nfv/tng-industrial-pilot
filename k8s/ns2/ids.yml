@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2ids
+  name: ns2-ids-deployment
   labels:
     pilot: sm
     ns: ns2
