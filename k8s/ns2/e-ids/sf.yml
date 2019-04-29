@@ -3,11 +3,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: suricata-static-configfile
-  namespace: sm
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
+  namespace: e-ids
 data:
   suricata.yaml: |
     outputs.console:
@@ -44,11 +44,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: filebeat-static-configfile
-  namespace: sm
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
+  namespace: e-ids
 data:
   filebeat.yml: | 
     filebeat.inputs:
@@ -88,13 +88,12 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: sm
-  name: ns2sf
+  name: ns2-suricata-filebeat-pod
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
-    name: ns2sf
+  namespace: e-ids
 spec:
   volumes:
   - name: suricata-logs
@@ -113,7 +112,7 @@ spec:
     securityContext:
       privileged: true
   - name: filebeat
-    image: docker.elastic.co/beats/filebeat:6.7.0
+    image: docker.elastic.co/beats/filebeat:6.7.1
     imagePullPolicy: IfNotPresent
     #command: ["/usr/share/filebeat/filebeat"]
     args: [
@@ -130,6 +129,6 @@ spec:
       mountPath: /usr/share/filebeat/config
     securityContext:
       privileged: false
-  hostname: ns2sf
+  hostname: suricata
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet

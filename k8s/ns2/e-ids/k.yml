@@ -7,7 +7,7 @@ metadata:
     pilot: sm
     ns: ns3
     cnf: kibana
-  namespace: sm
+  namespace: e-ids
 data:
   kibana.yml: |
     server.host: "0"
@@ -19,12 +19,12 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kibana
+  name: ns2-kibana-deployment
   labels:
     pilot: sm
     ns: ns2
     cnf: kibana
-  namespace: sm
+  namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -45,7 +45,7 @@ spec:
           name: kibana-static-configfile
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:6.7.0
+        image: docker.elastic.co/kibana/kibana:6.7.1
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_HOSTS
@@ -59,22 +59,23 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/kibana/config
           name: kibana-config
-        #hostname: kibana
-        #hostNetwork: false
-        #dnsPolicy: None
+      hostAliases:
+      - ip: 126.7.1.1
+        hostnames:
+        - kibana
+      #dnsPolicy: None
+      #hostNetwork: false
 
-
-#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: kibana
+  name: ns2-kibana-deployment
   labels:
     pilot: sm
     ns: ns2
     cnf: kibana
-  namespace: sm
+  namespace: e-ids
 spec:
   selector:
     cnf: kibana
@@ -89,3 +90,5 @@ spec:
   #loadBalancer:
     #ingress:
     #- ip: 172.31.14.x
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+ 

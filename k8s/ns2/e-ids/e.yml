@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: elasticsearch
+  name: ns2-elasticsearch-deployment
   labels:
     pilot: sm
     ns: ns2
     cnf: elasticsearch
-  namespace: sm
+  namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -27,7 +27,7 @@ spec:
         emptyDir: {}
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.7.0
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
         imagePullPolicy: IfNotPresent
         env:
         - name: ES_JAVA_OPTS
@@ -41,22 +41,24 @@ spec:
           protocol: TCP
         - containerPort: 9300 # for Nodes communication
           protocol: TCP
-        #hostname: elasticsearch
-        #hostNetwork: false
-        #dnsPolicy: None
+      hostAliases:
+      - ip: 126.7.1.1
+        hostnames:
+        - elasticsearch
+      #dnsPolicy: None
+      #hostNetwork: false
 
 
-#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: elasticsearch
+  name: ns2-elasticsearch-service
   labels:
     pilot: sm
     ns: ns2
     cnf: elasticsearch
-  namespace: sm
+  namespace: e-ids
 spec:
   selector:
     cnf: elasticsearch
@@ -76,3 +78,5 @@ spec:
   #loadBalancer:
     #ingress:
     #- ip: 172.31.14.x
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+ 

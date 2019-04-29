@@ -3,7 +3,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  namespace: sm
+  namespace: e-ids
   labels:
     pilot: sm
     ns: ns2
@@ -32,12 +32,12 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: logstash
+  name: ns2-logstash-deployment
   labels:
     pilot: sm
     ns: ns2
     cnf: logstash
-  namespace: sm
+  namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -60,7 +60,7 @@ spec:
           name: logstash-static-configfile
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:6.7.0
+        image: docker.elastic.co/logstash/logstash:6.7.1
         imagePullPolicy: IfNotPresent
         env:
         - name: PIPELINE_WORKERS
@@ -73,21 +73,23 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
-        #hostname: logstash
-        #hostNetwork: false
-        #dnsPolicy: None
+      hostAliases:
+      - ip: 126.7.1.1
+        hostnames:
+        - logstash
+      #dnsPolicy: None
+      #hostNetwork: false
 
-#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: logstash
+  name: ns2-logstash-deployment
   labels:
     pilot: sm
     ns: ns2
     cnf: logstash
-  namespace: sm
+  namespace: e-ids
 spec:
   selector:
     cnf: logstash
@@ -107,3 +109,5 @@ spec:
   #loadBalancer:
     #ingress:
     #- ip: 172.31.14.x
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+ 
