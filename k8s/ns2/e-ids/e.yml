@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2-elasticsearch-deployment
+  name: elasticsearch
   labels:
     pilot: sm
     ns: ns2
@@ -41,10 +41,6 @@ spec:
           protocol: TCP
         - containerPort: 9300 # for Nodes communication
           protocol: TCP
-      hostAliases:
-      - ip: 127.0.0.1
-        hostnames:
-        - elasticsearch
       dnsPolicy: ClusterFirst
       #service.namespace.svc.cluster.local
       hostNetwork: false
@@ -54,7 +50,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: ns2-elasticsearch-service
+  name: elasticsearch
   labels:
     pilot: sm
     ns: ns2
