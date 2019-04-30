@@ -74,11 +74,12 @@ spec:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
       hostAliases:
-      - ip: 126.7.1.1
+      - ip: 127.0.0.1
         hostnames:
         - logstash
-      #dnsPolicy: None
-      #hostNetwork: false
+      dnsPolicy: ClusterFirst
+      #service.namespace.svc.cluster.local
+      hostNetwork: false
 
 ---
 kind: Service

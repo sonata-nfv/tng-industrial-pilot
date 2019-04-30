@@ -60,11 +60,12 @@ spec:
         - mountPath: /usr/share/kibana/config
           name: kibana-config
       hostAliases:
-      - ip: 126.7.1.1
+      - ip: 127.0.0.1
         hostnames:
         - kibana
-      #dnsPolicy: None
-      #hostNetwork: false
+      dnsPolicy: ClusterFirst
+      #service.namespace.svc.cluster.local
+      hostNetwork: false
 
 ---
 kind: Service

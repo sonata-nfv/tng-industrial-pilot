@@ -42,11 +42,12 @@ spec:
         - containerPort: 9300 # for Nodes communication
           protocol: TCP
       hostAliases:
-      - ip: 126.7.1.1
+      - ip: 127.0.0.1
         hostnames:
         - elasticsearch
-      #dnsPolicy: None
-      #hostNetwork: false
+      dnsPolicy: ClusterFirst
+      #service.namespace.svc.cluster.local
+      hostNetwork: false
 
 
 ---
