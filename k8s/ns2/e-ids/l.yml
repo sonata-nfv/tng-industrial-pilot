@@ -13,7 +13,7 @@ data:
     input {
       beats {
         port => 5044
-        codec => "json_lines"
+        #codec => "json"
         #type => "SuricataIDPS"
       }
     }
@@ -32,7 +32,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2-logstash-deployment
+  name: logstash
   labels:
     pilot: sm
     ns: ns2
@@ -81,7 +81,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: ns2-logstash-deployment
+  name: logstash
   labels:
     pilot: sm
     ns: ns2

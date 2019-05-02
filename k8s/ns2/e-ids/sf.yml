@@ -67,7 +67,7 @@ data:
     filebeat.modules:
     - module: suricata
     setup.dashboards:
-      enabled: false
+      enabled: true
       #beat: filebeat
       #directory: build/kibana
     setup.template:
@@ -75,13 +75,15 @@ data:
       #fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "kibana:32056"
+      host: "kibana:5601"
+    xpack.monitoring:
+      enabled: true
     output.elasticsearch:
       enabled: false
-      hosts: ["elasticsearch:32092"]
+      hosts: ["elasticsearch:9200"]
     output.logstash:
       enabled: true
-      hosts: ["logstash:32044"]
+      hosts: ["logstash:5044"]
 
 
 ---

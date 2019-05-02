@@ -14,12 +14,13 @@ data:
     server.name: kibana
     elasticsearch.url: http://elasticsearch:9200
     xpack.monitoring.ui.container.elasticsearch.enabled: true
+    xpack.monitoring.collection.enabled: true
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2-kibana-deployment
+  name: kibana
   labels:
     pilot: sm
     ns: ns2
@@ -67,7 +68,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: ns2-kibana-deployment
+  name: kibana
   labels:
     pilot: sm
     ns: ns2
