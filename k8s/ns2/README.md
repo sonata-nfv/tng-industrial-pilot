@@ -15,10 +15,18 @@ This CNF contains two VDU's:
 
 ## Topology
 
-            +-------+
-            |  MDC  |
-            |  CNF  |
-            +-------+ 
+            +-------+    +-------+
+            |  MDC  |    |  IDS  |
+            |  CNF  |    |  CNF  |
+            +---+---+    +---+---+
+                |            |
+                +------+-----+
+                       ^
+                       |
+  +--------+           | 
+  | EXTERN |-----------+
+  | ATTACK |
+  +---+----+
 
 
 ## How to start

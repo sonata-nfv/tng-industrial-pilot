@@ -1,4 +1,19 @@
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: elasticsearch-static-configfile
+  labels:
+    pilot: sm
+    ns: ns3
+    cnf: elasticsearh
+  #namespace: e-ids
+data:
+  elasticsearch.yml: |
+    xpack.monitoring.collection.enabled: true
+
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,6 +37,10 @@ spec:
         ns: ns2
         cnf: elasticsearch
     spec:
+      volumes:
+      - name: elasticsearch-config
+        configMap:
+          name: elasticsearch-static-configfile
       volumes:
       - name: esdata
         emptyDir: {}
