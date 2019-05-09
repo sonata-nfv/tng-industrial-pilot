@@ -23,11 +23,11 @@ This CNF contains two VDU's:
                 +------+-----+
                        ^
                        |
-  +--------+           | 
+  +--------+           |
   | EXTERN |-----------+
   | ATTACK |
   +---+----+
-                                  
+ 
  
 
 ## How to start

@@ -53,7 +53,7 @@ This CNF is a web application with dashboards for data visualization
   | EXTERN |-----------+                              +-----+ OPERATOR |
   | ATTACK |                                                |          |
   +---+----+                                                +----------+
-                                                                        
+
  
 
 ## How to start
