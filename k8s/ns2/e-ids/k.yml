@@ -14,7 +14,7 @@ data:
     server.name: kibana
     elasticsearch.url: http://elasticsearch:9200
     xpack.monitoring.ui.container.elasticsearch.enabled: true
-    xpack.monitoring.collection.enabled: true
+    xpack.monitoring.collection.enabled: false
 
 ---
 apiVersion: apps/v1
