@@ -15,6 +15,7 @@ This CNF contains two VDU's:
 
 ## Topology
 
+`
             +-------+    +-------+
             |  MDC  |    |  IDS  |
             |  CNF  |    |  CNF  |
@@ -27,7 +28,7 @@ This CNF contains two VDU's:
   | EXTERN |-----------+
   | ATTACK |
   +---+----+
- 
+` 
  
 
 ## How to start
