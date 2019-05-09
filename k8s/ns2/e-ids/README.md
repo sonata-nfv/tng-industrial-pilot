@@ -33,7 +33,6 @@ This CNF is a web application with dashboards for data visualization
 
 ## Topology
 
-`
                          +-------+    +-------+   +------+
                          |  LS   |____|  ES   |___|  KB  |
                          |  CNF  |    |  CNF  |   |  CNF |
@@ -53,7 +52,7 @@ This CNF is a web application with dashboards for data visualization
   | EXTERN |-----------+                              +-----+ OPERATOR |
   | ATTACK |                                                |          |
   +---+----+                                                +----------+
-`
+
  
 
 ## How to start
