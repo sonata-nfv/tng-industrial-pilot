@@ -1,4 +1,4 @@
-# Smart-Manufacturing pilot - Network Service 2+
+# Smart-Manufacturing pilot - Network Service 2+ - MDC with IDS and ELK
 
 NS2+ is build of five CNF's: 
 1. a customized Machine Data Collector (MDC) 
@@ -53,7 +53,7 @@ This CNF is a web application with dashboards for data visualization
   | EXTERN |-----------+                              +-----+ OPERATOR |
   | ATTACK |                                                |          |
   +---+----+                                                +----------+
-
+  
 
 ## How to start
 
