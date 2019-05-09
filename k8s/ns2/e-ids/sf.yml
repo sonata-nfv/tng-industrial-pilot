@@ -3,11 +3,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: suricata-static-configfile
-  namespace: sm
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
+  namespace: e-ids
 data:
   suricata.yaml: |
     outputs.console:
@@ -44,11 +44,11 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: filebeat-static-configfile
-  namespace: sm
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
+  namespace: e-ids
 data:
   filebeat.yml: | 
     filebeat.inputs:
@@ -56,6 +56,12 @@ data:
       enabled: true
       paths:
       - /var/log/suricata/eve.json
+      #fields:
+      #  application: suricata
+      #  fields_under_root: true
+      #  json.message_key: log
+      #  json.keys_under_root: true
+      #  json.overwrite_keys: true
     processors: 
     - add_host_metadata: ~ 
     - add_cloud_metadata: ~ 
@@ -67,7 +73,7 @@ data:
     filebeat.modules:
     - module: suricata
     setup.dashboards:
-      enabled: false
+      enabled: true
       #beat: filebeat
       #directory: build/kibana
     setup.template:
@@ -75,26 +81,27 @@ data:
       #fields: "/usr/share/filebeat/fields.yml"
       settings.index.number_of_shards: 3
     setup.kibana:
-      host: "kibana:32056"
+      host: "kibana:5601"
+    xpack.monitoring:
+      enabled: false
     output.elasticsearch:
       enabled: false
-      hosts: ["elasticsearch:32092"]
+      hosts: ["elasticsearch:9200"]
     output.logstash:
       enabled: true
-      hosts: ["logstash:32044"]
+      hosts: ["logstash:5044"]
 
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: sm
-  name: ns2sf
+  name: ns2-suricata-filebeat-pod
   labels:
     pilot: sm
     ns: ns2
     cnf: ids
-    name: ns2sf
+  namespace: e-ids
 spec:
   volumes:
   - name: suricata-logs
@@ -106,6 +113,9 @@ spec:
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
+    #env:
+    #- name: NIC_NAME
+    #  value: "enp3s0"
     args: ["-i enp3s0"]
     volumeMounts:
     - name: suricata-logs
@@ -113,7 +123,7 @@ spec:
     securityContext:
       privileged: true
   - name: filebeat
-    image: docker.elastic.co/beats/filebeat:6.7.0
+    image: docker.elastic.co/beats/filebeat:6.7.1
     imagePullPolicy: IfNotPresent
     #command: ["/usr/share/filebeat/filebeat"]
     args: [
@@ -130,6 +140,7 @@ spec:
       mountPath: /usr/share/filebeat/config
     securityContext:
       privileged: false
-  hostname: ns2sf
+  hostname: suricata
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
+

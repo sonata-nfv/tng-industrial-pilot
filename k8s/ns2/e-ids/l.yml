@@ -3,7 +3,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  namespace: sm
+  #namespace: e-ids
   labels:
     pilot: sm
     ns: ns2
@@ -13,7 +13,7 @@ data:
     input {
       beats {
         port => 5044
-        codec => "json_lines"
+        #codec => "json"
         #type => "SuricataIDPS"
       }
     }
@@ -37,7 +37,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: logstash
-  namespace: sm
+  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -60,7 +60,7 @@ spec:
           name: logstash-static-configfile
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:6.7.0
+        image: docker.elastic.co/logstash/logstash:6.7.1
         imagePullPolicy: IfNotPresent
         env:
         - name: PIPELINE_WORKERS
@@ -73,11 +73,9 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
-        #hostname: logstash
-        #hostNetwork: false
-        #dnsPolicy: None
+      dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
+      hostNetwork: false
 
-#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
 ---
 kind: Service
 apiVersion: v1
@@ -87,23 +85,25 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: logstash
-  namespace: sm
+  #namespace: e-ids
 spec:
+  type: LoadBalancer
   selector:
     cnf: logstash
   ports:
-  - name: logstash5044
+  - name: l-5044
     protocol: TCP
     port: 5044
     targetPort: 5044
-  - name: logstash9600
+  - name: l-9600
     protocol: TCP
     port: 9600
     targetPort: 9600
   #clusterIP: 10.x.x.x
   #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
-  type: LoadBalancer
 #status:
   #loadBalancer:
     #ingress:
     #- ip: 172.31.14.x
+#https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
+ 
