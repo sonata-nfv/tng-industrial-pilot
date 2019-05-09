@@ -56,6 +56,12 @@ data:
       enabled: true
       paths:
       - /var/log/suricata/eve.json
+      #fields:
+      #  application: suricata
+      #  fields_under_root: true
+      #  json.message_key: log
+      #  json.keys_under_root: true
+      #  json.overwrite_keys: true
     processors: 
     - add_host_metadata: ~ 
     - add_cloud_metadata: ~ 
@@ -77,7 +83,7 @@ data:
     setup.kibana:
       host: "kibana:5601"
     xpack.monitoring:
-      enabled: true
+      enabled: false
     output.elasticsearch:
       enabled: false
       hosts: ["elasticsearch:9200"]
@@ -107,6 +113,9 @@ spec:
   - name: suricata
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
+    #env:
+    #- name: NIC_NAME
+    #  value: "enp3s0"
     args: ["-i enp3s0"]
     volumeMounts:
     - name: suricata-logs
@@ -134,3 +143,4 @@ spec:
   hostname: suricata
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
+

@@ -7,7 +7,7 @@ metadata:
     pilot: sm
     ns: ns3
     cnf: kibana
-  namespace: e-ids
+  #namespace: e-ids
 data:
   kibana.yml: |
     server.host: "0"
@@ -25,7 +25,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: kibana
-  namespace: e-ids
+  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -60,8 +60,7 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/kibana/config
           name: kibana-config
-      dnsPolicy: ClusterFirst
-      #service.namespace.svc.cluster.local
+      dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
 
 ---
@@ -73,17 +72,18 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: kibana
-  namespace: e-ids
+  #namespace: e-ids
 spec:
+  type: LoadBalancer
   selector:
     cnf: kibana
   ports:
-  - protocol: TCP
+  - name: k-5601
+    protocol: TCP
     port: 5601
     targetPort: 5601
   #clusterIP: 10.x.x.x
   #loadBalancerIP: 172.31.14.248-9 (ALB-PRD)
-  type: LoadBalancer
 #status:
   #loadBalancer:
     #ingress:

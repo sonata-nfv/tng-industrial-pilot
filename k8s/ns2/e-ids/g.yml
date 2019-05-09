@@ -7,7 +7,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: grafana
-  namespace: e-ids
+  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -43,7 +43,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: grafana
-  namespace: e-ids
+  #namespace: e-ids
 spec:
   selector:
     cnf: grafana
