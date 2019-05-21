@@ -7,7 +7,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-  namespace: e-ids
+  #namespace: e-ids
 data:
   suricata.yaml: |
     outputs.console:
@@ -48,7 +48,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-  namespace: e-ids
+  #namespace: e-ids
 data:
   filebeat.yml: | 
     filebeat.inputs:
@@ -71,7 +71,7 @@ data:
         path: ${path.config}/modules.d/*.yml
         reload.enabled: true
     filebeat.modules:
-    - module: suricata
+      module: suricata
     setup.dashboards:
       enabled: true
       #beat: filebeat
@@ -101,7 +101,7 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: ids
-  namespace: e-ids
+  #namespace: e-ids
 spec:
   volumes:
   - name: suricata-logs
@@ -116,7 +116,13 @@ spec:
     #env:
     #- name: NIC_NAME
     #  value: "enp3s0"
-    args: ["-i enp3s0"]
+    args: ["-i",
+      "enp3s0"
+      #"-s",
+      #"/usr/share/suricata/rules/my.rules",
+      #"-c",
+      #"/etc/suricata/suricata.yaml"
+    ]
     volumeMounts:
     - name: suricata-logs
       mountPath: /var/log/suricata
@@ -132,14 +138,16 @@ spec:
       "-e",
       "-c",
       "/usr/share/filebeat/config/filebeat.yml",
+      "-d",
+      "publish,logstash",
     ]
     volumeMounts:
     - name: suricata-logs
       mountPath: /var/log/suricata
     - name: filebeat-config
       mountPath: /usr/share/filebeat/config
-    securityContext:
-      privileged: false
+    #securityContext:
+    #  privileged: false
   hostname: suricata
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
