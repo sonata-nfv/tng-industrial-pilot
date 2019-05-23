@@ -17,6 +17,29 @@ data:
         #type => "SuricataIDPS"
       }
     }
+
+    filter {
+      json {
+        source => "message"
+        target => "temp"
+        }
+      if [temp][dest_ip] {
+        if [temp][dest_ip] == "172.31.13.191" {
+          json {
+            source => "message"
+            target => "message"
+            }
+          }
+        else
+          {
+          drop {}
+          }
+        }
+      else {
+        drop {}
+        }
+      }
+
     output {
       elasticsearch {
         hosts => ["elasticsearch:9200"]
