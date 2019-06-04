@@ -47,6 +47,10 @@ data:
         manage_template => false
         document_type => "%{[@metadata][type]}"
       }
+      file {
+        path => "/tmp/event-%{+YYYY-MM-dd-HH-mm-ss}.json"
+        codec => line { format => "%{message}" }
+      }
       stdout { codec => rubydebug }
     }
 
