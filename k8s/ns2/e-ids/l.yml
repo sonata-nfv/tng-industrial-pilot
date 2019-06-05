@@ -24,7 +24,7 @@ data:
         target => "temp"
         }
       if [temp][dest_ip] {
-        if [temp][dest_ip] == "172.31.13.191" {
+        if [temp][dest_ip] == "172.31.14.107" {
           json {
             source => "message"
             target => "message"
@@ -85,6 +85,8 @@ spec:
       - name: logstash-config
         configMap:  
           name: logstash-static-configfile
+      - name: intrusion-events
+        emptyDir: {}
       containers:
       - name: logstash
         image: docker.elastic.co/logstash/logstash:6.7.1
@@ -105,6 +107,17 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
+      - name: flask
+        image: arocha/tng-smp-flask:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: container_name
+            value: logstash
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: intrusion-events
+          mountPath: /tmp
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
 
@@ -138,4 +151,3 @@ spec:
     #ingress:
     #- ip: 172.31.14.x
 #https://kubernetes.io/docs/concepts/services-networking/#loadbalancer
- 
