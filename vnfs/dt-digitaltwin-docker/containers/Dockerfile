@@ -37,6 +37,8 @@ RUN apt-get update && apt-get install -y \
     smbclient \
     cifs-utils
 
+RUN pip3 install --upgrade pip
+
 ENV LC_ALL C.UTF-8
 
 # install required python libs
