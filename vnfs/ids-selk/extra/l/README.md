@@ -2,7 +2,7 @@
 
 ## Get the official LOGSTASH Docker Imag
 
-`$ docker pull docker.elastic.co/logstash/logstash:6.6.0`
+`$ docker pull docker.elastic.co/logstash/logstash:6.7.1`
 
 
 ## Create a new image to include the new Logstash configuration file
