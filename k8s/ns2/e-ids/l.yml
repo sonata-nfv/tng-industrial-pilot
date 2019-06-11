@@ -101,6 +101,8 @@ spec:
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts
           value: "http://elasticsearch:9200"
+        - name: config.support_escapes
+          value: "true"
         ports:
         - containerPort: 5044
         - containerPort: 9600
