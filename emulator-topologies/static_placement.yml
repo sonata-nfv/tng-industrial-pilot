@@ -1,0 +1,22 @@
+---
+# Static placement for NetSoft 2019 demo
+# NS1, instance 0
+vnf_cc.cdu01.0: "us-east1" 
+vnf_cc.cdu02.0: "us-east1"
+vnf_cc.cdu03.0: "us-east1"
+vnf_cc.cdu04.0: "us-east1"
+vnf_eae.cdu01.0: "us-east1"
+# NS1, instance 1
+vnf_cc.cdu01.1: "eu-west1" 
+vnf_cc.cdu02.1: "eu-west1"
+vnf_cc.cdu03.1: "eu-west1"
+vnf_cc.cdu04.1: "eu-west1"
+vnf_eae.cdu01.1: "eu-west1"
+# NS1, instance 2
+vnf_cc.cdu01.2: "cn-east1" 
+vnf_cc.cdu02.2: "cn-east1"
+vnf_cc.cdu03.2: "cn-east1"
+vnf_cc.cdu04.2: "cn-east1"
+vnf_eae.cdu01.2: "cn-east1"
+# NS1, instance 0
+# TODO

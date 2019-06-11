@@ -28,6 +28,8 @@ from mininet.log import setLogLevel
 from emuvim.dcemulator.net import DCNetwork
 from emuvim.api.rest.rest_api_endpoint import RestApiEndpoint
 from emuvim.api.tango import TangoLLCMEndpoint
+from emuvim.api.tango.llcm import StaticConfigPlacement
+
 
 logging.basicConfig(level=logging.DEBUG)
 setLogLevel('info')  # set Mininet loglevel
@@ -62,7 +64,10 @@ def create_topology():
     rapi1.start()
     # add the 5GTANGO lightweight life cycle manager (LLCM) to the topology
     # use port 32002 to be able to use tng-cli
-    llcm1 = TangoLLCMEndpoint("0.0.0.0", 32002, deploy_sap=False)
+    llcm1 = TangoLLCMEndpoint(
+        "0.0.0.0", 32002, deploy_sap=False,
+        placement_algorithm_obj=StaticConfigPlacement(
+            "~/tng-industrial-pilot/emulator-topologies/static_placement.yml"))
     llcm1.connectDatacenter(dc1)
     llcm1.connectDatacenter(dc2)
     llcm1.connectDatacenter(dc3)
