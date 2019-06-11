@@ -1,17 +1,26 @@
 # Dockerfile with a cusomized configuration for Logstash
 
-FROM docker.elastic.co/logstash/logstash:6.6.0
+FROM docker.elastic.co/logstash/logstash:6.7.1
 
 MAINTAINER sm-pilot@5gtango.eu
 
+# INSTALL 'jq'
+USER root
+RUN yum update -y && \
+    yum install epel-release -y && \
+    yum install jq -y && \
+    yum clean all
+#COPY logstash-entry.sh /usr/local/bin/logstash-entry.sh
+#RUN chown logstash:root /usr/local/bin/logstash-entry.sh && chmod 775 /usr/local/bin/logstash-entry.sh
+
 # CONFIG
-RUN rm -fr /usr/share/logstash/logstash.conf
-ADD ./beats2elastic.conf /usr/share/logstash/beats2elastic.conf
-ADD ./beats2elastic.conf /usr/share/logstash/config/beats2elastic.conf
+USER logstash
+EXPOSE 5044/tcp
+EXPOSE 9600/tcp
+WORKDIR /usr/share/logstash
+RUN bin/logstash-plugin install logstash-output-exec && bin/logstash-plugin install logstash-input-beats
 
-# SETTINGS
-RUN rm -fr /usr/share/logstash/logstash.yml
-ADD ./logstash.yml /usr/share/logstash/logstash.yml
-ADD ./logstash.yml /usr/share/logstash/config/logstash.yml
-
-RUN /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
+# RUN DAEMON
+#ENTRYPOINT ["/usr/local/bin/logstash-entry.sh"]
+ENTRYPOINT ["bin/logstash"]
+#CMD ["logstash-plugin", "install", "logstash-output-exec"]
