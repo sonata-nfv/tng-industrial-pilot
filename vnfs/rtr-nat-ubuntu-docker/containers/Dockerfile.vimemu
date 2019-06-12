@@ -39,6 +39,8 @@ RUN chmod +x start.sh
 # configurations
 ENV IFUPLINK uplink
 ENV IFLOCAL data
+# optinially define IP of uplink interface (otherwise value from VNFD is used)
+# ENV IFUPLINK_NET 30.0.0.101/24
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.sh"

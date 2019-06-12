@@ -1,5 +1,6 @@
 ---
 # Static placement for NetSoft 2019 demo
+# see: doc/netsoft2019deployment.drawio
 # NS1, instance 0
 vnf_cc.cdu01.0: "us-east1" 
 vnf_cc.cdu02.0: "us-east1"
@@ -7,16 +8,40 @@ vnf_cc.cdu03.0: "us-east1"
 vnf_cc.cdu04.0: "us-east1"
 vnf_eae.cdu01.0: "us-east1"
 # NS1, instance 1
-vnf_cc.cdu01.1: "eu-west1" 
-vnf_cc.cdu02.1: "eu-west1"
-vnf_cc.cdu03.1: "eu-west1"
-vnf_cc.cdu04.1: "eu-west1"
-vnf_eae.cdu01.1: "eu-west1"
+vnf_cc.cdu01.1: "cn-east1" 
+vnf_cc.cdu02.1: "cn-east1"
+vnf_cc.cdu03.1: "cn-east1"
+vnf_cc.cdu04.1: "cn-east1"
+vnf_eae.cdu01.1: "cn-east1"
 # NS1, instance 2
-vnf_cc.cdu01.2: "cn-east1" 
-vnf_cc.cdu02.2: "cn-east1"
-vnf_cc.cdu03.2: "cn-east1"
-vnf_cc.cdu04.2: "cn-east1"
-vnf_eae.cdu01.2: "cn-east1"
-# NS1, instance 0
-# TODO
+vnf_cc.cdu01.2: "eu-west1" 
+vnf_cc.cdu02.2: "eu-west1"
+vnf_cc.cdu03.2: "eu-west1"
+vnf_cc.cdu04.2: "eu-west1"
+vnf_eae.cdu01.2: "eu-west1"
+
+# NS2, instance 0
+vnf_dt.cdu01.0: "us-east1"
+vnf_mdc.cdu01.0: "us-east1"
+vnf_rtr.cdu01.0: "us-east1"
+
+# NS2, instance 1
+vnf_dt.cdu01.1: "us-west1"
+vnf_mdc.cdu01.1: "us-west1"
+vnf_rtr.cdu01.1: "us-west1"
+
+# NS2, instance 2
+vnf_dt.cdu01.2: "au-east1"
+vnf_mdc.cdu01.2: "au-east1"
+vnf_rtr.cdu01.2: "au-east1"
+
+# NS2, instance 3
+vnf_dt.cdu01.3: "eu-west1"
+vnf_mdc.cdu01.3: "eu-west1"
+vnf_rtr.cdu01.3: "eu-west1"
+
+# NS2, instance 4
+vnf_dt.cdu01.4: "br-east1"
+vnf_mdc.cdu01.4: "br-east1"
+vnf_rtr.cdu01.4: "br-east1"
+

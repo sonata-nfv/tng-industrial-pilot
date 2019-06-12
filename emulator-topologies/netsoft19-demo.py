@@ -67,7 +67,8 @@ def create_topology():
     llcm1 = TangoLLCMEndpoint(
         "0.0.0.0", 32002, deploy_sap=False,
         placement_algorithm_obj=StaticConfigPlacement(
-            "~/tng-industrial-pilot/emulator-topologies/static_placement.yml"))
+            "~/tng-industrial-pilot/emulator-topologies/static_placement.yml"),
+        env_conf_folder="~/tng-industrial-pilot/emulator-topologies/envs/")
     llcm1.connectDatacenter(dc1)
     llcm1.connectDatacenter(dc2)
     llcm1.connectDatacenter(dc3)
