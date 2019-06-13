@@ -46,7 +46,7 @@ class MqttExporter(object):
         """
         start_export_http_server(self.exporter_port)
 
-    def _update_metric(self, metric, value, is_numeric):
+    def _update_metric(self, metric, label, value, is_numeric):
         """
         Wraps Prometheus client and updates values of Prometheus metrics.
         Everthing is stored as Gauge.
@@ -56,18 +56,35 @@ class MqttExporter(object):
         # ensure singelton instance of Metric objects
         if metric not in self._metric_registry:
             self._metric_registry[metric] = Gauge(
-                metric, "Metric {}".format(metric), ["message"])
+                metric, "Metric {}".format(metric), ["machine", "message"])
         # update metric
         if is_numeric:  # directly set the numeric value
-            self._metric_registry[metric].labels(message="numeric").set(value)
+            self._metric_registry[metric].labels(machine=label, message="numeric").set(value)
             print("MQE:\tPrometheus set numeric metric '{}' to {}".format(metric, value))
         else:  # use the mesaage as label and increment message counter
-            self._metric_registry[metric].labels(message=value).inc()
+            self._metric_registry[metric].labels(machine=label, message=value).inc()
             print("MQE:\tPrometheus inc. labeld metric '{}' message={}".format(metric, value))
 
-    def _topic_to_metric_name(self, topic):
+    def _topic_to_metric_label(self, topic):
         """
         Prometheus has restrictions on metric names.
+        """
+        try:
+            prts = str(topic).split("/")
+            label = prts[0]
+            metric = "_".join(prts[1:])
+            #metric = str(topic).replace("/", "_")
+            metric = metric.replace("@", "")
+            metric = metric.strip(" .,-@+")
+            return metric.lower(), label
+        except BaseException as ex:
+            print("MQE: Can't translate topic: {}".format(topic))
+            print("MQE: - Exception: {}".format(ex)) 
+        return None, None
+
+    def _clean_payload(self, topic):
+        """
+        Prometheus has restrictions on payloads.
         """
         try:
             metric = str(topic).replace("/", "_")
@@ -105,7 +122,7 @@ class MqttExporter(object):
             return float(int("0x{}".format(payload.lower()), 16)), True
         except BaseException as ex:
             pass
-        return str(self._topic_to_metric_name(payload)), False
+        return str(self._clean_payload(payload)), False
 
     def _get_on_message_callback(self):
         """
@@ -119,9 +136,9 @@ class MqttExporter(object):
             print("MQE: Received MQTT message on '{}': {}"
                   .format(msg_topic, msg_payload.rstrip()), flush=True)
             try:
+                m, l = self._topic_to_metric_label(msg_topic)
                 # update prometheus metric
-                self._update_metric(
-                    self._topic_to_metric_name(msg_topic),
+                self._update_metric(m, l,
                     *self._payload_to_value(msg_payload))  # expand tuple to value, is numeric
             except BaseException as ex:
                 print("MQE: Prometheus error: {}".format(ex))

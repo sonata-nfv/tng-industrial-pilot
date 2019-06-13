@@ -49,7 +49,7 @@ from em63 import rmFile
 # -------------------------- Primary --------------------------------------- #
 #
 # Name of the machine
-machinename = "WIMMS"
+machinename = os.environ.get("MACHINE_NAME", "WIMMS")  # default "WIMMS"
 # Session number for EM63 communication
 session = "0001"
 # Path to the EM63 sharing folder for this machine
