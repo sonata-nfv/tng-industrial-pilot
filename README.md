@@ -1,5 +1,19 @@
 # tng-industrial-pilot
-5GTANGO industrial pilot repository
+5GTANGO industrial pilot repository. This pilot is based on a smart manufacturing scenario and contains three use cases:
+
+1. Initial deployment of new machines in a softwarized factory network
+2. Intrusion detection and automated intrusion mitigation
+3. AR-based maintenance
+
+## Demonstrations
+
+There are several demos developed that show various aspects of this pilot. The demos are categorized in demos running on the [vim-emu](https://osm.etsi.org/wikipub/index.php/VIM_emulator) platform (part of the 5GTANGO SDK) and demos running on Kubernetes (K8s) some of which are controlled by the 5GTANGO service platform.
+
+* vim-emu
+    * [IEEE NetSoft 2019: "Prototyping and Demonstrating 5G Verticals: The Smart Manufacturing Case"](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Demo-NetSoft2019-vim-emu)
+* K8s:
+    * [Manual deployment on Kubernetes](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Manual-kubernetes-demo)
+    * [Kubernetes deployment with the service platform](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/SP-kubernetes-demo)
 
 
 ## Folder structure
