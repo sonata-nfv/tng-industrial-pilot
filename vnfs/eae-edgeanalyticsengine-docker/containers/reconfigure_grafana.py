@@ -50,9 +50,13 @@ cc_db_url = "http://{}:{}".format(cc_db_ip, cc_db_port)
 # use that to replace the URL in the configuration
 datasource_path = "/etc/grafana/provisioning/datasources/datasource.yml"
 log.info("Updating configuration in {} accordingly".format(datasource_path))
-with open(datasource_path) as f:
-    ds = yaml.load(f, Loader=yaml.FullLoader)
-    log.debug("Replacing datasource URL")
-    ds['datasources'][0]['url'] = cc_db_url
+f_r = open(datasource_path, "r")
+ds = yaml.full_load(f_r)
+ds['datasources'][0]['url'] = cc_db_url
+f_r.close()
+f_w = open(datasource_path, "w")
+log.debug("Replacing datasource URL")
+f_w.write(yaml.safe_dump(ds))
+f_w.close()
 
 log.info("Done updating Grafana configurations")
