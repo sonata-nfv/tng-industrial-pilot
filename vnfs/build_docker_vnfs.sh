@@ -21,7 +21,7 @@ docker build -t $target_repo/vnf-mdc:k8s -f mdc-machinedatacollector-docker/cont
 # DT
 docker build -t $target_repo/vnf-dt:k8s -f dt-digitaltwin-docker/containers/Dockerfile dt-digitaltwin-docker/containers/
 # EAE
-docker build -t $target_repo/vnf-eae:k8s --no-cache -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
+docker build -t $target_repo/vnf-eae:k8s -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
 
 #
 # VNFs for vim-emu
@@ -41,4 +41,4 @@ docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-docker/c
 # DT
 docker build -t $target_repo/vnf-dt:vimemu -f dt-digitaltwin-docker/containers/Dockerfile.vimemu dt-digitaltwin-docker/containers/
 # EAE
-docker build -t $target_repo/vnf-eae:vimemu --no-cache -f eae-edgeanalyticsengine-docker/containers/Dockerfile.vimemu eae-edgeanalyticsengine-docker/containers/
+docker build -t $target_repo/vnf-eae:vimemu -f eae-edgeanalyticsengine-docker/containers/Dockerfile.vimemu eae-edgeanalyticsengine-docker/containers/
