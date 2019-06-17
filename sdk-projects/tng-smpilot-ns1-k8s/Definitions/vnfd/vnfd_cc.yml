@@ -36,26 +36,26 @@ description: "Cloud connector (CC) CNF"
 # loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: "cdu01"
-    image: sonatanfv/vnf-cc-broker:k8s
+    image: sonatanfv/vnf-cc-broker:latest
     connection_points:
       - id: "int-mqtt"
         port: 1883
   - id: "cdu02"
-    image: sonatanfv/vnf-cc-processor:k8s
+    image: sonatanfv/vnf-cc-processor:latest
     connection_points: []
     parameters:
       env:
         MQTT_BROKER_HOST: localhost
         MQTT_BROKER_PORT: 1883
   - id: "cdu03"
-    image: sonatanfv/vnf-cc-mqttexporter:k8s
+    image: sonatanfv/vnf-cc-mqttexporter:latest
     connection_points: []
     parameters:
       env:
         MQTT_BROKER_HOST: localhost
         MQTT_BROKER_PORT: 1883
   - id: "cdu04"
-    image: sonatanfv/vnf-cc-database:k8s
+    image: sonatanfv/vnf-cc-database:latest
     connection_points:
       - id: "int-prometheus"
         port: 9090
