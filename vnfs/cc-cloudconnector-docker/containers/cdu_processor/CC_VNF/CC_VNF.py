@@ -253,7 +253,7 @@ else:
 # Data input from MQTT broker
 broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
 broker_port = os.getenv("MQTT_BROKER_PORT", 1883)
-
+broker_topic = os.getenv("MQTT_TOPIC", "+/+/+")
 
 listetopic = []
 listepayload = []
@@ -264,11 +264,9 @@ clientB.on_message = on_message
 print("---------------------------------------------")
 print("Connecting to MQTT broker: {}:{}".format(broker_host, broker_port))
 clientB.connect(broker_host, port=int(broker_port))
-# print("Subscribing to topic","WIMMS/EM63/TIME")
-# client.subscribe("WIMMS/EM63/TIME")
-print("Subscribing to MQTT broker's topic", "WIMMS/EM63/#")
+print("Subscribing to MQTT broker's topic: ", broker_topic)
 print("---------------------------------------------")
-clientB.subscribe(os.getenv("MQTT_TOPIC", "+/+/+"))
+clientB.subscribe(broker_topic)
 
 
 # MQTT for Azure IoT Hub
