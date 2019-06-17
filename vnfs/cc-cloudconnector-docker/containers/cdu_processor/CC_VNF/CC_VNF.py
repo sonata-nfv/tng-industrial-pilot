@@ -268,7 +268,7 @@ clientB.connect(broker_host, port=int(broker_port))
 # client.subscribe("WIMMS/EM63/TIME")
 print("Subscribing to MQTT broker's topic", "WIMMS/EM63/#")
 print("---------------------------------------------")
-clientB.subscribe("WIMMS/EM63/#")
+clientB.subscribe(os.getenv("MQTT_TOPIC", "+/+/+"))
 
 
 # MQTT for Azure IoT Hub
