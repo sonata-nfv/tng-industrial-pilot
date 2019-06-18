@@ -39,6 +39,7 @@ import time
 import os
 import sys
 import json
+from collections import OrderedDict
 import paho.mqtt.client as paho
 from paho.mqtt import client as azure_mqtt
 import ssl
@@ -126,111 +127,85 @@ def on_publishA(client, userdata, mid):
 
 # MQTT function
 def on_message(client, userdata, message):
-    global payload3, payload4
     payload_str = str(message.payload.decode("utf-8"))
     topic_str = str(message.topic)
+    print("Received: {} on topic {}".format(payload_str, topic_str))
     # construct a message for cloud backend
-    msgstr = build_message(topic_str, payload_str)
-    # transform data
-    if topic_str == topicstr3:
-        payload3 = float(payload_str)
-    if topic_str == topicstr4:
-        payload4 = float(payload_str)
-    # send message to cloud backend
-    if msgstr != 0:
-        send_message(msgstr)
+    update_message(topic_str, payload_str)
+    if enable_cloud_conn == "True":
+        # send message to cloud backend
+        send_message(TEMP_MESSAGE_BUFFER)
 
 
-def build_message(topic, payload):
-    global listetopic, listepayload
-    print("Received message from MQTT broker: ")
-    print("Topic: %s Payload: %s" % (topic, payload))
-    if topic in listetopic:
-        msgstr = "{"
-        for index in range(len(listetopic)):
-            msgstr += "\"%s\": %s" % (str(listetopic[index]),
-                                      str(listepayload[index]))
-            if index < len(listetopic)-1:
-                msgstr += ","
-        msgstr += "}"
-        del listetopic
-        del listepayload
-        listetopic = []
-        listepayload = []
-        listetopic.append(topic)
-        listepayload.append(payload)
-        return msgstr
-        # return msgdict
-    else:
-        listetopic.append(topic)
-        listepayload.append(payload)
-        return 0
+# global message buffer (holding the message to be send)
+TEMP_MESSAGE_BUFFER = OrderedDict()
+# time when we last send something to the cloud
+TIME_LAST_SEND = 0
+# time to wait until we next send something to the cloud (seconds)
+TIME_COOLDOWN = 1.0
+
+
+def initialize_message(max_machines=8):
+    """
+    Azure IoT expects a fixed JSON schema. This method defines how the message
+    we send will look like. We have to reserve for a maximum amount of machines here.
+    This is still suboptimal. Still better than the old version which only supported a single machine.
+    """
+    #topics_to_send = ["WIMMS{}/EM63/@ActSimPara1",
+    #                  "WIMMS{}/EM63/@ActSimPara2",
+    #                  "WIMMS{}/EM63/ActTimCyc",
+    #                  "WIMMS{}/EM63/ActCntCyc"]
+    topics_to_send = ["WIMMS{}/EM63/@ActSimPara2"]
+    # WIMMS0, WIMMS1, ..., WIMMS8, WIMMS
+    machines = list(range(0, max_machines))
+    machines.append("")
+    for i in machines:
+        for t in topics_to_send:
+            TEMP_MESSAGE_BUFFER.update({t.format(i): 0.0})
+    print("Initialized message buffer: {}".format(TEMP_MESSAGE_BUFFER))
+
+
+def update_message(topic, payload):
+    """
+    Updates the message to be send stored in TEMP_MESSAGE_BUFFER.
+    The constructed message is a dict holding topic, payload pairs.
+    We use the JSON encoder in send_message instead of building 
+    the message string manually.
+    Replaces old "build_message" function
+    """
+    # create topic: payload dict and try to parse float
+    try:
+        # try to interpret payload as float
+        tmp_dict = {topic: float(payload)}
+    except:
+        # if not possible use it "as is"
+        tmp_dict = {topic: str(payload).strip()}
+    # update the message (if topic has a place in buffer) to be send
+    if topic in TEMP_MESSAGE_BUFFER:
+        print("Update: {}".format(tmp_dict))
+        TEMP_MESSAGE_BUFFER.update(tmp_dict)
 
 
 def send_message(msg):
-    global payload3, payload4
-    # print("RAW message: %s" % msg)
-
-    # Case A: Em63 parameters
-#    messageA = IoTHubMessage(msg)
-#    print("Sending message: %s" % messageA.get_string() )
-#    clientA.send_event_async(messageA, send_confirmation_callback, None)
-
-    # Case B: dummy values
-#    date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-#    sin=2
-#    data = [{"Date": date, "Sinus": sin}]
-#    messageA = IoTHubMessage(json.dumps(data))
-#    print("Sending message: %s \n" % messageA.get_string() )
-#    clientA.send_event_async(messageA, send_confirmation_callback, None)
-
-    # Case C: Em63 parameters
-    # use a dictionary instead of a string
-    # topicstr1 = "WIMMS/EM63/DATE"
-    # topicstr2 = "WIMMS/EM63/@ActSimPara2"
-
-    MSG_TXT = "{\"%s\": %.2f,\"%s\": %.2f}"
-    # payload3=12
-    # payload4=2*payload3
-    msg_txt_formatted = MSG_TXT % (topicstr3, payload3, topicstr4, payload4)
-    messageA = msg_txt_formatted  # IoTHubMessage(msg_txt_formatted)
+    """
+    Convert given dict to JSON string and send to cloud backend.
+    We rate limit this function to not send to many messages.
+    """
+    global TIME_LAST_SEND
+    if time.time() - TIME_LAST_SEND < TIME_COOLDOWN:
+        # print("Skipping send.")
+        return
+    
+    msg_str = json.dumps(msg)
     print("---------------------------------------------")
-    print("Send messages to cloud.")
-    print("Sending message: %s" % messageA)
+    print("Sending to cloud: %s" % msg_str)
     # Push to Azure IoT Hub
     clientA.loop_start()
-#    clientA.publish("devices/" + device_id +
-#                    "/messages/events/",
-#                    payload="{\"WIMMS/EM63/@ActSimPara1\":23}", qos=1)
     clientA.publish("devices/" + device_id +
                     "/messages/events/",
-                    payload=messageA, qos=1)
+                    payload=msg_str, qos=1)
     clientA.loop_stop()
-
-
-topicstr1 = "WIMMS/EM63/DATE"
-payload1 = ""
-topicstr2 = "WIMMS/EM63/TIME"
-payload2 = ""
-topicstr3 = "WIMMS/EM63/@ActSimPara1"
-payload3 = 3
-topicstr4 = "WIMMS/EM63/@ActSimPara2"
-payload4 = 4
-topicstr5 = "WIMMS/EM63/ActCntCyc"
-payload5 = ""
-topicstr6 = "WIMMS/EM63/ActCntPrt"
-payload6 = ""
-topicstr7 = "WIMMS/EM63/ActStsMach"
-payload7 = ""
-topicstr8 = "WIMMS/EM63/ActTimCyc"
-payload8 = ""
-topicstr9 = "WIMMS/EM63/SetCntMld"
-payload9 = ""
-topicstr10 = "WIMMS/EM63/SetCntPrt"
-payload10 = ""
-# MSG_TXT = "{\"%s\": %s,\"%s\": %s}"
-# payload1=0
-# payload2=0
+    TIME_LAST_SEND = time.time()
 
 
 # MQTT parameters for Azure IoT Hub; replaces connectionstring
@@ -238,7 +213,13 @@ device_key = ''  # primary key of device
 iot_hub_name = ''  # Name of IoT Hub
 device_id = ''  # Name of device to connect to
 sas_token = ''  # SAS token
-cc_config_file = 'keys.json'
+# have two alternative configs. one of them can be configured by env. variable
+cc_config_file = 'keys.json'  # the one in the repo
+cc_config_file_secret = os.getenv("AZURE_KEY_FILE", "keys_connector1.json.secret")
+if os.path.exists(cc_config_file_secret):
+    # use the secret config defined by ENV if it is available
+    cc_config_file = cc_config_file_secret
+
 path_to_root_cert = "digicert.cer"
 enable_cloud_conn = os.getenv("ENABLE_CLOUD_CONNECTION", "False")
 
@@ -253,10 +234,11 @@ else:
 # Data input from MQTT broker
 broker_host = os.getenv("MQTT_BROKER_HOST", "127.0.0.1")
 broker_port = os.getenv("MQTT_BROKER_PORT", 1883)
+broker_topic = os.getenv("MQTT_TOPIC", "+/+/+")
 
+# initialize message buffer
+initialize_message()
 
-listetopic = []
-listepayload = []
 # TODO we should retry and wait here until the broker is ready
 # this might take a couple of seconds in real deployments
 clientB = paho.Client("CC-Client-Sub")
@@ -264,11 +246,9 @@ clientB.on_message = on_message
 print("---------------------------------------------")
 print("Connecting to MQTT broker: {}:{}".format(broker_host, broker_port))
 clientB.connect(broker_host, port=int(broker_port))
-# print("Subscribing to topic","WIMMS/EM63/TIME")
-# client.subscribe("WIMMS/EM63/TIME")
-print("Subscribing to MQTT broker's topic", "WIMMS/EM63/#")
+print("Subscribing to MQTT broker's topic: ", broker_topic)
 print("---------------------------------------------")
-clientB.subscribe("WIMMS/EM63/#")
+clientB.subscribe(broker_topic)
 
 
 # MQTT for Azure IoT Hub
