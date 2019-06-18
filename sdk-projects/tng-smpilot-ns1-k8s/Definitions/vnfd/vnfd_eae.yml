@@ -36,11 +36,10 @@ description: "Edge analytics engine (EAE) CNF"
 # loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: "cdu01"
-    image: "sonatanfv/vnf-eae:k8s"
+    image: "sonatanfv/vnf-eae:latest"
     connection_points:
       - id: "int-grafana"
         port: 3000
-    # TODO: need the k8s service name of the CC to connect to prometheus (should be added automatically by the SP)
             
      
 # corresponds to the k8s service layer: connection to the outside world     
