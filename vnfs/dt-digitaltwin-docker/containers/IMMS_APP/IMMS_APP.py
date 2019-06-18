@@ -708,7 +708,7 @@ def autostart_production(args):
     varATActSimPara2phaseStr = str(args.varATActSimPara2phase)
     varATActSimPara2offset = float(args.varATActSimPara2offset)
     # Set variables based on args: production params
-    varSetCntMld = int(args.varSetTimCyc)
+    varSetCntMld = int(args.varSetCntMld)
     varSetCntPrt = int(args.varSetCntPrt)
     varSetTimCyc = float(args.varSetTimCyc)
     # Set variables based on args: finally go to productions state
@@ -742,7 +742,7 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varATActSimPara2period",
         required=False,
-        default=10.0)
+        default=20.0)
 
     parser.add_argument(
         "--varATActSimPara2amplitude",
@@ -777,7 +777,7 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varSetTimCyc",
         required=False,
-        default=1.0)
+        default=5.0)
 
     if manual_args is not None:
         return parser.parse_args(manual_args)

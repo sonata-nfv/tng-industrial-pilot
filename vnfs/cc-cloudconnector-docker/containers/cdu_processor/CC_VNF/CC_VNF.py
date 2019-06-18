@@ -39,6 +39,7 @@ import time
 import os
 import sys
 import json
+from collections import OrderedDict
 import paho.mqtt.client as paho
 from paho.mqtt import client as azure_mqtt
 import ssl
@@ -131,16 +132,17 @@ def on_message(client, userdata, message):
     print("Received: {} on topic {}".format(payload_str, topic_str))
     # construct a message for cloud backend
     update_message(topic_str, payload_str)
-    # send message to cloud backend
-    send_message(TEMP_MESSAGE_BUFFER)
+    if enable_cloud_conn == "True":
+        # send message to cloud backend
+        send_message(TEMP_MESSAGE_BUFFER)
 
 
 # global message buffer (holding the message to be send)
-TEMP_MESSAGE_BUFFER = dict()
+TEMP_MESSAGE_BUFFER = OrderedDict()
 # time when we last send something to the cloud
 TIME_LAST_SEND = 0
 # time to wait until we next send something to the cloud (seconds)
-TIME_COOLDOWN = 2.0
+TIME_COOLDOWN = 1.0
 
 
 def initialize_message(max_machines=8):
@@ -149,10 +151,11 @@ def initialize_message(max_machines=8):
     we send will look like. We have to reserve for a maximum amount of machines here.
     This is still suboptimal. Still better than the old version which only supported a single machine.
     """
-    topics_to_send = ["WIMMS{}/EM63/@ActSimPara1",
-                      "WIMMS{}/EM63/@ActSimPara2",
-                      "WIMMS{}/EM63/ActTimCyc",
-                      "WIMMS{}/EM63/ActCntCyc"]
+    #topics_to_send = ["WIMMS{}/EM63/@ActSimPara1",
+    #                  "WIMMS{}/EM63/@ActSimPara2",
+    #                  "WIMMS{}/EM63/ActTimCyc",
+    #                  "WIMMS{}/EM63/ActCntCyc"]
+    topics_to_send = ["WIMMS{}/EM63/@ActSimPara2"]
     # WIMMS0, WIMMS1, ..., WIMMS8, WIMMS
     machines = list(range(0, max_machines))
     machines.append("")
@@ -190,7 +193,7 @@ def send_message(msg):
     """
     global TIME_LAST_SEND
     if time.time() - TIME_LAST_SEND < TIME_COOLDOWN:
-        print("Skipping send.")
+        # print("Skipping send.")
         return
     
     msg_str = json.dumps(msg)
@@ -210,11 +213,11 @@ device_key = ''  # primary key of device
 iot_hub_name = ''  # Name of IoT Hub
 device_id = ''  # Name of device to connect to
 sas_token = ''  # SAS token
-# have two alternative configs. one of them not under version control
+# have two alternative configs. one of them can be configured by env. variable
 cc_config_file = 'keys.json'  # the one in the repo
-cc_config_file_secret = 'keys.json.secret'  # the one not in the repo
+cc_config_file_secret = os.getenv("AZURE_KEY_FILE", "keys_connector1.json.secret")
 if os.path.exists(cc_config_file_secret):
-    # use the secret config if it is available
+    # use the secret config defined by ENV if it is available
     cc_config_file = cc_config_file_secret
 
 path_to_root_cert = "digicert.cer"
