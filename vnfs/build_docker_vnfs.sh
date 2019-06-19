@@ -44,4 +44,4 @@ docker build -t $target_repo/vnf-mdc:vimemu -f mdc-machinedatacollector-docker/c
 # DT
 docker build -t $target_repo/vnf-dt:vimemu -f dt-digitaltwin-docker/containers/Dockerfile.vimemu dt-digitaltwin-docker/containers/
 # EAE
-docker build --no-cache -t $target_repo/vnf-eae:vimemu -f eae-edgeanalyticsengine-docker/containers/Dockerfile.vimemu eae-edgeanalyticsengine-docker/containers/
+docker build -t $target_repo/vnf-eae:vimemu -f eae-edgeanalyticsengine-docker/containers/Dockerfile.vimemu eae-edgeanalyticsengine-docker/containers/
