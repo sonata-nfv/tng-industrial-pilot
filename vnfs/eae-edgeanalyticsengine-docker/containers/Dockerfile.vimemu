@@ -39,9 +39,9 @@ LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 # install python and grafana
 USER root
 RUN apt-get update -y
-RUN apt-get install -y python3 python3-pip software-properties-common curl apt-transport-https wget adduser libfontconfig1
-RUN wget https://dl.grafana.com/oss/release/grafana_6.2.2_amd64.deb 
-RUN dpkg -i grafana_6.2.2_amd64.deb
+RUN apt-get install -y apt-utils python3 python3-pip software-properties-common curl apt-transport-https wget adduser libfontconfig1
+#RUN wget https://dl.grafana.com/oss/release/grafana_6.2.2_amd64.deb 
+#RUN dpkg -i grafana_6.2.2_amd64.deb
 RUN add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 RUN curl https://packages.grafana.com/gpg.key | apt-key add -
 RUN apt-get update -y
