@@ -60,7 +60,7 @@ ENV MQTT_BROKER_PORT 1883
 ENV MQTT_TOPIC +/+/+
 
 # by default, don't try to connect to Azure; Use "True" to enable
-ENV ENABLE_CLOUD_CONNECTION False
+ENV ENABLE_CLOUD_CONNECTION True
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.vimemu.sh"
