@@ -284,8 +284,9 @@ def start_webapp():
 
 
 def _start_EM63():
-    while 0 < 1:
+    while True:
         run_EM63()
+        time.sleep(.2)  # lets sleep a bit, to not utilize our CPU for 100% with this thread
 
 
 def start_EM63():
@@ -817,8 +818,9 @@ def main():
 
 
 def plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3):
-    plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
-    plotActCnt(sinPlotY3)
+    pass  # deactivated plotting to reduce CPU load 
+    # plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
+    # plotActCnt(sinPlotY3)
 
 
 def plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2):
