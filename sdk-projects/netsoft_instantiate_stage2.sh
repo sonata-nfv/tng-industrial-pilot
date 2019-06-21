@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo date
 echo "Instantiating NS1.2 ..."
 tng-cli -u http://127.0.0.1 service -i tng-smpilot-ns1-emulator
 echo "DONE"
