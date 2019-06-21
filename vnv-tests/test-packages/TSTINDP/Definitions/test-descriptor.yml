@@ -1,0 +1,67 @@
+---
+author: "Aureliano Sinatra (EGM)"
+description: "Performance test for mqtt broker"
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/test-descriptor/testdescriptor-schema.yml
+name: "test-industrial-pilot-ns1"
+vendor: "eu.5gtango.egm"
+version: '0.8'
+
+service_platforms:
+  - "SONATA"
+test_category:
+  - "benchmarking"
+testing_tags:
+  - "industrial-pilot-broker"
+
+phases:
+  - id: setup
+    steps:
+    - action: deploy
+      description: "Deploying a NS"
+      name: deployment
+    - action: configure
+      description: "Configuration"
+      name: configuration
+      probes:
+      - id: mqttprobe
+        description: "A service initial configuration container"
+        image: "easyglobalmarket/mqtt-probe:latest"
+        name: mqttprobe
+        parameters:
+        - key: IP
+          value: '$(smpilot-cc/endpoints/id:floating_ip/address)'
+        - key: PORT
+          value: '$(smpilot-cc/endpoints/id:floating_ip/ports/id:mqtt/port)'
+        - key: CLIENTS
+          value: '100'
+        - key: COUNT
+          value: '100'
+        - key: SIZE
+          value: '100'  
+        - key: USERNAME
+          value: 'hub-iot'
+        - key: PASSWORD
+          value: 'hub-iot'  
+  - id: exercise
+    steps:
+    - command: /bin/sh
+      dependencies: []
+      description: "Starting the mqtt probe"
+      entrypoint: /app/entrypoint.sh
+      index: 1
+      instances: 1
+      name: mqttprobe
+      output:
+      - {results: logs.txt}
+      run: mqttprobe
+  - id: verification
+    steps:
+    - step: parser
+      description: "Check obtained results"
+      name: parser
+      conditions:
+          - condition: present
+            file: results.out
+            find: '"failures": 0'
+            name: no-error
+            verdict: pass

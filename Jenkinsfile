@@ -37,6 +37,7 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: 'sdk-projects/*.tgo'
+            archiveArtifacts artifacts: 'vnv-tests/test-packages/*.tgo'
         }
         failure {
                 emailext(from: "jenkins@sonata-nfv.eu", 
