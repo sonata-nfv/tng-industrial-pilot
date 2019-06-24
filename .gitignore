@@ -112,3 +112,5 @@ ENV/
 
 
 /home/ubuntu/stack-docker/config/elasticsearch/elasticsearch.keystore
+
+.project
