@@ -1,0 +1,50 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: sf-vnf0
+version: '0.9'
+author: alberto.m.rocha@alticelabs.com
+description: 'a VNF with two VDUs: Suricata & Filebeat'
+virtual_deployment_units:
+- id: vdu01
+  vm_image: jasonish/suricata
+  vm_image_format: docker
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: input
+    interface: ipv4
+    type: internal
+- id: vdu02
+  vm_image: docker.elastic.co/beats/filebeat:6.7.1
+  vm_image_format: docker
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: input
+    interface: ipv4
+    type: internal
+connection_points:
+- id: input
+  interface: ipv4
+  type: external
+virtual_links:
+- id: input
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vdu02:input
+  - input
+  dhcp: true

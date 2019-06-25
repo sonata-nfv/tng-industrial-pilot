@@ -1,0 +1,50 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: lh-vnf1
+version: '0.9'
+author: alberto.m.rocha@alticelabs.com
+description: 'A VNF based on Logstash and light HTTP server'
+virtual_deployment_units:
+- id: vdu01
+  vm_image: docker.elastic.co/logstash/logstash:6.7.1
+  vm_image_format: docker
+  resource_requirements:
+    cpu:
+      vcpus: 2
+    memory:
+      size: 1024
+      size_unit: MB
+    storage:
+      size: 20
+      size_unit: GB
+  connection_points:
+  - id: input
+    interface: ipv4
+    type: internal
+- id: vdu02
+  vm_image: mesquitasonata/httptangosrv
+  vm_image_format: docker
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: input
+    interface: ipv4
+    type: internal
+connection_points:
+- id: input
+  interface: ipv4
+  type: external
+virtual_links:
+- id: input
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vdu02:input
+  - input
+  dhcp: true

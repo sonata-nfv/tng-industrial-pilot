@@ -1,0 +1,58 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: default-vnf0
+version: '0.9'
+author: 5GTANGO Developer
+description: A VNF based on ubuntu16-04.qcow2
+virtual_deployment_units:
+- id: vdu01
+  vm_image: ubuntu:16.04
+  vm_image_format: docker
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: mgmt
+    interface: ipv4
+    type: internal
+  - id: input
+    interface: ipv4
+    type: internal
+  - id: output
+    interface: ipv4
+    type: internal
+connection_points:
+- id: mgmt
+  interface: ipv4
+  type: management
+- id: input
+  interface: ipv4
+  type: external
+- id: output
+  interface: ipv4
+  type: external
+virtual_links:
+- id: mgmt
+  connectivity_type: E-LAN
+  connection_points_reference:
+  - vdu01:mgmt
+  - mgmt
+  dhcp: true
+- id: input
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vdu01:input
+  - input
+  dhcp: true
+- id: output
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vdu01:output
+  - output
+  dhcp: true
