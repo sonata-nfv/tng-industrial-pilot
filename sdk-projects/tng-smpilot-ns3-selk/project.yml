@@ -1,0 +1,30 @@
+version: '0.5'
+descriptor_extension: yml
+uuid: 722f27bb-8c1d-4511-a189-e1f14a4502de
+package:
+  version: '0.1'
+  name: tng-smp-ns3-nsd-sfelk
+  vendor: eu.5gtango
+  maintainer: sm-pilot@5gtango.pt
+  description: SFELK - enhanced IDPS
+files:
+- path: nsd/tng_smp_ns3_nsd_selk.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.nsd
+- path: vnfd/tng_smp_ns3_vnfd_sf.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+- path: vnfd/tng_smp_ns3_vnfd_e.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+- path: vnfd/tng_smp_ns3_vnfd_l.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
+- path: vnfd/tng_smp_ns3_vnfd_k.yml
+  tags:
+  - eu.5gtango
+  type: application/vnd.5gtango.vnfd
