@@ -57,11 +57,10 @@ ENV IFLOCAL data
 # MQTT config
 ENV MQTT_BROKER_HOST 30.0.0.1
 ENV MQTT_BROKER_PORT 1883
-# only for dummy MQTT generator not for MDC APP
-ENV AZURE_SECRET_FILE /CC_VNF/azure_connection_string.secret
+ENV MQTT_TOPIC +/+/+
 
 # by default, don't try to connect to Azure; Use "True" to enable
-ENV ENABLE_CLOUD_CONNECTION False
+ENV ENABLE_CLOUD_CONNECTION True
 
 # set entry point for emulator (configuration script)
 ENV VIM_EMU_CMD "./start.vimemu.sh"

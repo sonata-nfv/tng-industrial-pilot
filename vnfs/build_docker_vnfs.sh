@@ -5,23 +5,26 @@ target_repo=${1-sonatanfv}
 
 #
 # VNFs for Kubernets
+# tag with :k8s and :latest to ensure auto updates by kubernetes
 #
 # RTR
-docker build -t $target_repo/vnf-rtr-nat:k8s -f rtr-nat-ubuntu-docker/containers/Dockerfile rtr-nat-ubuntu-docker/containers/
+docker build -t $target_repo/vnf-rtr-nat:k8s -t $target_repo/vnf-rtr-nat:latest -f rtr-nat-ubuntu-docker/containers/Dockerfile rtr-nat-ubuntu-docker/containers/
 # CC-CDU01: broker
-docker build -t $target_repo/vnf-cc-broker:k8s -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile cc-cloudconnector-docker/containers/cdu_broker/
+docker build -t $target_repo/vnf-cc-broker:k8s -t $target_repo/vnf-cc-broker:latest -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile cc-cloudconnector-docker/containers/cdu_broker/
 # CC-CDU02: processor
-docker build -t $target_repo/vnf-cc-processor:k8s -f cc-cloudconnector-docker/containers/cdu_processor/Dockerfile cc-cloudconnector-docker/containers/cdu_processor/
+docker build -t $target_repo/vnf-cc-processor:k8s -t $target_repo/vnf-cc-processor:latest -f cc-cloudconnector-docker/containers/cdu_processor/Dockerfile cc-cloudconnector-docker/containers/cdu_processor/
 # CC-CDU03: mqtt exporter
-docker build -t $target_repo/vnf-cc-mqttexporter:k8s -f cc-cloudconnector-docker/containers/cdu_mqttexporter/Dockerfile cc-cloudconnector-docker/containers/cdu_mqttexporter/
+docker build -t $target_repo/vnf-cc-mqttexporter:k8s -t $target_repo/vnf-cc-mqttexporter:latest -f cc-cloudconnector-docker/containers/cdu_mqttexporter/Dockerfile cc-cloudconnector-docker/containers/cdu_mqttexporter/
 # CC-CDU04: database
-docker build -t $target_repo/vnf-cc-database:k8s -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile cc-cloudconnector-docker/containers/cdu_database/
+docker build -t $target_repo/vnf-cc-database:k8s -t $target_repo/vnf-cc-database:latest -f cc-cloudconnector-docker/containers/cdu_database/Dockerfile cc-cloudconnector-docker/containers/cdu_database/
 # MDC
-docker build -t $target_repo/vnf-mdc:k8s -f mdc-machinedatacollector-docker/containers/Dockerfile mdc-machinedatacollector-docker/containers/
+docker build -t $target_repo/vnf-mdc:k8s -t $target_repo/vnf-mdc:latest -f mdc-machinedatacollector-docker/containers/Dockerfile mdc-machinedatacollector-docker/containers/
 # DT
-docker build -t $target_repo/vnf-dt:k8s -f dt-digitaltwin-docker/containers/Dockerfile dt-digitaltwin-docker/containers/
+docker build -t $target_repo/vnf-dt:k8s -t $target_repo/vnf-dt:latest -f dt-digitaltwin-docker/containers/Dockerfile dt-digitaltwin-docker/containers/
 # EAE
-docker build -t $target_repo/vnf-eae:k8s -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
+docker build -t $target_repo/vnf-eae:k8s -t $target_repo/vnf-eae:latest -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
+
+
 
 #
 # VNFs for vim-emu

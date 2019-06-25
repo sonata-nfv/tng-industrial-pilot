@@ -53,6 +53,8 @@ RUN pip3 install prometheus_client
 ADD start.sh start.sh
 RUN chmod +x start.sh
 
+ENV MQTT_TOPIC +/+/+
+
 # add VNF CC app
 ADD CC_VNF CC_VNF
 

@@ -284,8 +284,9 @@ def start_webapp():
 
 
 def _start_EM63():
-    while 0 < 1:
+    while True:
         run_EM63()
+        time.sleep(.2)  # lets sleep a bit, to not utilize our CPU for 100% with this thread
 
 
 def start_EM63():
@@ -708,7 +709,7 @@ def autostart_production(args):
     varATActSimPara2phaseStr = str(args.varATActSimPara2phase)
     varATActSimPara2offset = float(args.varATActSimPara2offset)
     # Set variables based on args: production params
-    varSetCntMld = int(args.varSetTimCyc)
+    varSetCntMld = int(args.varSetCntMld)
     varSetCntPrt = int(args.varSetCntPrt)
     varSetTimCyc = float(args.varSetTimCyc)
     # Set variables based on args: finally go to productions state
@@ -742,7 +743,7 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varATActSimPara2period",
         required=False,
-        default=10.0)
+        default=20.0)
 
     parser.add_argument(
         "--varATActSimPara2amplitude",
@@ -777,7 +778,7 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varSetTimCyc",
         required=False,
-        default=1.0)
+        default=5.0)
 
     if manual_args is not None:
         return parser.parse_args(manual_args)
@@ -817,8 +818,9 @@ def main():
 
 
 def plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3):
-    plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
-    plotActCnt(sinPlotY3)
+    pass  # deactivated plotting to reduce CPU load 
+    # plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
+    # plotActCnt(sinPlotY3)
 
 
 def plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2):
