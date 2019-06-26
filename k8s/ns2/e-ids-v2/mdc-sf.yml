@@ -95,7 +95,7 @@ spec:
         image: jasonish/suricata
         imagePullPolicy: IfNotPresent
         args: ["-i",
-          "enp3s0"
+          "eth0"
         ]
         volumeMounts:
         - name: suricata-logs
@@ -118,7 +118,7 @@ spec:
         - name: filebeat-config
           mountPath: /usr/share/filebeat/config
       hostNetwork: false
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: ClusterFirst
 
 ---
 kind: ConfigMap

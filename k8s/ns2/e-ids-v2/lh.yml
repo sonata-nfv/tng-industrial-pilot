@@ -3,7 +3,6 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  #namespace: e-ids
   labels:
     pilot: sm
     ns: ns2
@@ -64,7 +63,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: logstash
-  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -110,7 +108,7 @@ spec:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
       - name: flask
-        image: arocha/tng-smp-flask:latest
+        image: mesquitasonata/httptangosrv
         imagePullPolicy: IfNotPresent
         env:
           - name: container_name
