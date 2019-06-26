@@ -3,8 +3,8 @@ package:
   name: 'tng-smpilot-ns2-k8s-eids'
   vendor: 'eu.5gtango'
   version: '0.1'
-  maintainer: 'alberto.m.rocha@alticelabs.com'
-  description: 'Smart Manufacturing pilot - containerized Enhanced-IDS'
+  maintainer: ALB, sm-pilot@5gtango.eu
+  description: Smart Manufacturing pilot - containerized Enhanced-IDS
 descriptor_extension: yml
 files:
 - path: nsd/e-ids.yml

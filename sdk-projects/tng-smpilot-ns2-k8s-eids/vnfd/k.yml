@@ -1,8 +1,8 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
-name: k-vnf3
+name: k-vnf4
 version: '0.9'
-author: alberto.m.rocha@alticelabs.com
+author: ALB, sm-pilot@5gtango.eu
 description: 'A VNF based on official Kibana image'
 virtual_deployment_units:
 - id: vdu01

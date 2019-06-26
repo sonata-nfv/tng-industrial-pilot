@@ -1,0 +1,202 @@
+#  Copyright (c) 2018 5GTANGO, Paderborn University
+# ALL RIGHTS RESERVED.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Neither the name of the SONATA-NFV, 5GTANGO, Paderborn University
+# nor the names of its contributors may be used to endorse or promote
+# products derived from this software without specific prior written
+# permission.
+#
+# This work has also been performed in the framework of the 5GTANGO project,
+# funded by the European Commission under Grant number 761493 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.5gtango.eu).
+
+
+# 1 CNF = 1 service and 1 deployment (=1 pod) with separate containers per CDU
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns2-mdc-svc
+  # for easy reference later on
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: mdc
+spec:
+  # to which deployment does this service belong?
+  selector:
+    pilot: sm
+    ns: ns2
+    cnf: mdc
+  # this requires MetalLB (or another LB) to be installed and configured
+  type: LoadBalancer
+  ports:
+    # don't need the UDP ports
+    - name: samba139
+      protocol: TCP
+      port: 139
+    - name: samba445
+      protocol: TCP
+      port: 445
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2-mdc
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: mdc
+spec:
+  selector:
+    # must match the labels of the template
+    matchLabels:
+      pilot: sm
+      ns: ns2
+      cnf: mdc
+  # the pod(s) to deploy = 3 CDU
+  template:
+    metadata:
+      labels:
+        pilot: sm
+        ns: ns2
+        cnf: mdc
+    spec:
+      volumes:
+      - name: suricata-logs
+        emptyDir: {}
+      - name: filebeat-config
+        configMap:
+          name: filebeat-static-configfile
+      containers:
+      - name: vnf-mdc
+        image: sonatanfv/vnf-mdc:k8s
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MQTT_BROKER_HOST
+          value: ns1-cc-service
+        - name: MQTT_BROKER_PORT
+          value: "1883"
+      - name: suricata
+        image: jasonish/suricata
+        imagePullPolicy: IfNotPresent
+        args: ["-i",
+          "enp3s0"
+        ]
+        volumeMounts:
+        - name: suricata-logs
+          mountPath: /var/log/suricata
+        securityContext:
+          privileged: true
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:6.7.1
+        imagePullPolicy: IfNotPresent
+        args: [
+          "-e",
+          "-c",
+          "/usr/share/filebeat/config/filebeat.yml",
+          "-d",
+          "publish,logstash",
+        ]
+        volumeMounts:
+        - name: suricata-logs
+          mountPath: /var/log/suricata
+        - name: filebeat-config
+          mountPath: /usr/share/filebeat/config
+      hostNetwork: false
+      dnsPolicy: ClusterFirstWithHostNet
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: suricata-static-configfile
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: ids
+data:
+  suricata.yaml: |
+    outputs.console:
+      enabled: true
+    outputs.eve-logs:
+      enabled: true
+      filename: eve.json
+      filetype: regular
+      append: no
+      types:
+      - alert:
+        metadata: yes
+        tagged-packets: yes
+      - http:
+        extended: yes
+      - dns:
+        query: yes
+        answer: yes
+      - tls:
+        extended: yes
+        - files:
+          force-magic: no
+          force-hash: [md5, sha256]
+      - ssh
+      - flow
+    outputs.files:
+      enabled: true
+      filename: /var/log/suricata/suricata.log
+      level: info
+
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: filebeat-static-configfile
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: ids
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+      - /var/log/suricata/eve.json
+    processors:
+    - add_host_metadata: ~
+    - add_cloud_metadata: ~
+    filebeat.config:
+      modules:
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: true
+    filebeat.modules:
+      module: suricata
+    setup.dashboards:
+      enabled: true
+    setup.template:
+      settings.index.number_of_shards: 3
+    setup.kibana:
+      host: "kibana:5601"
+    xpack.monitoring:
+      enabled: false
+    output.elasticsearch:
+      enabled: false
+      hosts: ["elasticsearch:9200"]
+    output.logstash:
+      enabled: true
+      hosts: ["logstash:5044"]
+
