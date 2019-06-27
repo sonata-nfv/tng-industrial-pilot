@@ -7,7 +7,7 @@ description: 'A VNF based on official Kibana image'
 cloudnative_deployment_units:
 - id: cdu01
   image: docker.elastic.co/kibana/kibana:6.7.1
-  image_format: docker
+  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 2

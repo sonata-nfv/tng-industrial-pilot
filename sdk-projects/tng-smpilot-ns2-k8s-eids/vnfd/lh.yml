@@ -7,7 +7,7 @@ description: 'A VNF based on Logstash and light HTTP server'
 cloudnative_deployment_units:
 - id: cdu01
   image: docker.elastic.co/logstash/logstash:6.7.1
-  image_format: docker
+  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 2
@@ -24,7 +24,7 @@ cloudnative_deployment_units:
     port: 5400
 - id: cdu02
   image: mesquitasonata/httptangosrv
-  image_format: docker
+  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 1
