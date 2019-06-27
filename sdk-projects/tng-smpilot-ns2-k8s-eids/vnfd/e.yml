@@ -4,7 +4,7 @@ name: e-vnf3
 version: '0.9'
 author: ALB, sm-pilot@5gtango.eu
 description: 'A VNF based on official Elasticsearch image'
-virtual_deployment_units:
+cloudnative_deployment_units:
 - id: vdu01
   vm_image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
   vm_image_format: docker
