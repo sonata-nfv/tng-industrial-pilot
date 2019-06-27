@@ -1,7 +1,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: k-vnf4
-version: '0.9'
+version: '0.6'
 author: ALB, sm-pilot@5gtango.eu
 description: 'A VNF based on official Kibana image'
 cloudnative_deployment_units:
@@ -25,6 +25,7 @@ connection_points:
 - id: input
   interface: ipv4
   type: external
+  port: 5601
 virtual_links:
 - id: input
   connectivity_type: E-Line

@@ -1,7 +1,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: lh-vnf2
-version: '0.9'
+version: '0.6'
 author: ALB, sm-pilot@5gtango.eu
 description: 'A VNF based on Logstash and light HTTP server'
 cloudnative_deployment_units:
@@ -21,6 +21,7 @@ cloudnative_deployment_units:
   - id: input
     interface: ipv4
     type: internal
+    port: 5400
 - id: cdu02
   image: mesquitasonata/httptangosrv
   image_format: docker
@@ -37,6 +38,7 @@ cloudnative_deployment_units:
   - id: input
     interface: ipv4
     type: internal
+    port: 5000
 connection_points:
 - id: input
   interface: ipv4
