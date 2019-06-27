@@ -62,7 +62,7 @@ spec:
           protocol: TCP
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
-
+      hostname: elasticsearch
 
 ---
 apiVersion: v1

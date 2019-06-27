@@ -7,7 +7,6 @@ metadata:
     pilot: sm
     ns: ns3
     cnf: kibana
-  #namespace: e-ids
 data:
   kibana.yml: |
     server.host: "0"
@@ -26,7 +25,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: kibana
-  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -63,6 +61,7 @@ spec:
           name: kibana-config
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
+      hostname: kibana
 
 ---
 kind: Service
@@ -73,7 +72,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: kibana
-  #namespace: e-ids
 spec:
   type: LoadBalancer
   selector:

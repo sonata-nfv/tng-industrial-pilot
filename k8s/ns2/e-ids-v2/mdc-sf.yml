@@ -119,6 +119,7 @@ spec:
           mountPath: /usr/share/filebeat/config
       hostNetwork: false
       dnsPolicy: ClusterFirst
+      hostname: suricata
 
 ---
 kind: ConfigMap

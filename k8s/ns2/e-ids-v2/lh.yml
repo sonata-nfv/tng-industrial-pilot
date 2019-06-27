@@ -120,6 +120,7 @@ spec:
           mountPath: /tmp
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
+      hostname: logstash
 
 ---
 kind: Service

@@ -1,60 +1,66 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
 name: e-ids-nsd
-version: '0.9'
+version: '0.6'
 author: ALB, sm-pilot@5gtango.eu
 description: 'an enhanced Security barrier Network Service'
 network_functions:
-- vnf_id: sf_vnf0
+- vnf_id: sf_vnf1
   vnf_vendor: eu.5gtango
   vnf_name: sf-vnf1
-  vnf_version: '0.9'
-- vnf_id: lh_vnf1
+  vnf_version: '0.6'
+- vnf_id: lh_vnf2
   vnf_vendor: eu.5gtango
   vnf_name: lh-vnf2
-  vnf_version: '0.9'
-- vnf_id: e_vnf2
+  vnf_version: '0.6'
+- vnf_id: e_vnf3
   vnf_vendor: eu.5gtango
   vnf_name: e-vnf3
-  vnf_version: '0.9'
-- vnf_id: k_vnf3
+  vnf_version: '0.6'
+- vnf_id: k_vnf4
   vnf_vendor: eu.5gtango
   vnf_name: k-vnf4
-  vnf_version: '0.9'
+  vnf_version: '0.6'
 connection_points:
 - id: input
   interface: ipv4
   type: external
 virtual_links:
-- id: input-2-vnf0
-  connectivity_type: E-Line
-  connection_points_reference:
-  - input
-  - vnf0:input
 - id: input-2-vnf1
   connectivity_type: E-Line
   connection_points_reference:
   - input
   - vnf1:input
-- id: input-2-vnf2
+- id: vnf1-2-vnf2
   connectivity_type: E-Line
   connection_points_reference:
-  - input
+  - vnf1:input
   - vnf2:input
-- id: input-2-vnf3
+- id: vnf2-2-vnf3
   connectivity_type: E-Line
   connection_points_reference:
-  - input
+  - vnf2:input
   - vnf3:input
+- id: vnf3-2-vnf4
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vnf3:input
+  - vnf4:input
 forwarding_graphs:
 - fg_id: fg01
-  number_of_endpoints: 2
-  number_of_virtual_links: 2
+  number_of_endpoints: 1
+  number_of_virtual_links: 4
   constituent_virtual_links:
   - input-2-vnf1
-  - vnf0-2-output
+  - vnf1-2-vnf2
+  - vnf1-2-vnf3
+  - vnf1-3-vnf4
+  #- vnf4-2-output
   constituent_vnfs:
   - vnf1
+  - vnf2
+  - vnf3
+  - vnf4
   network_forwarding_paths:
   - fp_id: fg01:fp01
     policy: none
@@ -63,7 +69,15 @@ forwarding_graphs:
       position: 1
     - connection_point_ref: vnf1:input
       position: 2
-    - connection_point_ref: vnf0:output
+    - connection_point_ref: vnf1:output
       position: 3
-    - connection_point_ref: output
+    - connection_point_ref: vnf2:input
       position: 4
+    - connection_point_ref: vnf2:output
+      position: 5
+    - connection_point_ref: vnf3:input
+      position: 6
+    - connection_point_ref: vnf3:output
+      position: 7
+    - connection_point_ref: vnf4:input
+      position 8
