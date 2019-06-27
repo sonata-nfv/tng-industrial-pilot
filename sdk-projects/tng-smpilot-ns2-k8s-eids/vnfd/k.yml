@@ -5,9 +5,9 @@ version: '0.9'
 author: ALB, sm-pilot@5gtango.eu
 description: 'A VNF based on official Kibana image'
 cloudnative_deployment_units:
-- id: vdu01
-  vm_image: docker.elastic.co/kibana/kibana:6.7.1
-  vm_image_format: docker
+- id: cdu01
+  image: docker.elastic.co/kibana/kibana:6.7.1
+  image_format: docker
   resource_requirements:
     cpu:
       vcpus: 2
@@ -29,6 +29,6 @@ virtual_links:
 - id: input
   connectivity_type: E-Line
   connection_points_reference:
-  - vdu01:input
+  - cdu01:input
   - input
   dhcp: true
