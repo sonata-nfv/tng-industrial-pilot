@@ -4,10 +4,10 @@ package:
   vendor: 'eu.5gtango'
   version: '0.1'
   maintainer: ALB, sm-pilot@5gtango.eu
-  description: Smart Manufacturing pilot - containerized Enhanced-IDS
+  description: Smart Manufacturing pilot - containerized Machine Data Collector with enhanced-IDS
 descriptor_extension: yml
 files:
-- path: nsd/e-ids.yml
+- path: nsd/mdc-selk.yml
   type: application/vnd.5gtango.nsd
   tags:
   - eu.5gtango

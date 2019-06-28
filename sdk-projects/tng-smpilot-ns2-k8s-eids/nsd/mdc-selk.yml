@@ -80,4 +80,4 @@ virtual_links:
 #    - connection_point_ref: vnf3:output
 #      position: 7
 #    - connection_point_ref: vnf4:input
-      position: 8
+#      position: 8
