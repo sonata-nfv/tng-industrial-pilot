@@ -17,7 +17,7 @@ cloudnative_deployment_units:
       size: 20
       size_unit: GB
   connection_points:
-  - id: cp4k
+  - id: cp4
     interface: ipv4
     type: internal
 connection_points:

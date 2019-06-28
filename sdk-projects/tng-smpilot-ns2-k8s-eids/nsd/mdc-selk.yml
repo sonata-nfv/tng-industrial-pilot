@@ -46,31 +46,31 @@ virtual_links:
   connection_points_reference:
   - vnf3:cp3
   - vnf4:cp4
-forwarding_graphs:
-- fg_id: fg01
-  number_of_endpoints: 1
-  number_of_virtual_links: 4
-  constituent_virtual_links:
-  - vl01
-  - vl12
-  - vl23
-  - vl34
-  constituent_vnfs:
-  - vnf1
-  - vnf2
-  - vnf3
-  - vnf4
-  network_forwarding_paths:
-  - fp_id: fg01:fp01
-    policy: none
-    connection_points:
-    - connection_point_ref: cp0
-      position: 1
-    - connection_point_ref: vnf1:cp1
-      position: 2
-    - connection_point_ref: vnf2:cp2
-      position: 3
-    - connection_point_ref: vnf3:cp3
-      position: 4
-    - connection_point_ref: vnf4:cp4
-      position: 5
+#forwarding_graphs:
+#- fg_id: fg01
+#  number_of_endpoints: 1
+#  number_of_virtual_links: 4
+#  constituent_virtual_links:
+#  - vl01
+#  - vl12
+#  - vl23
+#  - vl34
+#  constituent_vnfs:
+#  - vnf1
+#  - vnf2
+#  - vnf3
+#  - vnf4
+#  network_forwarding_paths:
+#  - fp_id: fg01:fp01
+#    policy: none
+#    connection_points:
+#    - connection_point_ref: cp0
+#      position: 1
+#    - connection_point_ref: vnf1:cp1
+#      position: 2
+#    - connection_point_ref: vnf2:cp2
+#      position: 3
+#    - connection_point_ref: vnf3:cp3
+#      position: 4
+#    - connection_point_ref: vnf4:cp4
+#      position: 5
