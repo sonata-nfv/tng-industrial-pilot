@@ -1,13 +1,25 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
-name: sf-vnf1
+name: msf-vnf1
 version: '0.6'
-author: ALB, sm-pilot@5gtango.eu
-description: 'a VNF with two VDUs: Suricata & Filebeat'
+author: sm-pilot@5gtango.eu
+description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 cloudnative_deployment_units:
 - id: cdu01
+  image: 'sonatanfv/vnf-mdc:latest'
+  connection_points:
+  - id: smb139
+    port: 139
+  - id: smb445
+    port: 445
+  parameters:
+    env:
+      # TODO: this should point to the k8s service layer of the CC
+      # the SP should add an env variable that contains this k8s service name
+      MQTT_BROKER_HOST: ns1-cc-service
+      MQTT_BROKER_PORT: 1883
+- id: cdu02
   image: jasonish/suricata
-  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 1
@@ -18,12 +30,11 @@ cloudnative_deployment_units:
       size: 10
       size_unit: GB
   connection_points:
-  - id: input
+  - id: promisc
     interface: ipv4
     type: internal
-- id: cdu02
+- id: cdu03
   image: docker.elastic.co/beats/filebeat:6.7.1
-  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 1
@@ -34,18 +45,30 @@ cloudnative_deployment_units:
       size: 10
       size_unit: GB
   connection_points:
-  - id: input
+  - id: beats
     interface: ipv4
     type: internal
     port: 5044
 connection_points:
-- id: input
+- id: cp0
   interface: ipv4
   type: external
+- id: cp1
+  interface: ipv4
+  type: internal
+- id: cp2
+  interface: ipv4
+  type: internal
 virtual_links:
-- id: input
+- id: vl01
   connectivity_type: E-Line
   connection_points_reference:
-  - cdu02:input
-  - input
+  - cp1
+  - cp0
+  dhcp: true
+- id: vl12
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp1
+  - cp2
   dhcp: true

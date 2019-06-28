@@ -2,12 +2,11 @@ descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/maste
 vendor: eu.5gtango
 name: e-vnf3
 version: '0.6'
-author: ALB, sm-pilot@5gtango.eu
-description: 'A VNF based on official Elasticsearch image'
+author: sm-pilot@5gtango.eu
+description: 'a CNF based on official Elasticsearch image'
 cloudnative_deployment_units:
 - id: cdu01
   image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
-  #image_format: docker
   resource_requirements:
     cpu:
       vcpus: 2
@@ -18,18 +17,30 @@ cloudnative_deployment_units:
       size: 20
       size_unit: GB
   connection_points:
-  - id: input
+  - id: cp3e
     interface: ipv4
     type: internal
 connection_points:
-- id: input
+- id: cp2
   interface: ipv4
-  type: external
+  type: internal
+- id: cp3
+  interface: ipv4
+  type: internal
+- id: cp4
+  interface: ipv4
+  type: internal
   port: 9200
 virtual_links:
-- id: input
+- id: vl23
   connectivity_type: E-Line
   connection_points_reference:
-  - cdu01:input
-  - input
+  - cp2
+  - cp3
+  dhcp: true
+- id: vl34
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp3
+  - cp4
   dhcp: true

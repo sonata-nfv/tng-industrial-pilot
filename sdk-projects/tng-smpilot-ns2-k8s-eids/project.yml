@@ -1,17 +1,17 @@
 version: '0.5'
 package:
-  name: 'tng-smpilot-ns2-k8s-eids'
+  name: 'tng-smpilot-ns2-k8s-mdc-eids'
   vendor: 'eu.5gtango'
   version: '0.1'
-  maintainer: ALB, sm-pilot@5gtango.eu
-  description: Smart Manufacturing pilot - containerized Machine Data Collector with enhanced-IDS
+  maintainer: sm-pilot@5gtango.eu
+  description: Smart Manufacturing pilot - containerized Machine Data Collector (MDC) with enhanced-IDS (SELK)
 descriptor_extension: yml
 files:
 - path: nsd/mdc-selk.yml
   type: application/vnd.5gtango.nsd
   tags:
   - eu.5gtango
-- path: vnfd/sf.yml
+- path: vnfd/msf.yml
   type: application/vnd.5gtango.vnfd
   tags:
   - eu.5gtango
