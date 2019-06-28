@@ -3,7 +3,6 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: logstash-static-configfile
-  #namespace: e-ids
   labels:
     pilot: sm
     ns: ns2
@@ -64,7 +63,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: logstash
-  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -110,7 +108,7 @@ spec:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
       - name: flask
-        image: arocha/tng-smp-flask:latest
+        image: mesquitasonata/httptangosrv
         imagePullPolicy: IfNotPresent
         env:
           - name: container_name
@@ -122,6 +120,34 @@ spec:
           mountPath: /tmp
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
+      hostname: logstash
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: flask
+  labels:
+    pilot: sm
+    ns: ns2
+    cnf: flask
+spec:
+  type: LoadBalancer
+  selector:
+    cnf: flask
+  ports:
+  - name: h-80
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  - name: h-443
+    protocol: TCP
+    port: 443
+    targetPort: 443
+  - name: h-5000
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
 
 ---
 kind: Service
@@ -132,7 +158,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: logstash
-  #namespace: e-ids
 spec:
   type: LoadBalancer
   selector:

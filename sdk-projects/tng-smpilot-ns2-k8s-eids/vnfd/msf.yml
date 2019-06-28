@@ -1,0 +1,74 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: msf-vnf1
+version: '0.6'
+author: sm-pilot@5gtango.eu
+description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
+cloudnative_deployment_units:
+- id: cdu01
+  image: 'sonatanfv/vnf-mdc:latest'
+  connection_points:
+  - id: smb139
+    port: 139
+  - id: smb445
+    port: 445
+  parameters:
+    env:
+      # TODO: this should point to the k8s service layer of the CC
+      # the SP should add an env variable that contains this k8s service name
+      MQTT_BROKER_HOST: ns1-cc-service
+      MQTT_BROKER_PORT: 1883
+- id: cdu02
+  image: jasonish/suricata
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: promisc
+    interface: ipv4
+    type: internal
+- id: cdu03
+  image: docker.elastic.co/beats/filebeat:6.7.1
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: beats
+    interface: ipv4
+    type: internal
+    port: 5044
+connection_points:
+- id: cp0
+  interface: ipv4
+  type: external
+- id: cp1
+  interface: ipv4
+  type: internal
+- id: cp2
+  interface: ipv4
+  type: internal
+virtual_links:
+- id: vl01
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp1
+  - cp0
+  dhcp: true
+- id: vl12
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp1
+  - cp2
+  dhcp: true

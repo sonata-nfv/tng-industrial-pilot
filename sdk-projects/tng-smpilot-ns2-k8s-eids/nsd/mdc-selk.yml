@@ -1,0 +1,76 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+vendor: eu.5gtango
+name: tng-smpilot-mdc-eids
+version: '0.6'
+author: sm-pilot@5gtango.eu
+description: 'a CNF for MDC with SELK (sidecar) enhanced security barrier'
+network_functions:
+- vnf_id: vnf1
+  vnf_vendor: eu.5gtango
+  vnf_name: msf-vnf1
+  vnf_version: '0.6'
+- vnf_id: vnf2
+  vnf_vendor: eu.5gtango
+  vnf_name: lh-vnf2
+  vnf_version: '0.6'
+- vnf_id: vnf3
+  vnf_vendor: eu.5gtango
+  vnf_name: e-vnf3
+  vnf_version: '0.6'
+- vnf_id: vnf4
+  vnf_vendor: eu.5gtango
+  vnf_name: k-vnf4
+  vnf_version: '0.6'
+connection_points:
+- id: cp0
+  interface: ipv4
+  type: external
+virtual_links:
+- id: vl01
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp0
+  - vnf1:cp1
+- id: vl12
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vnf1:cp1
+  - vnf2:cp2
+- id: vl23
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vnf2:cp2
+  - vnf3:cp3
+- id: vl34
+  connectivity_type: E-Line
+  connection_points_reference:
+  - vnf3:cp3
+  - vnf4:cp4
+#forwarding_graphs:
+#- fg_id: fg01
+#  number_of_endpoints: 1
+#  number_of_virtual_links: 4
+#  constituent_virtual_links:
+#  - vl01
+#  - vl12
+#  - vl23
+#  - vl34
+#  constituent_vnfs:
+#  - vnf1
+#  - vnf2
+#  - vnf3
+#  - vnf4
+#  network_forwarding_paths:
+#  - fp_id: fg01:fp01
+#    policy: none
+#    connection_points:
+#    - connection_point_ref: cp0
+#      position: 1
+#    - connection_point_ref: vnf1:cp1
+#      position: 2
+#    - connection_point_ref: vnf2:cp2
+#      position: 3
+#    - connection_point_ref: vnf3:cp3
+#      position: 4
+#    - connection_point_ref: vnf4:cp4
+#      position: 5

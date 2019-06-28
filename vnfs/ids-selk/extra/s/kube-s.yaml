@@ -12,7 +12,7 @@ spec:
     imagePullPolicy: IfNotPresent
     args: ["-i enp3s0"]
   - name: filebeat
-    image: docker.elastic.co/beats/filebeat:6.6.0
+    image: docker.elastic.co/beats/filebeat:6.7.1
     imagePullPolicy: IfNotPresent
   restartPolicy: Never
   hostNetwork: true

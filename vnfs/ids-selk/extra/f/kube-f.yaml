@@ -12,7 +12,7 @@ spec:
     emptyDir: {}
   containers:
   - name: filebeat
-#      image: arocha/u16filebeat:6.6.0
+#      image: arocha/u16filebeat:6.7.1
     image: docker.elastic.co/beats/filebeat:6.6.2
     imagePullPolicy: IfNotPresent
     env:

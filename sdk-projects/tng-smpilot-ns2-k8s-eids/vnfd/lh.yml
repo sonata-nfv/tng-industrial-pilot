@@ -1,0 +1,66 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: lh-vnf2
+version: '0.6'
+author: sm-pilot@5gtango.eu
+description: 'a CNF based on official Logstash image from Elastic and Flask lightweight HTTP server'
+cloudnative_deployment_units:
+- id: cdu01
+  image: docker.elastic.co/logstash/logstash:6.7.1
+  resource_requirements:
+    cpu:
+      vcpus: 2
+    memory:
+      size: 1024
+      size_unit: MB
+    storage:
+      size: 20
+      size_unit: GB
+  connection_points:
+  - id: cp2l
+    interface: ipv4
+    type: internal
+    port: 5400
+- id: cdu02
+  image: mesquitasonata/httptangosrv
+  resource_requirements:
+    cpu:
+      vcpus: 1
+    memory:
+      size: 512
+      size_unit: MB
+    storage:
+      size: 10
+      size_unit: GB
+  connection_points:
+  - id: cp2h
+    interface: ipv4
+    type: internal
+    port: 5000
+connection_points:
+- id: cp0
+  interface: ipv4
+  type: external
+- id: cp1
+  interface: ipv4
+  type: internal
+- id: cp2
+  interface: ipv4
+  type: internal
+  port: 9200
+- id: cp3
+  interface: ipv4
+  type: internal
+virtual_links:
+- id: vl12
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp1
+  - cp2
+  dhcp: true
+- id: vl23
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp2
+  - cp3
+  dhcp: true

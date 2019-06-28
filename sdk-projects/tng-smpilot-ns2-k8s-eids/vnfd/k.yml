@@ -1,0 +1,38 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: k-vnf4
+version: '0.6'
+author: sm-pilot@5gtango.eu
+description: 'a CNF based on official Kibana image'
+cloudnative_deployment_units:
+- id: cdu01
+  image: docker.elastic.co/kibana/kibana:6.7.1
+  resource_requirements:
+    cpu:
+      vcpus: 2
+    memory:
+      size: 1024
+      size_unit: MB
+    storage:
+      size: 20
+      size_unit: GB
+  connection_points:
+  - id: cp4
+    interface: ipv4
+    type: internal
+connection_points:
+- id: cp3
+  interface: ipv4
+  type: internal
+  port: 9200
+- id: cp4
+  interface: ipv4
+  type: internal
+  port: 5601
+virtual_links:
+- id: vl34
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp3
+  - cp4
+  dhcp: true
