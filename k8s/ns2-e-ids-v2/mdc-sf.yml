@@ -56,7 +56,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ns2-mdc
+  name: ns2-mdc-sf
   labels:
     pilot: sm
     ns: ns2
@@ -118,7 +118,7 @@ spec:
           mountPath: /usr/share/filebeat/config
       hostNetwork: false
       dnsPolicy: ClusterFirst
-      hostname: suricata
+      hostname: ns2-mdc-sf
 
 ---
 kind: ConfigMap
