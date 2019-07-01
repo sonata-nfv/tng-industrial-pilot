@@ -84,8 +84,7 @@ spec:
           name: filebeat-static-configfile
       containers:
       - name: vnf-mdc
-        image: sonatanfv/vnf-mdc:k8s
-        imagePullPolicy: IfNotPresent
+        image: sonatanfv/vnf-mdc:latest
         env:
         - name: MQTT_BROKER_HOST
           value: ns1-cc-service
