@@ -77,8 +77,7 @@ spec:
     spec:
       containers:
       - name: vnf-mdc
-        image: sonatanfv/vnf-mdc:k8s
-        imagePullPolicy: Always
+        image: sonatanfv/vnf-mdc:latest
         env:
         # the k8s service names of all CNFs need to be set by the SP dynamically
         - name: MQTT_BROKER_HOST
