@@ -24,7 +24,15 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
+# extra security policy to allow privileged containers (IDS)
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: ns2.policy.allowPrivileged
+spec:
+  privileged: true 
 
+---
 # 1 CNF = 1 service and 1 deployment (=1 pod) with separate containers per CDU
 apiVersion: v1
 kind: Service
