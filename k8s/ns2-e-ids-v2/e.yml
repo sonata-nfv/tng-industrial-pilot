@@ -7,7 +7,6 @@ metadata:
     pilot: sm
     ns: ns3
     cnf: elasticsearh
-  #namespace: e-ids
 data:
   elasticsearch.yml: |
     xpack.monitoring.collection.enabled: true
@@ -22,7 +21,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: elasticsearch
-  #namespace: e-ids
 spec:
   replicas: 1
   selector:
@@ -73,7 +71,6 @@ metadata:
     pilot: sm
     ns: ns2
     cnf: elasticsearch
-  #namespace: e-ids
 spec:
   type: LoadBalancer
   selector:

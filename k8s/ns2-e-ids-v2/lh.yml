@@ -16,14 +16,13 @@ data:
         #type => "SuricataIDPS"
       }
     }
-
     filter {
       json {
         source => "message"
         target => "temp"
         }
-      if [temp][dest_ip] {
-        if [temp][dest_ip] == "172.31.14.107" {
+      if [temp][event_type] {
+        if [temp][event_type] == "smb" {
           json {
             source => "message"
             target => "message"
@@ -37,8 +36,7 @@ data:
       else {
         drop {}
         }
-      }
-
+    }
     output {
       elasticsearch {
         hosts => ["elasticsearch:9200"]
@@ -52,7 +50,6 @@ data:
       }
       stdout { codec => rubydebug }
     }
-
 
 ---
 apiVersion: apps/v1
