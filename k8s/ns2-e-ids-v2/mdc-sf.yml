@@ -99,8 +99,8 @@ spec:
         volumeMounts:
         - name: suricata-logs
           mountPath: /var/log/suricata
-        #securityContext:
-          #privileged: true
+        securityContext:
+          privileged: false
       - name: filebeat
         image: docker.elastic.co/beats/filebeat:6.7.1
         imagePullPolicy: IfNotPresent
