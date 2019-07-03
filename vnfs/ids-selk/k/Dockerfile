@@ -1,17 +1,16 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:6.7.1
+FROM docker.elastic.co/kibana/kibana:6.7.1
 MAINTAINER "smpilot@5gtango.eu"
 #RUN yum update -y
-ENV ES_JAVA_OPTS="-Xms1g -Xmx1g"
-ENV ES_HEAP_SIZE="2g"
-ENV bootstrap.memory_lock="true"
-ENV discovery.type="single-node"
-ENV PATH=$PATH:/usr/share/elasticsearch/bin
-USER elasticsearch
-COPY ./elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
-COPY ./logging.yml /usr/share/elasticsearch/config/logging.yml
-WORKDIR /usr/share/elasticsearch
-VOLUME [/usr/share/elasticsearch/data]
-EXPOSE 9200/tcp 9300/tcp
+ENV SERVER_NAME="kibana"
+ENV XPACK_MONITORING_ENABLED="true"
+ENV ELASTICSEARCH_HOSTS="http://elasticsearch"
+ENV PATH=$PATH:/usr/share/kibana/bin
+USER kibana
+COPY ./kibana.yml /usr/share/kibana/config/kibana.yml
+COPY ./logging.yml /usr/share/kibana/config/logging.yml
+WORKDIR /usr/share/kibana
+VOLUME [/usr/share/kibana/data]
+EXPOSE 5601/tcp
 
-#ENTRYPOINT ["elasticsearch"]
+#ENTRYPOINT ["kibana"]
 #CMD ["-d","-v"]
