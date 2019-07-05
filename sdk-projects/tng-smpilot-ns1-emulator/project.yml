@@ -1,0 +1,24 @@
+descriptor_extension: yml
+version: '0.5'
+files:
+- path: nsd/nsd_smpilot_ns1_emulator.yml
+  type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+  testing_tags:
+  - industrial-pilot-broker
+- path: vnfd/vnfd_cc_emulator.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+- path: vnfd/vnfd_eae_emulator.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+package:
+  name: tng-smpilot-ns1-emulator
+  version: '0.1'
+  maintainer: Manuel Peuster (Paderborn University)
+  vendor: eu.5gtango
+  description: 'Smart manufacturing pilot: Factory edge service (NS1) for vim-emu.'
+uuid: 1fcc354c-a37d-46ba-890d-a6d602300f1c

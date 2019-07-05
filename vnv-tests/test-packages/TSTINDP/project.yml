@@ -1,0 +1,18 @@
+descriptor_extension: yml
+version: '0.5'
+package:
+  vendor: eu.5gtango
+  name: industrial-pilot-test-egm
+  version: '0.9'
+  maintainer: Aureliano Sinatra, EGM
+  description: This is a 5GTANGO test package for mqtt Benchmarking
+files:
+- path: Definitions/test-descriptor.yml
+  type: application/vnd.5gtango.tstd
+  testing_tags:
+  - industrial-pilot-broker
+- path: Icons/upb_logo.png
+  type: image/png
+- path: Licenses/LICENSE
+  type: text/plain
+uuid: e475v601-94ff-45d1-bf98-ada6e3300a54

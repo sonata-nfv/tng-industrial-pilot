@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content">
+<h2>Setup Machine<h2>
+<h3></h3>  
+<div class="w3-sidebar" style="width:130px">
+<button class="w3-button tablink" onclick="openLink(event, 'parameter')">Parameter</button>
+<button class="w3-button tablink" onclick="openLink(event, 'job')">Job</button>
+<button class="w3-button tablink" onclick="openLink(event, 'machinestate')">Machine State</button>
+<button class="w3-button tablink" onclick="openLink(event, 'network')">Network Interface</button>
+<button class="w3-button tablink" onclick="openLink(event, 'em63')">Euromap 63 </button>
+</div>
+
+<div style="margin-left:130px">
+<div id="parameter" class="city" >
+<h3>Parameter</h3>
+<p>Set parameter values. Modifications can be done every time.</p>
+<!--http://127.0.0.1:5000/result-->
+
+<form action = "resultSimPara" method = "POST">
+<hr/>
+<p>@ActSimPara1 (constant value)<input type="number" min="-32000" max="32000" name = "formATActSimPara1" value="5"/></p>
+
+<hr/>
+
+<p>@ActSimPara2 (sine function)</p>
+
+<div id="div1" style="float:left; height:100%; width:100%">
+<div id="div1left" style="float:left; width:25%;">
+
+<p>Periodic time (sec.) 
+<select name="formATActSimPara2period">
+<option value="20" selected>20</option>
+<option value="10">10</option>
+<option value="5">5</option>
+<option value="2">2</option>
+<option value="1">1</option>
+<option value="0.5">0.5</option>
+<option value="0.2">0.2</option>
+<option value="0.1">0.1</option>
+</select>
+</p>
+
+<p>Amplitude 
+<select name="formATActSimPara2amplitude">
+<option value="10">10</option>
+<option value="5">5</option>
+<option value="2">2</option>
+<option value="1" selected>1</option>
+<option value="0.5">0.5</option>
+<option value="0.2">0.2</option>
+<option value="0.1">0.1</option>
+</select>   
+</p>
+
+<p>Phase shift 
+<select name="formATActSimPara2phase">
+<option value="-pi">-&pi;</option> <!-- -3.141592654, -1.570796327, 0.785398163, 0.785398163, 1.570796327, 3.141592654-->
+<option value="-pi/2">-0.5*&pi;</option>
+<option value="-pi/4">-0.25*&pi;</option>
+<option value="0" selected >0</option>
+<option value="pi/4">0.25&pi;</option>
+<option value="pi/2">0.5*&pi;</option>
+<option value="pi">&pi;</option>
+</select>        
+</p>
+
+<p>Offset 
+<select name="formATActSimPara2offset">
+<option value="10">10</option>
+<option value="5">5</option>
+<option value="2">2</option>
+<option value="1" selected>1</option>
+<option value="0">0</option>
+<option value="-1">-1</option>
+<option value="-2">-2</option>
+<option value="-5">-5</option>
+<option value="-10">-10</option>
+</select>         
+</p>
+
+</div>
+<div id="div1right" style="float:left; width:75%;">
+<img src="{{ url_for('static', filename='img/sinedesc.jpg') }}" alt="Sine curve description" width="95%">
+</div>
+</div> 
+
+<p>&nbsp;</p>
+
+<hr/>
+
+<p> <input type="radio" name ="formPlotATActSimPara" value="1" />Plot @ActSimPara1 and @ActSimPara2</p>
+<p> <input type="radio" name ="formPlotATActSimPara" value="0" checked/>Do not plot</p>
+
+<hr/>
+
+<p><input type = "submit" value = "submit" /></p>
+
+</form>	
+</div>
+
+<div id="job" class="city" style="display:none">
+<h3>Job</h3>
+<p>Set the job parameters. Modifications can be done in setup mode.</p>
+<!--http://127.0.0.1:5000/result-->
+<form action = "result" method = "POST">
+<hr/>
+<p>Number of Parts <input type="number" min="1" max="99999" name = "formSetCntPrt" value="100"/></p>
+<p>Number of Moulds <input type="number" min="1" max="12" name = "formSetCntMld" value="10"/></p>
+<p>Cycle Time (sec.)<input type="number" min="1" max="500" name = "formSetTimCyc" value="1"/></p>
+<hr/>
+<p><input type = "submit" value = "submit" /></p>
+</form>	
+</div>
+
+<div id="machinestate" class="city" style="display:none">
+<h3>Machine State</h3>
+
+<p>Actual machine state (currently not supported):</p>
+<p><input type="radio" name="isformState" value="isformStateidle" disabled>Idle</p>
+<p><input type="radio" name="isformState" value="isformStatesetup" disabled>Set up</p>
+<p><input type="radio" name="isformState" value="isformStateproduction" disabled>Production</p>
+<p><input type="radio" name="isformState" value="isformStateerror" disabled>Machine Error</p>
+<p><input type="radio" name="isformState" value="isformStatepause" disabled>Pause</p>
+<p><input type="radio" name="isformState" value="isformStatefinished" disabled>Job Completed</p>
+
+<hr/>
+<p>Set new machine state:</p>
+<ul>
+<li>Select <b>Idle</b> when a job was finished.</li>
+<li>Select <b>Machine Error</b> to simulate a machine error.</li>
+<li>Select <b>Pause</b> to pause the machine.</li>
+<li>Select <b>Production</b> to start production or continue after pause or machine error.</li>
+</ul>
+
+<div id="div2" style="float:left; height:100%; width:100%; background-color:#eeeeee;">
+<div id="div2left" style="float:left; width:35%;">
+
+<form action = "resultState" method = "POST">
+
+<p><input type="radio" name="formState" value="formStateidle" checked>Idle</p>
+<p><input type="radio" name="formState" value="formStatesetup" disabled>Set up (not selectable)</p>
+<p><input type="radio" name="formState" value="formStateproduction">Production</p>
+<p><input type="radio" name="formState" value="formStateerror">Machine Error</p>
+<p><input type="radio" name="formState" value="formStatepause">Pause</p>
+<p><input type="radio" name="formState" value="formStatefinished" disabled>Job Completed (not selectable)</p>
+
+<p><input type = "submit" value = "submitState" /></p>
+</form>
+</div>
+<div id="div2right" style="float:left; width:65%;">
+<img src="{{ url_for('static', filename='img/statemachine.png') }}" alt="Statemachine description" width="50%">
+</div>
+<p>&nbsp;</p>
+<hr/>
+</div> 
+</div>
+
+<div id="network" class="city" style="display:none">
+<h3>Network Interface</h3>
+<p>Set the network configuration. (Currently not supported. Please use /etc/network/interfaces)</p>
+<form action = "resultNetwork" method = "POST">
+<hr/>
+<p>IP Address<input type="text" name = "formNetIP" value="192.168.2.2" /></p>
+<p>Subnet <input type="text" name = "formNetSubnet" value="255.255.255.0" /></p>
+<p>Gateway <input type="text" name = "formNetGateway" value="192.168.2.254" /></p>
+<p>DNS <input type="text" name = "formNetDNS" value="192.168.2.254" /></p>
+<hr/>
+<p><input type = "submit" value = "submit" /></p>
+</form>
+</div>
+
+<div id="em63" class="city" style="display:none">
+<h3>Euromap 63 Interface</h3>
+<p>Set the path and credentials for Euromap 63 interface. User and Password can be empty. Using variable $USER is not allowed.</p>
+<form action = "resultEM63" method = "POST">
+<hr/>
+<p>Session folder path <input type="text" name = "formEM63path" value="/home/marcel/em63/"/></p>
+<p>User <input type="text" name = "formEM63user" /></p>
+<p>Password <input type="password" name = "formEM63pass" /></p>
+<hr/>
+<p><input type = "submit" value = "submit" /></p>
+</form>
+</div>
+</div>
+</div>
+
+<script>
+function openLink(evt, animName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+     tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+  }
+  document.getElementById(animName).style.display = "block";
+  evt.currentTarget.className += " w3-red";
+}
+</script>    
+{% endblock %}

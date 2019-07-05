@@ -1,0 +1,18 @@
+descriptor_extension: yml
+version: '0.5'
+files:
+- path: nsd/nsd_smpilot_ns2.yml
+  type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+- path: vnfd/vnfd_mdc.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+package:
+  name: tng-smpilot-ns2-k8s
+  version: '0.1'
+  maintainer: Stefan Schneider (Paderborn University)
+  vendor: eu.5gtango
+  description: 'Smart manufacturing pilot: Machine interconnection service (NS2) for
+    k8s.'

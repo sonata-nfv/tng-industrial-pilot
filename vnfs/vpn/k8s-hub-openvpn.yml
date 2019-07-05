@@ -1,0 +1,57 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -f hub-docker-compose.yml -o k8s-hub-openvpn.yml
+      kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: openvpn
+    name: openvpn
+  spec:
+    ports:
+    - name: "443"
+      port: 443
+      targetPort: 443
+    - name: "1194"
+      port: 1194
+      protocol: UDP
+      targetPort: 1194
+    selector:
+      io.kompose.service: openvpn
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -f hub-docker-compose.yml -o k8s-hub-openvpn.yml
+      kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: openvpn
+    name: openvpn
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          io.kompose.service: openvpn
+      spec:
+        containers:
+        - image: kylemanna/openvpn
+          name: openvpn
+          ports:
+          - containerPort: 443
+          - containerPort: 1194
+            protocol: UDP
+          resources: {}
+        restartPolicy: Always
+  status: {}
+kind: List
+metadata: {}
+

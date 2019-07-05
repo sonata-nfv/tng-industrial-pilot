@@ -1,0 +1,30 @@
+# Dockerfile to build a Suricata docker container
+
+# Set the latest Ubuntu image
+FROM ubuntu
+
+# File Author
+MAINTAINER sm-pilot@5gtango.eu
+
+# Update the repos and install tools
+RUN apt update -y && \
+    apt install -y software-properties-common wget apt-transport-https && \
+    # Add the Suricata repository
+    add-apt-repository -y ppa:oisf/suricata-stable && \
+    # Update the repos and install Suricata
+    apt update -y && \
+    apt install -y suricata
+
+# Copy the suricata config to its config location
+ADD suricata.yaml /etc/suricata/suricata.yaml
+
+# eth0 is hardcoded in suricata (recognized as a bug)
+RUN grep -rl eth0 /etc | xargs sed -i 's/eth0/ens3/g'
+
+# Start the Suricata/Filebeat service when the container is started
+CMD service suricata start
+    #filebeat modules enable suricata -e && \
+    #filebeat modules enable logstash -e && \
+    #filebeat modules enable elasticsearch -e && \
+    #filebeat setup --template -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]' && \
+    #filebeat setup

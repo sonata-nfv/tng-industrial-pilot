@@ -1,0 +1,27 @@
+version: '2'
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.7.1
+    container_name: logstash
+    environment:
+      - http.host = "0.0.0.0"
+      - xpack.monitoring.enabled = true
+      - xpack.monitoring.elasticsearch.url = http://localhost:9200
+    volumes:
+      # bind-mounted settings file
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - 5044:5044
+      - 9600:9600
+    networks:
+      - smpnet
+
+#volumes:
+  #lsdata:
+    #driver: local
+
+networks:
+  smpnet:
+    driver: bridge
+
+# [CREDITS](https://www.elastic.co/guide/en/logstash/current/docker-config.html)

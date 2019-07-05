@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content">
+<h2>Monitoring Machine<h2>
+<h3>Show last plots.</h3>
+<meta http-equiv="Refresh" content="3; url={{ url_for('monitoring') }}">
+
+<iframe src="{{ url_for('plotActSimPara') }}" height="500" width="100%" frameborder="0"></iframe>
+
+<iframe src="{{ url_for('plotActCntCyc') }}" height="500" width="100%" frameborder="0"></iframe>
+</div>
+{% endblock %}

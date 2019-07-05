@@ -1,0 +1,30 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -f tng-docker-compose.yml -o k8s-tng-snort.yml
+      kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: snort
+    name: snort
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          io.kompose.service: snort
+      spec:
+        containers:
+        - image: registry.sonata-nfv.eu:5000/tng-snort
+          name: snort
+          resources: {}
+        restartPolicy: Always
+  status: {}
+kind: List
+metadata: {}
+

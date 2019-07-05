@@ -1,0 +1,87 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o k8s-quagga.yml
+      kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: quagga
+    name: quagga
+  spec:
+    ports:
+    - name: "2600"
+      port: 2600
+      targetPort: 2600
+    - name: "2601"
+      port: 2601
+      targetPort: 2601
+    - name: "2602"
+      port: 2602
+      targetPort: 2602
+    - name: "2603"
+      port: 2603
+      targetPort: 2603
+    - name: "2604"
+      port: 2604
+      targetPort: 2604
+    - name: "2605"
+      port: 2605
+      targetPort: 2605
+    - name: "2606"
+      port: 2606
+      targetPort: 2606
+    - name: "2607"
+      port: 2607
+      targetPort: 2607
+    - name: "2608"
+      port: 2608
+      targetPort: 2608
+    - name: "2609"
+      port: 2609
+      targetPort: 2609
+    selector:
+      io.kompose.service: quagga
+  status:
+    loadBalancer: {}
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose convert -o k8s-quagga.yml
+      kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: quagga
+    name: quagga
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          io.kompose.service: quagga
+      spec:
+        containers:
+        - image: cumulusnetworks/quagga
+          name: quagga
+          ports:
+          - containerPort: 2600
+          - containerPort: 2601
+          - containerPort: 2602
+          - containerPort: 2603
+          - containerPort: 2604
+          - containerPort: 2605
+          - containerPort: 2606
+          - containerPort: 2607
+          - containerPort: 2608
+          - containerPort: 2609
+          resources: {}
+        restartPolicy: Always
+  status: {}
+kind: List
+metadata: {}
+

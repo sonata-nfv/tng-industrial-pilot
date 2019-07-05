@@ -1,0 +1,11 @@
+DATE,
+TIME,
+@ActSimPara1,
+@ActSimPara2,
+ActCntCyc,
+ActCntPrt,
+ActStsMach,
+ActTimCyc,
+SetCntMld,
+SetCntPrt,
+SetTimCyc;

@@ -1,0 +1,25 @@
+descriptor_extension: yml
+version: '0.5'
+files:
+- path: Definitions/nsd/nsd_smpilot_ns1.yml
+  type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+  testing_tags:
+  - industrial-pilot-broker
+- path: Definitions/vnfd/vnfd_cc.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+  testing_tags:
+  - industrial-pilot-broker
+- path: Definitions/vnfd/vnfd_eae.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+package:
+  name: tng-smpilot-ns1-k8s
+  version: '0.1'
+  maintainer: Manuel Peuster (Paderborn University)
+  vendor: eu.5gtango
+  description: 'Smart manufacturing pilot: Factory edge service (NS1) for vim-emu.'

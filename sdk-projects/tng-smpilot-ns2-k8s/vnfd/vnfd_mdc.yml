@@ -1,0 +1,73 @@
+#  Copyright (c) 2018 5GTANGO, Paderborn University
+# ALL RIGHTS RESERVED.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Neither the name of the SONATA-NFV, 5GTANGO, Paderborn University
+# nor the names of its contributors may be used to endorse or promote
+# products derived from this software without specific prior written
+# permission.
+#
+# This work has also been performed in the framework of the 5GTANGO project,
+# funded by the European Commission under Grant number 761493 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.5gtango.eu).
+
+descriptor_schema: >-
+  https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: smpilot-mdc
+version: '0.1'
+author: 'Stefan Schneider (Paderborn University)'
+description: 'Machine data collector (MDC) CNF'
+
+# loosely corresponds to the "containers" section in a k8s deployment
+cloudnative_deployment_units:
+  - id: cdu01
+    image: 'sonatanfv/vnf-mdc:latest'
+    connection_points:
+      - id: "int-samba139"
+        port: 139
+      - id: "int-samba445"
+        port: 445
+    parameters:
+      env:
+        # TODO: this should point to the k8s service layer of the CC
+        # the SP should add an env variable that contains this k8s service name
+        MQTT_BROKER_HOST: ns1-cc-service
+        MQTT_BROKER_PORT: 1883
+                
+# corresponds to the k8s service layer: connection to the outside world     
+connection_points:
+  - id: samba139
+    interface: ipv4
+    type: serviceendpoint
+    port: 139
+  - id: samba445
+    interface: ipv4
+    type: serviceendpoint
+    port: 445
+    
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
+virtual_links: 
+  - id: "samba139-link"
+    connectivity_type: E-Tree
+    connection_points_reference:
+      - samba139
+      - 'cdu01:int-samba139'
+  - id: "samba445-link"
+    connectivity_type: E-Tree
+    connection_points_reference:
+      - samba445
+      - 'cdu01:int-samba445'
