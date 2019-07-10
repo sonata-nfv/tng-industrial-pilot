@@ -12,6 +12,7 @@ cloudnative_deployment_units:
     port: 139
   - id: smb445
     port: 445
+  - id: cp1a
   parameters:
     env:
       # TODO: this should point to the k8s service layer of the CC
@@ -45,7 +46,7 @@ cloudnative_deployment_units:
       size: 10
       size_unit: GB
   connection_points:
-  - id: beats
+  - id: cp1f
     interface: ipv4
     type: internal
     port: 5044
