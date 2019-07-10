@@ -23,14 +23,35 @@ data:
         }
       if [temp][event_type] {
         if [temp][event_type] == "smb" {
-          json {
-            source => "message"
-            target => "message"
+          if [temp][smb][command] == "SMB2_COMMAND_NEGOTIATE_PROTOCOL" or [temp][smb][command] == "SMB1_COMMAND_NEGOTIATE_PROTOCOL" {
+            aggregate {
+              task_id => [temp][flow_id]
+              code => "map['alarm'] = 0"
+              map_action => "create"
+              }
             }
+          if [temp][smb][command] == "" {
+            aggregate {
+              task_id => [temp][flow_id]
+              code => "map['alarm'] = 1"
+              map_action => "update"
+              end_of_task => true
+              timeout => 120
+              }
+            }
+
           }
         else
           {
-          drop {}
+          if [temp][event_type] == "dns" or [temp][event_type] == "stats" or [temp][event_type] == "http" or [temp][event_type] == "fileinfo" or [temp][event_type] == "flow" {
+            drop {}
+            }
+          else {
+            json {
+              source => "message"
+              target => "message"
+              }
+            }
           }
         }
       else {
