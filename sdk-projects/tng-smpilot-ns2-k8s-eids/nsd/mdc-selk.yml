@@ -1,45 +1,68 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
 name: tng-smpilot-mdc-eids
-version: '0.6'
+version: '0.1'
 author: sm-pilot@5gtango.eu
 description: 'a CNF for MDC with SELK (sidecar) enhanced security barrier'
 network_functions:
 - vnf_id: vnf1
   vnf_vendor: eu.5gtango
   vnf_name: msf-vnf1
-  vnf_version: '0.6'
+  vnf_version: '0.1'
 - vnf_id: vnf2
   vnf_vendor: eu.5gtango
   vnf_name: lh-vnf2
-  vnf_version: '0.6'
+  vnf_version: '0.1'
 - vnf_id: vnf3
   vnf_vendor: eu.5gtango
   vnf_name: e-vnf3
-  vnf_version: '0.6'
+  vnf_version: '0.1'
 - vnf_id: vnf4
   vnf_vendor: eu.5gtango
   vnf_name: k-vnf4
-  vnf_version: '0.6'
+  vnf_version: '0.1'
 connection_points:
 - id: cp0
   interface: ipv4
   type: external
+- id: cp1m
+  interface: ipv4
+  type: internal
+- id: cp1s
+  interface: ipv4
+  type: internal
+- id: cp1f
+  interface: ipv4
+  type: internal
+- id: cp2l
+  interface: ipv4
+  type: internal
+- id: cp3
+  interface: ipv4
+  type: internal
+- id: cp4
+  interface: ipv4
+  type: internal
 virtual_links:
-- id: vl01
+- id: vl01m
   connectivity_type: E-Line
   connection_points_reference:
   - cp0
-  - vnf1:cp1
+  - vnf1:cp1m
+- id: vl01s
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp0
+  - vnf1:cp1s
 - id: vl12
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1
-  - vnf2:cp2
+  - vnf1:cp1f
+  - vnf2:cp2l
 - id: vl23
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf2:cp2
+  - vnf2:cp2l
   - vnf3:cp3
 - id: vl34
   connectivity_type: E-Line

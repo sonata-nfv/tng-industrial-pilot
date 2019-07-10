@@ -16,15 +16,15 @@ RUN yum clean all && \
 # CONFIG
 USER logstash
 WORKDIR /usr/share/logstash
-COPY logstash.yml config/
-COPY logstash.conf pipeline/
-COPY logging.yml config/
+COPY logstash.yml ./config/
+COPY logstash.conf ./pipeline/
+COPY logging.yml ./config/
 RUN bin/logstash-plugin install logstash-output-exec && bin/logstash-plugin install logstash-input-beats
 
 # RUN DAEMON
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN chown logstash:root /usr/local/bin/docker-entrypoint.sh && chmod 775 /usr/local/bin/docker-entrypoint.sh
-RUN ln -s docker-entrypoint.sh / # backwards compat
+#RUN chown logstash:root /usr/local/bin/docker-entrypoint.sh && chmod 775 /usr/local/bin/docker-entrypoint.sh
+#RUN ln -s docker-entrypoint.sh / # backwards compat
 ENTRYPOINT ["docker-entrypoint.sh"]
 EXPOSE 5044/tcp 9600/tcp
 
