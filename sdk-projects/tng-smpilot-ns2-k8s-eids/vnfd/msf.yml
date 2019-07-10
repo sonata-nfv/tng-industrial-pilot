@@ -53,20 +53,20 @@ connection_points:
 - id: cp0
   interface: ipv4
   type: external
-- id: cp1m
+- id: cp1a
   interface: ipv4
   type: internal
-- id: cp2s
+- id: cp1s
   interface: ipv4
   type: internal
-- id: cp2f
+- id: cp1f
   interface: ipv4
   type: internal
 virtual_links:
 - id: vl01m
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1m
+  - vnf1:cp1a
   - cp0
   dhcp: true
 - id: vl01s

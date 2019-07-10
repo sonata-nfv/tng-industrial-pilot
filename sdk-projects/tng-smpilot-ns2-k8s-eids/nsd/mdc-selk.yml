@@ -25,7 +25,13 @@ connection_points:
 - id: cp0
   interface: ipv4
   type: external
-- id: cp1m
+- id: smb139
+  interface: ipv4
+  type: internal
+- id: smb445
+  interface: ipv4
+  type: internal
+- id: cp1a
   interface: ipv4
   type: internal
 - id: cp1s
@@ -44,11 +50,21 @@ connection_points:
   interface: ipv4
   type: internal
 virtual_links:
-- id: vl01m
+- id: vl01139
   connectivity_type: E-Line
   connection_points_reference:
   - cp0
-  - vnf1:cp1m
+  - vnf1:smb139
+- id: vl01445
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp0
+  - vnf1:smb445
+- id: vl01aea
+  connectivity_type: E-Line
+  connection_points_reference:
+  - cp0
+  - vnf1:cp1a
 - id: vl01s
   connectivity_type: E-Line
   connection_points_reference:
