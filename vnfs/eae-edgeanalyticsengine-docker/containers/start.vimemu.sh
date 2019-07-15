@@ -27,6 +27,6 @@
 
 echo "EAE: Reconfiguring Grafana based on env vars"
 python3 reconfigure_grafana.py
-grafana-cli admin reset-admin-password --homepath "/usr/share/grafana" tango
+# grafana-cli --homepath "/usr/share/grafana" admin reset-admin-password tango
 echo "EAE: Starting Grafana... (logs: /var/grafana.log)"
 service grafana-server start > /var/grafana.log 2>&1 &
