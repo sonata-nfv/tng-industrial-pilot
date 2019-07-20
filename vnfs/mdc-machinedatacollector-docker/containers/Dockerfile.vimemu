@@ -69,8 +69,8 @@ ENV GATEWAY 30.0.1.3
 # MQTT config
 ENV MQTT_BROKER_HOST 30.0.0.1
 ENV MQTT_BROKER_PORT 1883
-# only for dummy MQTT generator not for MDC APP
-ENV TOPIC machines/molding-042/sensors/temp
+# name of the connected machine (used as first part of MQTT topic)
+ENV MACHINE_NAME WIMMS
 
 # MDC configs
 # (dont change, its also hardcoded in smb.conf)

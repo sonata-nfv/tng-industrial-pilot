@@ -50,6 +50,7 @@ from em63 import rmFile
 import plotly
 import plotly.graph_objs as go
 import numpy as np
+from opcua import Client
 
 app = Flask(__name__)
 
@@ -156,6 +157,17 @@ ActiveJobs,
 ActiveReports,	;
 ActiveEvents,	;
 """
+
+# Set OPC UA server address and port or use defaults
+OPCUA_SERVER = os.environ.get("OPCUA_SERVER", "localhost")
+OPCUA_PORT = os.environ.get("OPCUA_PORT", "4840")
+client = Client("opc.tcp://%s:%s/freeopcua/server/" % (OPCUA_SERVER, OPCUA_PORT))
+client.connect()
+root = client.get_root_node()
+# Each instance gets a separate number, because it writes updates to a
+# different OPC UA object on the server
+IMMS_NUMBER = os.environ.get("IMMS_NUMBER", "1")
+imms = root.get_child(["0:Objects", "2:IMMS_" + IMMS_NUMBER])
 
 
 @app.route('/')
@@ -284,14 +296,27 @@ def start_webapp():
 
 
 def _start_EM63():
-    while 0 < 1:
+    while True:
         run_EM63()
+        time.sleep(.2)  # lets sleep a bit, to not utilize our CPU for 100% with this thread
 
 
 def start_EM63():
     thread2 = threading.Thread(target=_start_EM63)
     thread2.daemon = True
     thread2.start()
+    return
+
+def _start_OPCUA():
+    while True:
+        run_OPCUA()
+        time.sleep(.2)  # lets sleep a bit, to not utilize our CPU for 100% with this thread
+
+
+def start_OPCUA():
+    thread3 = threading.Thread(target=_start_OPCUA)
+    thread3.daemon = True
+    thread3.start()
     return
 
 
@@ -604,6 +629,25 @@ def run_EM63():
         sys.stdout.flush()
 
 
+def run_OPCUA():
+    # write values to OPC UA server
+    global varActStsMach, varSetCntMld, varSetCntPrt, varSetTimCyc
+    global varActCntPrt, varActCntCyc, varActTimCyc
+    global valEM63, varATActSimPara1, varATActSimPara2
+    imms.get_variables()[0].set_data_value(varDATE)
+    imms.get_variables()[1].set_data_value(varTIME)
+    imms.get_variables()[2].set_data_value(varATActSimPara1)
+    imms.get_variables()[3].set_data_value(varATActSimPara2)
+    imms.get_variables()[4].set_data_value(varActCntCyc)
+    imms.get_variables()[5].set_data_value(varActCntPrt)
+    imms.get_variables()[6].set_data_value(varActStsMach)
+    imms.get_variables()[7].set_data_value(varActTimCyc)
+    imms.get_variables()[8].set_data_value(varSetCntMld)
+    imms.get_variables()[9].set_data_value(varSetCntPrt)
+    imms.get_variables()[10].set_data_value(varSetTimCyc)
+    return
+
+
 class vIMM(StateMachine):
     # Simplified IMM states
     s_idle = State('Idle', initial=True)
@@ -708,7 +752,7 @@ def autostart_production(args):
     varATActSimPara2phaseStr = str(args.varATActSimPara2phase)
     varATActSimPara2offset = float(args.varATActSimPara2offset)
     # Set variables based on args: production params
-    varSetCntMld = int(args.varSetTimCyc)
+    varSetCntMld = int(args.varSetCntMld)
     varSetCntPrt = int(args.varSetCntPrt)
     varSetTimCyc = float(args.varSetTimCyc)
     # Set variables based on args: finally go to productions state
@@ -742,7 +786,7 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varATActSimPara2period",
         required=False,
-        default=10.0)
+        default=20.0)
 
     parser.add_argument(
         "--varATActSimPara2amplitude",
@@ -777,7 +821,15 @@ def parse_args(manual_args=None):
     parser.add_argument(
         "--varSetTimCyc",
         required=False,
-        default=1.0)
+        default=5.0)
+
+    parser.add_argument(
+        "--enableOPCUA",
+        help="Enable OPC UA client.",
+        required=False,
+        default=False,
+        dest="enableOPCUA",
+        action="store_true")
 
     if manual_args is not None:
         return parser.parse_args(manual_args)
@@ -792,6 +844,9 @@ def main():
     # IMM1 = vIMM()
     start_webapp()
     start_EM63()
+
+    if args.enableOPCUA:
+        start_OPCUA()
 
     if args.autostart:
         autostart_production(args)
@@ -817,8 +872,9 @@ def main():
 
 
 def plotAllLocal(sinPlotX, sinPlotY, sinPlotY2, sinPlotY3):
-    plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
-    plotActCnt(sinPlotY3)
+    pass  # deactivated plotting to reduce CPU load 
+    # plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2)
+    # plotActCnt(sinPlotY3)
 
 
 def plotActSimPara2(sinPlotX, sinPlotY, sinPlotY2):

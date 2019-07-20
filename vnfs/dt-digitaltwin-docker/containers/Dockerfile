@@ -40,10 +40,9 @@ RUN apt-get update && apt-get install -y \
 ENV LC_ALL C.UTF-8
 
 # install required python libs
-RUN pip3 install matplotlib
-RUN pip3 install plotly
-RUN pip3 install python-statemachine
-RUN pip3 install flask
+RUN pip3 install --upgrade pip
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
 # digital twin tool
 ADD IMMS_APP IMMS_APP
@@ -61,6 +60,8 @@ ENV DT_WEB_PORT 15001
 ENV DT_EM63_SHARE /em63_share
 # mdc in emulator: 30.0.1.2 local testing: 172.17.0.2
 ENV DT_EM63_SHARE_HOST 30.0.1.2
+ENV OPCUA_SERVER localhost
+ENV OPCUA_PORT 4840
 
 CMD ./start.sh
 

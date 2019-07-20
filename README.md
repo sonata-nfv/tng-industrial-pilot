@@ -1,5 +1,21 @@
 # tng-industrial-pilot
-5GTANGO industrial pilot repository
+5GTANGO industrial pilot repository. This pilot is based on a smart manufacturing scenario and contains three use cases:
+
+1. Initial deployment of new machines in a softwarized factory network
+2. Intrusion detection and automated intrusion mitigation
+3. AR-based maintenance
+
+## Demonstrations
+
+There are several demos developed that show various aspects of this pilot. The demos are categorized in demos running on the [vim-emu](https://osm.etsi.org/wikipub/index.php/VIM_emulator) platform (part of the 5GTANGO SDK) and demos running on Kubernetes (K8s) some of which are controlled by the 5GTANGO service platform.
+
+* vim-emu
+    * [IEEE NetSoft 2019: "Prototyping and Demonstrating 5G Verticals: The Smart Manufacturing Case"](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Demo-NetSoft2019-vim-emu)
+* 5GTANGO SP / K8s:
+    * [Manual deployment on Kubernetes](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Manual-kubernetes-demo)
+    * [Kubernetes deployment with the service platform](https://github.com/sonata-nfv/tng-industrial-pilot/wiki/SP-kubernetes-demo)
+* 5GTANGO VnV:
+    * TODO
 
 
 ## Folder structure
@@ -7,11 +23,15 @@
 | Folder | Comment |
 | --- | --- |
 | `doc` | documentation, figures |
+| `emulator-topologies` | vim-emu related artifacts for demos, etc. |
+| `evaluation` | measurements, evaluation, research |
+| `k8s` | Kubernetes related artefacts (K8s without 5GTANGO SP) |
 | `pipeline` | Scripts for Jenkins CI/CD |
 | `sdk-projects` | 5GTANG SDK network service projects (descriptors) |
 | `son-sm`| reference to son-sm library to build SSMs and FSMs |
 | `ssm` | Service specific managers (SSMs) |
 | `vnfs` | All our VNFs and their FSMs |
+| `vnv-tests` | All files, packages, and artifacts to test this pilot on the 5GTANGO V&V |
 
 ## CI/CD integration
 

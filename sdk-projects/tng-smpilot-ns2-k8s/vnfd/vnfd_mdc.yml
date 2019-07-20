@@ -35,7 +35,7 @@ description: 'Machine data collector (MDC) CNF'
 # loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
   - id: cdu01
-    image: 'sonatanfv/vnf-mdc:k8s'
+    image: 'sonatanfv/vnf-mdc:latest'
     connection_points:
       - id: "int-samba139"
         port: 139
@@ -43,7 +43,7 @@ cloudnative_deployment_units:
         port: 445
     parameters:
       env:
-        # FIXME: this should point to the k8s service layer of the CC
+        # TODO: this should point to the k8s service layer of the CC
         # the SP should add an env variable that contains this k8s service name
         MQTT_BROKER_HOST: ns1-cc-service
         MQTT_BROKER_PORT: 1883

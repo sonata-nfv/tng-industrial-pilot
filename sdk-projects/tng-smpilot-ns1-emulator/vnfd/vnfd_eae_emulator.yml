@@ -35,7 +35,8 @@ cloudnative_deployment_units:
     image: 'sonatanfv/vnf-eae:vimemu'
     connection_points:
       - id: data
-        # port: 5555  # TODO change
+        port: 3000
+        publish: {3000: 13011}
 connection_points:
   - id: data
     interface: ipv4

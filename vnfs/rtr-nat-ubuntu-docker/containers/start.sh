@@ -26,7 +26,8 @@
 # partner consortium (www.5gtango.eu).
 
 # Start script to configure Router/NAT using iptables
-
+# 0. change IP if specified (else value from VNFD is used)
+[[ -v IFUPLINK_NET ]] && ifconfig uplink $IFUPLINK_NET
 # 1. enable ip forwarding
 sysctl -w net.ipv4.ip_forward=1
 # 2. configure NAT
