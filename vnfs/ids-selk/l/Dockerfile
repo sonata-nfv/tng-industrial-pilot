@@ -15,8 +15,9 @@ RUN yum update -y && \
 #RUN chown logstash:root /usr/local/bin/logstash-entry.sh && chmod 775 /usr/local/bin/logstash-entry.sh
 
 # CONFIG
-USER logstash
+#USER logstash
 COPY ./logstash.yml /usr/share/logstash/config/logstash.yml
+COPY ./logstash.conf /usr/share/logstash/pipeline/logstash.conf
 COPY ./logging.yml /usr/share/logstash/config/logging.yml
 WORKDIR /usr/share/logstash
 RUN bin/logstash-plugin install logstash-output-exec && bin/logstash-plugin install logstash-input-beats
