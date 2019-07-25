@@ -17,26 +17,62 @@ data:
       }
     }
     filter {
+      mutate {
+        add_field => { "[@metadata][source]" => "${SMB_CLIENT_NAME}" }
+        }
       json {
         source => "message"
         target => "temp"
         }
       if [temp][event_type] {
         if [temp][event_type] == "smb" {
-          json {
-            source => "message"
-            target => "message"
+          if ([temp][smb][command] == "SMB2_COMMAND_SESSION_SETUP") and [temp][smb][ntlmssp] {
+            if [temp][smb][ntlmssp][user] == "tango" {
+              if [temp][smb][ntlmssp][host] == [@metadata][source] {
+                drop {}
+                }
+              else {
+                json {
+                  source => "message"
+                  target => "message"
+                  }
+                }
+              }
+            else {
+              json {
+                source => "message"
+                target => "message"
+                }
+              }
             }
-          }
-        else
-          {
-          drop {}
+          else {
+            drop {}
+            }
+          if [temp][event_type] == "dns" or [temp][event_type] == "stats" or [temp][event_type] == "http" or [temp][event_type] == "fileinfo" {
+            drop {}
+            }
+          else {
+            if ([temp][event_type] == "flow") and (([temp][dest_port] == 445) or ([temp][dest_port] == 139)) {
+              if ([temp][app_proto] == "smb") and ([temp][flow][reason] == "timeout") {
+                drop {}
+                }
+              else { 
+                json {
+                  source => "message"
+                  target => "message"
+                  }
+                }
+              }
+            else {
+              drop {}
+              }
+            }
           }
         }
       else {
         drop {}
         }
-    }
+      }
     output {
       elasticsearch {
         hosts => ["elasticsearch:9200"]
@@ -92,6 +128,8 @@ spec:
         env:
         - name: PIPELINE_WORKERS
           value: "2"
+        - name: SMB_CLIENT_NAME
+          value: "K8PRDCTRL1"
         - name: xpack.monitoring.enable
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts

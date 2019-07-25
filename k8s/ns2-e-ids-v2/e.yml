@@ -39,9 +39,8 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: elasticsearch-static-configfile
-      volumes:
-      - name: esdata
-        emptyDir: {}
+      #- name: esdata
+        #emptyDir: {}
       containers:
       - name: elasticsearch
         image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
