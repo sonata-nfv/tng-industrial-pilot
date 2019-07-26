@@ -1,9 +1,11 @@
 build:
-	docker build -t easyglobalmarket/mqtt-probe .
+	docker build -t easyglobalmarket/mqtt-functional-probe .
 push:
-	docker push easyglobalmarket/mqtt-probe	
+	docker push easyglobalmarket/mqtt-functional-probe	
 run:
-	docker run  -e "IP=$(ip)" -e "PORT=$(port)" -e "QOS=0" -e "CLIENTS=$(clients)" -e "COUNT=$(count)" -e "MESSAGE=$(message)"  --name docker-mqtt-probe --net=egm easyglobalmarket/mqtt-probe
+	docker run --name mqtt-functional-probe --rm -e "IP=$(ip)" -e "PORT=$(port)"  easyglobalmarket/mqtt-functional-probe	
 stop:
-	docker stop docker-mqtt-probe
-	docker rm docker-mqtt-probe
+	docker stop easyglobalmarket/mqtt-functional-probe || true
+	docker rm easyglobalmarket/mqtt-functional-probe || true
+	
+	
