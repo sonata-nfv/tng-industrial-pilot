@@ -60,7 +60,7 @@ ENV DT_WEB_PORT 15001
 ENV DT_EM63_SHARE /em63_share
 # mdc in emulator: 30.0.1.2 local testing: 172.17.0.2
 ENV DT_EM63_SHARE_HOST 30.0.1.2
-ENV OPCUA_SERVER localhost
+ENV OPCUA_HOST localhost
 ENV OPCUA_PORT 4840
 
 CMD ./start.sh
