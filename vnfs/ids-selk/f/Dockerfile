@@ -1,42 +1,33 @@
-# Dockerfile with a cusomized configuration for Logstash
+## STEP 1: GET FILEBEAT FROM OFFICIAL IMAGE REPOSITORY
 
-FROM ubuntu:16.04
+FROM elastic/filebeat:6.8.1
+MAINTAINER "smpilot@5gtango.eu"
+USER root
+RUN yum update -y && \
+    yum upgrade -y && \
+    yum clean all -y && \
+    rm -fr /var/cache/yum
+    #hostnamectl set-hostname filebeat
 
-MAINTAINER sm-pilot@5gtango.eu
+## STEP 2: CONFIGURE FILEBEAT TO USE LOGSTASH
+USER filebeat
+WORKDIR /usr/share/filebeat
+COPY filebeat.yml ./
+COPY logging.yml ./
 
-# [FILEBEAT](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-getting-started.html)
+## STEP 2: CONFIGURE FILEBEAT TO ENABLE suricata MODULE AND kibana DASHBOARDS
+RUN /usr/share/filebeat/filebeat modules enable suricata
+## Loading dashboards (Kibana must be running and reachable)
+   #/usr/share/filebeat/filebeat setup --dashboards && \
+   #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
+   #/usr/share/filebeat/filebeat setup --template
 
-## STEP 1: INSTALL FILEBEAT
+# START filebeat LOG SHIPPER
+#ENTRYPOINT ["/usr/share/filebeat/filebeat"]
+#CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","o utput.logstash.hosts=['logstash:5044']"]
 
-# 
-RUN apt update -y && \
-    apt install -y curl && \
-    curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.6.2-amd64.deb && \
-    dpkg -i filebeat-6.6.2-amd64.deb && \
-    rm -fr filebeat-6.6.2-amd64.deb
-
-## STEP 2: CONFIGURE FILEBEAT
-
-RUN rm -f /etc/filebeat/filebeat.yml
-ADD filebeat.yml /etc/filebeat/filebeat.yml
-RUN chown root:root /etc/filebeat/filebeat.yml
-RUN chmod go-w /etc/filebeat/filebeat.yml
-
-## STEP 3: CONFIGURE FILEBEAT TO USE LOGSTASH
-# The recommended index template file for Filebeat is installed by the Filebeat packages. 
-# If you accept the default configuration in the filebeat.yml config file, Filebeat loads the template automatically 
-## STEP 4:
-## STEP 5: Set up the Kibana dashboars
-
-RUN /usr/share/filebeat/bin/filebeat modules enable suricata
-RUN /usr/share/filebeat/bin/filebeat setup --dashboards 
-RUN /usr/share/filebeat/bin/filebeat setup --pipelines --modules suricata
-RUN /usr/share/filebeat/bin/filebeat setup --template
- 
-
-#CMD /usr/share/filebeat/bin/filebeat -e -c /etc/filebeat/filebeat.yml -E output.elasticsearch.enabled=false -E output.logstash.enabled=true -E output.logstash.hosts=['localhost:5044']
-
-# Start the Filebeat service 
-ENTRYPOINT ["/usr/share/filebeat/bin/filebeat"]
-CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","output.logstash.hosts=['localhost:5044']"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
+###
+# $ docker build  -t tng-smp-filebeat - < Dockerfile
+# $ docker run --rm --name filebeat -d tng-smp-filebeat
+# $ docker exec --rm  -it filebeat  bash
+###
