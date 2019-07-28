@@ -1,3 +1,6 @@
+# YOU MUST CHANGE THE NETWORK INTERFACE NAME TO YOUR's
+# ex: eth0 --> enp3s0
+---
 apiVersion: v1
 kind: Pod
 metadata:
@@ -10,7 +13,7 @@ spec:
   - name: suricata-ids
     image: jasonish/suricata
     imagePullPolicy: IfNotPresent
-    args: ["-i enp3s0"]
+    args: ["-i eth0"]
   - name: filebeat
     image: docker.elastic.co/beats/filebeat:6.7.1
     imagePullPolicy: IfNotPresent

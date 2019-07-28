@@ -14,6 +14,7 @@ USER filebeat
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./
 COPY logging.yml ./
+VOLUME /var/log/suricata
 
 ## STEP 2: CONFIGURE FILEBEAT TO ENABLE suricata MODULE AND kibana DASHBOARDS
 RUN /usr/share/filebeat/filebeat modules enable suricata
