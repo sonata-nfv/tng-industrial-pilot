@@ -27,8 +27,8 @@ RUN /usr/share/filebeat/filebeat modules enable suricata
 #ENTRYPOINT ["/usr/share/filebeat/filebeat"]
 #CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","o utput.logstash.hosts=['logstash:5044']"]
 
-###
-# $ docker build  -t tng-smp-filebeat - < Dockerfile
-# $ docker run --rm --name filebeat -d tng-smp-filebeat
-# $ docker exec --rm  -it filebeat  bash
-###
+##
+## $ docker build  -t tng-smp-filebeat - < Dockerfile
+## $ docker run --rm --name filebeat -d tng-smp-filebeat
+## $ docker exec --rm  -it filebeat bash
+##
