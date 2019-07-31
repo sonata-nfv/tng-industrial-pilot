@@ -48,6 +48,8 @@ data:
           else {
             drop {}
             }
+          }
+        else {
           if [temp][event_type] == "dns" or [temp][event_type] == "stats" or [temp][event_type] == "http" or [temp][event_type] == "fileinfo" {
             drop {}
             }
