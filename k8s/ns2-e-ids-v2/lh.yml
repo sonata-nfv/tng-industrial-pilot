@@ -19,6 +19,7 @@ data:
     filter {
       mutate {
         add_field => { "[@metadata][source]" => "${SMB_CLIENT_NAME}" }
+        add_field => { "[@metadata][user]" => "${SMB_USER_NAME}" }
         }
       json {
         source => "message"
@@ -27,7 +28,7 @@ data:
       if [temp][event_type] {
         if [temp][event_type] == "smb" {
           if ([temp][smb][command] == "SMB2_COMMAND_SESSION_SETUP") and [temp][smb][ntlmssp] {
-            if [temp][smb][ntlmssp][user] == "tango" {
+            if [temp][smb][ntlmssp][user] == [@metadata][user] {
               if [temp][smb][ntlmssp][host] == [@metadata][source] {
                 drop {}
                 }
@@ -132,6 +133,8 @@ spec:
           value: "2"
         - name: SMB_CLIENT_NAME
           value: "K8PRDCTRL1"
+        - name: SMB_USER_NAME
+          value: "stefan"
         - name: xpack.monitoring.enable
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts
