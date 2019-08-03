@@ -20,7 +20,8 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: jasonish/suricata
+  #image: jasonish/suricata
+  image: arocha/tng-smp-suricata
   resource_requirements:
     cpu:
       vcpus: 1
@@ -31,11 +32,12 @@ cloudnative_deployment_units:
       size: 10
       size_unit: GB
   connection_points:
-  - id: promisc
+  - id: cp1s
     interface: ipv4
     type: internal
 - id: cdu03
-  image: docker.elastic.co/beats/filebeat:6.7.1
+  #image: docker.elastic.co/beats/filebeat:6.8.1
+  image: arocha/tng-smp-filebeat
   resource_requirements:
     cpu:
       vcpus: 1
@@ -100,4 +102,3 @@ virtual_links:
   - vnf1:cp1f
   - vnf2:cp2l
   dhcp: true
-
