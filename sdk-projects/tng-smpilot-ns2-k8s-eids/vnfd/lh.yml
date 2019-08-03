@@ -61,17 +61,17 @@ virtual_links:
   connectivity_type: E-Line
   connection_points_reference:
   - cp0
-  - vnf2:cp2h
+  - cp2h
   dhcp: true
 - id: vl12
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1f
-  - vnf2:cp2l
+  - cp1f
+  - cp2l
   dhcp: true
 - id: vl23
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf2:cp2l
+  - cp2l
   - cp3
   dhcp: true

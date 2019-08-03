@@ -71,34 +71,37 @@ connection_points:
 - id: cp1f
   interface: ipv4
   type: internal
+- id: cp2l
+  interface: ipv4
+  type: internal
 virtual_links:
 - id: vl01aea
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1a
+  - cp1a
   - cp0
   dhcp: true
 - id: vl01139
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:smb139
+  - smb139
   - cp0
   dhcp: true
 - id: vl01445
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:smb445
+  - smb445
   - cp0
   dhcp: true
 - id: vl01s
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1s
+  - cp1s
   - cp0
   dhcp: true
 - id: vl12
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1f
-  - vnf2:cp2l
+  - cp1f
+  - cp2l
   dhcp: true

@@ -22,7 +22,7 @@ cloudnative_deployment_units:
     interface: ipv4
     type: internal
 connection_points:
-- id: cp2
+- id: cp2l
   interface: ipv4
   type: internal
 - id: cp3
