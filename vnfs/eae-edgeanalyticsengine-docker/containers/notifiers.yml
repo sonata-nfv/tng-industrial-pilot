@@ -1,0 +1,12 @@
+notifiers:
+  - name: notification-channel-1
+    type: email
+    uid: notifier1
+    org_name: Main Org.
+    is_default: true
+    send_reminder: true
+    frequency: 1m
+    disable_resolve_message: false
+    # alert notification type.
+    settings:
+      addresses: kaiha@mail.upb.de
