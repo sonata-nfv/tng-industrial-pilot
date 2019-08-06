@@ -38,7 +38,7 @@ LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 # install python and grafana
 USER root
 RUN apt-get update -y
-RUN apt-get install -y apt-utils python3 python3-pip software-properties-common curl apt-transport-https wget adduser libfontconfig1
+RUN apt-get install -y --fix-missing apt-utils python3 python3-pip software-properties-common curl apt-transport-https wget adduser libfontconfig1
 RUN add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 RUN curl https://packages.grafana.com/gpg.key | apt-key add -
 RUN apt-get update -y
@@ -60,5 +60,9 @@ ENV GF_SECURITY_ADMIN_PASSWORD tango
 # env vars for connection to CC Prometheus DB
 ENV eu.5gtango_smpilot-cc_0.1_prometheus_ip 192.168.99.100
 ENV eu.5gtango_smpilot-cc_0.1_prometheus_port 9090
+
+# add start.sh
+ADD start.sh start.sh
+RUN chmod +x start.sh
 
 CMD ./start.sh
