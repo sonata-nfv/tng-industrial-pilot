@@ -61,4 +61,8 @@ ENV GF_SECURITY_ADMIN_PASSWORD tango
 ENV eu.5gtango_smpilot-cc_0.1_prometheus_ip 192.168.99.100
 ENV eu.5gtango_smpilot-cc_0.1_prometheus_port 9090
 
+# add start.sh
+ADD start.sh start.sh
+RUN chmod +x start.sh
+
 CMD ./start.sh
