@@ -42,15 +42,15 @@ cloudnative_deployment_units:
     
 # corresponds to the k8s service layer: connection to the outside world 
 connection_points:
-- id: kibana5601
+- id: kibana
   interface: ipv4
   type: serviceendpoint
   port: 5601
   
 # CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links:
-- id: kibana5601link
+- id: kibana-link
   connectivity_type: E-Tree
   connection_points_reference:
-    - kibana5601
-    - cdu01:kibana5601
+    - kibana
+    - cdu01:kibana

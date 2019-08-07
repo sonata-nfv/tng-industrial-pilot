@@ -65,7 +65,7 @@ connection_points:
 - id: flask5000
   interface: ipv4
   type: external
-- id: kibana5601
+- id: kibana
   interface: ipv4
   type: external
 - id: elastic9200
@@ -99,9 +99,9 @@ virtual_links:
   connection_points_reference:
     - elastic9200
     - vnf3:elastic9200
-- id: kibana5601link
+- id: kibanalink
   connectivity_type: E-LAN
   connection_points_reference:
-    - kibana5601
-    - vnf4:kibana5601
+    - kibana
+    - vnf4:kibana
       

@@ -52,9 +52,7 @@ cloudnative_deployment_units:
   connection_points: []
 - id: cdu03
   image: sonatanfv/vnf-ids-filebeat:latest
-  connection_points:
-  - id: filebeat5044
-    port: 5044
+  connection_points: []
     
 # corresponds to the k8s service layer: connection of CNFs to the outside world
 # no need to worry about connections inside the CNF. these go via localhost and don't need to be defined here
