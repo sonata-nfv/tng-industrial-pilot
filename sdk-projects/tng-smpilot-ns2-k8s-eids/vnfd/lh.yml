@@ -6,8 +6,7 @@ author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Logstash image from Elastic and Flask lightweight HTTP server'
 cloudnative_deployment_units:
 - id: cdu01
-  #image: docker.elastic.co/logstash/logstash:6.8.1
-  image: arocha/tng-smp-logstash
+  image: sonatanfv/tng-smp-logstash
   resource_requirements:
     cpu:
       vcpus: 2
@@ -23,8 +22,7 @@ cloudnative_deployment_units:
     type: internal
     port: 5400
 - id: cdu02
-  #image: mesquitasonata/httptangosrv
-  image: arocha/tng-smp-flask
+  image: sonatanfv/tng-smp-flask
   resource_requirements:
     cpu:
       vcpus: 1

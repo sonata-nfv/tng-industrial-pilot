@@ -6,8 +6,7 @@ author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Kibana image'
 cloudnative_deployment_units:
 - id: cdu01
-  #image: docker.elastic.co/kibana/kibana:6.8.1
-  image: arocha/tng-smp-kibana
+  image: sonatanfv/tng-smp-kibana
   resource_requirements:
     cpu:
       vcpus: 2
