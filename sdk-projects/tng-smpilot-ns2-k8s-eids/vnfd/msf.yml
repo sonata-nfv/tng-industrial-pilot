@@ -1,7 +1,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.2'
+version: '0.1'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 cloudnative_deployment_units:
@@ -20,7 +20,7 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: sonatanfv/tng-smp-suricata
+  image: sonatanfv/vnf-ids-suricata
   resource_requirements:
     cpu:
       vcpus: 1
@@ -35,7 +35,7 @@ cloudnative_deployment_units:
     interface: ipv4
     type: internal
 - id: cdu03
-  image: sonatanfv/tng-smp-filebeat
+  image: sonatanfv/vnf-ids-filebeat
   resource_requirements:
     cpu:
       vcpus: 1
