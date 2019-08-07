@@ -1,7 +1,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.1'
+version: '0.2'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 cloudnative_deployment_units:
@@ -20,7 +20,7 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: jasonish/suricata
+  image: sonatanfv/tng-smp-suricata
   resource_requirements:
     cpu:
       vcpus: 1
@@ -31,11 +31,11 @@ cloudnative_deployment_units:
       size: 10
       size_unit: GB
   connection_points:
-  - id: promisc
+  - id: cp1s
     interface: ipv4
     type: internal
 - id: cdu03
-  image: docker.elastic.co/beats/filebeat:6.7.1
+  image: sonatanfv/tng-smp-filebeat
   resource_requirements:
     cpu:
       vcpus: 1
@@ -69,35 +69,37 @@ connection_points:
 - id: cp1f
   interface: ipv4
   type: internal
+- id: cp2l
+  interface: ipv4
+  type: internal
 virtual_links:
 - id: vl01aea
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1a
+  - cp1a
   - cp0
   dhcp: true
 - id: vl01139
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:smb139
+  - smb139
   - cp0
   dhcp: true
 - id: vl01445
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:smb445
+  - smb445
   - cp0
   dhcp: true
 - id: vl01s
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1s
+  - cp1s
   - cp0
   dhcp: true
 - id: vl12
   connectivity_type: E-Line
   connection_points_reference:
-  - vnf1:cp1f
-  - vnf2:cp2l
+  - cp1f
+  - cp2l
   dhcp: true
-

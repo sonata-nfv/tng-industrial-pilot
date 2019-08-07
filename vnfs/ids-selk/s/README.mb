@@ -5,7 +5,7 @@
 `$ docker build --progress=plain --no-cache -t suricata .`
 
 
-## Pre-requirements to run IDS on promiscuos mode
+## Pre-requirements to run IDS on promiscuous mode
 
 `$ sudo ip link set <INTERFACE> multicast off`
 
@@ -16,9 +16,9 @@
 
 ## How to run
 
-`$ docker run -d --rm --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -t suricata -i ens3`
+`$ docker run -d --rm --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -t suricata -i eth0`
 
 
 ## CLI
 
-`/usr/sbin/suricata -c suricata.yaml -s signatures.rules -i ens3`
+`/usr/sbin/suricata -c suricata.yaml -s signatures.rules -i eth0`
