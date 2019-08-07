@@ -7,8 +7,6 @@ target_repo=${1-sonatanfv}
 # VNFs for Kubernets
 # tag with :k8s and :latest to ensure auto updates by kubernetes
 #
-# RTR
-docker build -t $target_repo/vnf-rtr-nat:k8s -t $target_repo/vnf-rtr-nat:latest -f rtr-nat-ubuntu-docker/containers/Dockerfile rtr-nat-ubuntu-docker/containers/
 # CC-CDU01: broker
 docker build -t $target_repo/vnf-cc-broker:k8s -t $target_repo/vnf-cc-broker:latest -f cc-cloudconnector-docker/containers/cdu_broker/Dockerfile cc-cloudconnector-docker/containers/cdu_broker/
 # CC-CDU02: processor
@@ -23,6 +21,19 @@ docker build -t $target_repo/vnf-mdc:k8s -t $target_repo/vnf-mdc:latest -f mdc-m
 docker build -t $target_repo/vnf-dt:k8s -t $target_repo/vnf-dt:latest -f dt-digitaltwin-docker/containers/Dockerfile dt-digitaltwin-docker/containers/
 # EAE
 docker build -t $target_repo/vnf-eae:k8s -t $target_repo/vnf-eae:latest -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
+### IDS VNFs
+# s: suricata
+docker build -t $target_repo/vnf-ids-suricata:k8s -t $target_repo/vnf-ids-suricata:latest -f ids-selk/s/Dockerfile ids-selk/s/
+# f: filebeat
+docker build -t $target_repo/vnf-ids-filebeat:k8s -t $target_repo/vnf-ids-filebeat:latest -f ids-selk/f/Dockerfile ids-selk/f/
+# l: logstash
+docker build -t $target_repo/vnf-ids-logstash:k8s -t $target_repo/vnf-ids-logstash:latest -f ids-selk/l/Dockerfile ids-selk/l/
+# h: http server
+docker build -t $target_repo/vnf-ids-http:k8s -t $target_repo/vnf-ids-http:latest -f ids-selk/h/Dockerfile ids-selk/h/
+# e: elasticsearch
+docker build -t $target_repo/vnf-ids-elasticsearch:k8s -t $target_repo/vnf-ids-elasticsearch:latest -f ids-selk/e/Dockerfile ids-selk/e/
+# k: kibana
+docker build -t $target_repo/vnf-ids-kibana:k8s -t $target_repo/vnf-ids-kibana:latest -f ids-selk/k/Dockerfile ids-selk/k/
 
 
 

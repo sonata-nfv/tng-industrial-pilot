@@ -41,10 +41,11 @@ log = logging.getLogger(__name__)
 # get the IP and port of the CC's Prometheus DB from env var
 # var name format: vendor_name_version_cp-id_ip/port
 # see https://github.com/sonata-nfv/tng-industrial-pilot/wiki/Integration-with-SP
-cc_db_var_name = "eu.5gtango_smpilot-cc_0.1_prometheus"
-log.info("Reading IP and port of {} from env vars".format(cc_db_var_name))
-cc_db_ip = os.getenv(cc_db_var_name + "_ip", "localhost")
-cc_db_port = os.getenv(cc_db_var_name + "_port", "9090")
+cc_db_var_name_vimemu = "eu.5gtango_smpilot-cc_0.1_prometheus"
+cc_db_var_name_k8s = "smpilot_cc_eu_5gtango_0_1_prometheus"
+log.info("Reading IP and port of {} or {} from env vars".format(cc_db_var_name_vimemu, cc_db_var_name_k8s))
+cc_db_ip = os.getenv(cc_db_var_name_k8s + "_ip", os.getenv(cc_db_var_name_vimemu + "_ip", "localhost"))
+cc_db_port = os.getenv(cc_db_var_name_k8s + "_port", os.getenv(cc_db_var_name_vimemu + "_port", "9090"))
 cc_db_url = "http://{}:{}".format(cc_db_ip, cc_db_port)
 
 # use that to replace the URL in the configuration

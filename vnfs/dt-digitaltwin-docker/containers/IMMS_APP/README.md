@@ -28,12 +28,12 @@ $~ python3 IMMS_APP.py
 
 ### Manual start of the simulation
 Select Setup
--> Parameter -> and define 2 configurable parameters
--> Job -> and define your job
--> Machine State -> and select Production
+&rarr; Parameter &rarr; and define 2 configurable parameters
+&rarr; Job &rarr; and define your job
+&rarr; Machine State &rarr; and select Production
 Request data using session and job files in EM63 shared session folder
 When job is finished switch from machine state job completed back to idle
-Select Setup -> Machine State -> Select Idle
+Select Setup &rarr; Machine State &rarr; Select Idle
 
 # Modules needed
 ```sh
@@ -42,6 +42,28 @@ $~ pip3 install Flask --user
 $~ pip3 install numpy --user
 $~ pip3 install plotly --user
 ```
+
+# OPC UA Support
+With `--enableOPCUA` you can enable an integrated OPC UA server.
+The two environment variables  `OPCUA_HOST` and `OPCUA_PORT` can be set accordingly, if it is enabled.
+Default values are `OPCUA_HOST="localhost"` and `OPCUA_PORT="4840"`.
+The following Variables are created within the ``IMMS`` object on the server and get updated periodically:
+```
+DATE <Double>
+TIME <String>
+ATActSimPara1 <Double>
+ATActSimPara2 <Double>
+ActCntCyc <Double>
+ActCntPrt <Double>
+ActStsMach <String>
+ActTimCyc <Double>
+SetCntMld <Double>
+SetCntPrt <Double>
+SetTimCyc <Double>
+```
+
+Data on the OPC UA server can be easily browsed and visualized using ``opcua-client``.
+
 # TODO
 
 ## EM63 communication
