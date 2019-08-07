@@ -10,7 +10,7 @@ ENTRYPOINT ["python"]
 CMD ["httptangosrv.py"]
 
 ##
-## docker build -t tng-smp-flask .
-## docker run -t flask -d tng-smp-flask
-## docker exec -it flask bash
+## docker build -t tng-smp-http .
+## docker run -t http -d tng-smp-http
+## docker exec -it http bash
 ##
