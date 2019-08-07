@@ -37,16 +37,16 @@ cloudnative_deployment_units:
 - id: cdu01
   image: 'sonatanfv/vnf-mdc:latest'
   connection_points:
-  - id: smb139
-    port: 139
-  - id: smb445
-    port: 445
-    parameters:
-      env:
-        # TODO: this should point to the k8s service layer of the CC
-        # the SP should add an env variable that contains this k8s service name
-        MQTT_BROKER_HOST: ns1-cc-service
-        MQTT_BROKER_PORT: 1883
+    - id: smb139
+      port: 139
+    - id: smb445
+      port: 445
+  parameters:
+    env:
+      # TODO: this should point to the k8s service layer of the CC
+      # the SP should add an env variable that contains this k8s service name
+      MQTT_BROKER_HOST: ns1-cc-service
+      MQTT_BROKER_PORT: 1883
 - id: cdu02
   image: sonatanfv/vnf-ids-suricata:latest
   connection_points: []
