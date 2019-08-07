@@ -22,7 +22,7 @@ cloudnative_deployment_units:
     type: internal
     port: 5400
 - id: cdu02
-  image: sonatanfv/vnf-ids-flask
+  image: sonatanfv/vnf-ids-http
   resource_requirements:
     cpu:
       vcpus: 1
