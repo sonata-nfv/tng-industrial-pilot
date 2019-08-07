@@ -20,7 +20,7 @@ def stats():
     files = glob.glob("/tmp/*.json")
     files.sort()
     if files.count == 0:
-        response["resource_id"] = os.getenv("container_name")
+        response["resource_id"] = os.getenv("HOSTNAME")
         return json.dumps(response)
 
     name = "event-" + mytime
@@ -47,12 +47,12 @@ def stats():
             evFile.close()
 
     alarmedIPs = {}
-    alarmedIPs["resource_id"] = os.getenv("container_name")
+    alarmedIPs["resource_id"] = os.getenv("HOSTNAME")
     ipcount = 0
     for ev in events:
         print("ip = ", int(ipaddress.ip_address(str(ev['dest_ip']))))
         if(int(ipaddress.ip_address(str(ev['dest_ip']))) not in alarmedIPs.values()):
-            alarmedIPs["ip" + str(ipcount)] = int(ipaddress.ip_address(ev['dest_ip']))
+            alarmedIPs["ip" + str(ipcount)] = str(int(ipaddress.ip_address(ev['dest_ip'])))
             ++ipcount
 
     lastInvocationTime = mytime
