@@ -1,12 +1,12 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: k-vnf4
-version: '0.1'
+version: '0.2'
 author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Kibana image'
 cloudnative_deployment_units:
 - id: cdu01
-  image: docker.elastic.co/kibana/kibana:6.7.1
+  image: sonatanfv/tng-smp-kibana
   resource_requirements:
     cpu:
       vcpus: 2
