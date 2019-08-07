@@ -22,7 +22,18 @@ docker build -t $target_repo/vnf-dt:k8s -t $target_repo/vnf-dt:latest -f dt-digi
 # EAE
 docker build -t $target_repo/vnf-eae:k8s -t $target_repo/vnf-eae:latest -f eae-edgeanalyticsengine-docker/containers/Dockerfile eae-edgeanalyticsengine-docker/containers/
 ### IDS VNFs
-# TODO
+# s: suricata FIXME: what's the correct Dockerfile?
+docker build -t $target_repo/vnf-ids-suricata:k8s -t $target_repo/vnf-ids-suricata:latest -f ids-selk/s/Dockerfile ids-selk/s/
+# f: filebeat FIXME: some build error
+docker build -t $target_repo/vnf-ids-filebeat:k8s -t $target_repo/vnf-ids-filebeat:latest -f ids-selk/f/Dockerfile ids-selk/f/
+# l: logstash
+docker build -t $target_repo/vnf-ids-logstash:k8s -t $target_repo/vnf-ids-logstash:latest -f ids-selk/l/Dockerfile ids-selk/l/
+# h: http server
+docker build -t $target_repo/vnf-ids-http:k8s -t $target_repo/vnf-ids-http:latest -f ids-selk/h/Dockerfile ids-selk/h/
+# e: elasticsearch
+docker build -t $target_repo/vnf-ids-elasticsearch:k8s -t $target_repo/vnf-ids-elasticsearch:latest -f ids-selk/e/Dockerfile ids-selk/e/
+# k: kibana FIXME: build error [Errno 13] Permission denied: '/var/lib/rpm/Requirename'
+docker build -t $target_repo/vnf-ids-kibana:k8s -t $target_repo/vnf-ids-kibana:latest -f ids-selk/k/Dockerfile ids-selk/k/
 
 
 #
