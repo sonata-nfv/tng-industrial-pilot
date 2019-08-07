@@ -9,10 +9,12 @@ RUN chmod 755 /var/log/suricata
 
 VOLUME /var/log/suricata
 
+COPY suricata.yaml /usr/share/suricata
+
 ENTRYPOINT ["/usr/sbin/suricata"] 
 
 # YOU MUST CHANGE THE NETWORK INTERFACE NAME TO YOUR's
-CMD ["-c","suricata.yaml","-s",""signatures.rules","-i","eth0"]
+CMD ["-c","/usr/share/suricata/suricata.yaml","-i","eth0"]
 
 ## USAGE
 ## $ docker build -t sonatanfv/tng-smp-suricata .

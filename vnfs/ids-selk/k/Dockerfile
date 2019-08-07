@@ -22,8 +22,8 @@ COPY ./logging.yml ./config/logging.yml
 VOLUME [/usr/share/kibana/data]
 EXPOSE 5601/tcp
 
-ENTRYPOINT ["./bin/../node/bin/node"]
-CMD ["--no-warnings","--max-http-header-size=65536","./bin/../src/cli","--cpu.cgroup.path.override=/","--cpuacct.cgroup.path.override=/","NODE_ENV=production","ELASTIC_CONTAINER=true"]
+#ENTRYPOINT ["./bin/../node/bin/node"]
+#CMD ["--no-warnings","--max-http-header-size=65536","./bin/../src/cli","--cpu.cgroup.path.override=/","--cpuacct.cgroup.path.override=/","NODE_ENV=production","ELASTIC_CONTAINER=true"]
 
 ###
 ## $ docker build  -t tng-smp-kibana - < Dockerfile

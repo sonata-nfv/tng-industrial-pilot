@@ -45,7 +45,7 @@ spec:
           name: kibana-static-configfile
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:6.7.1
+        image: docker.elastic.co/kibana/kibana:6.8.1
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_HOSTS
