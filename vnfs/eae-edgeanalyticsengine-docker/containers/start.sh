@@ -31,4 +31,4 @@ python3 reconfigure_grafana.py
 #set grafana password
 #grafana-cli --homepath "usr/share/grafana" admin reset-admin-password tango
 echo "EAE: Starting Grafana..."
-service grafana-server start > /var/grafana.log 2>&1 &
+service grafana-server start
