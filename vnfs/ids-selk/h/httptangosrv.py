@@ -17,7 +17,7 @@ def stats():
     response = {}
 
     files = []
-    files = glob.glob("/tmp/*.json")
+    files = glob.glob("/var/log/logstash/*.json")
     files.sort()
     if files.count == 0:
         response["resource_id"] = os.getenv("HOSTNAME")

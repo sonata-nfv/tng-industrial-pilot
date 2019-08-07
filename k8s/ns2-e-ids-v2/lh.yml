@@ -84,7 +84,7 @@ data:
         document_type => "%{[@metadata][type]}"
       }
       file {
-        path => "/tmp/event-%{+YYYY-MM-dd-HH-mm-ss}.json"
+        path => "/usr/share/logstash/logs/event-%{+YYYY-MM-dd-HH-mm-ss}.json"
         codec => line { format => "%{message}" }
       }
       stdout { codec => rubydebug }
@@ -147,6 +147,8 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
+        - mountPath: /usr/share/logstash/logs
+          name: intrusion-events
       - name: flask
         image: mesquitasonata/httptangosrv
         imagePullPolicy: IfNotPresent
@@ -157,7 +159,7 @@ spec:
         - containerPort: 5000
         volumeMounts:
         - name: intrusion-events
-          mountPath: /tmp
+          mountPath: /var/log/logstash
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
       hostname: logstash
