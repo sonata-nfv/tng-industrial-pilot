@@ -37,29 +37,38 @@ LABEL maintainer="Stefan Schneider <stefan.schneider@upb.de>"
 
 # install python and grafana
 USER root
-RUN apt-get update -y
-RUN apt-get install -y apt-utils python3 python3-pip software-properties-common curl apt-transport-https wget adduser libfontconfig1
+RUN apt-get update -y && apt-get install -y \
+    apt-utils \
+    software-properties-common \
+    curl \
+    apt-transport-https \
+    wget \
+    adduser \
+    libfontconfig1 \
+    python3 \
+    python3-pip
+
 RUN add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
 RUN curl https://packages.grafana.com/gpg.key | apt-key add -
-RUN apt-get update -y
-RUN apt-get install -y grafana net-tools iproute iputils-ping
+RUN apt-get update -y && apt-get install -y \
+    grafana \
+    net-tools \
+    iproute \
+    iputils-ping
 
 # copy script and install requirements
 COPY reconfigure_grafana.py reconfigure_grafana.py
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-# copy config files for provisioning and pre-configuring the data source and dashboard
+# copy config files for provisioning and pre-configuring the data source and dashboard and notifiers
 COPY datasource.yml /etc/grafana/provisioning/datasources/datasource.yml
 COPY dashboard_provider.yml /etc/grafana/provisioning/dashboards/dashboard_provider.yml
 COPY dashboard.json /var/lib/grafana/dashboards/dashboard.json
+COPY notifiers.yml /etc/grafańa/provisioning/notifiers/notifiers.yml
 
 # set Grafana admin password to "tango" (to avoid initial prompt for password change)
 ENV GF_SECURITY_ADMIN_PASSWORD tango
-
-# env vars for connection to CC Prometheus DB
-ENV eu.5gtango_smpilot-cc_0.1_prometheus_ip 192.168.99.100
-ENV eu.5gtango_smpilot-cc_0.1_prometheus_port 9090
 
 # add start.sh
 ADD start.sh start.sh
