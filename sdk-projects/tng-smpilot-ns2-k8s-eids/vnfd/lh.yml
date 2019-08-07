@@ -1,75 +1,70 @@
+#  Copyright (c) 2018 5GTANGO
+# ALL RIGHTS RESERVED.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Neither the name of the SONATA-NFV, 5GTANGO
+# nor the names of its contributors may be used to endorse or promote
+# products derived from this software without specific prior written
+# permission.
+#
+# This work has also been performed in the framework of the 5GTANGO project,
+# funded by the European Commission under Grant number 761493 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.5gtango.eu).
+
+
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: lh-vnf2
 version: '0.1'
 author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Logstash image from Elastic and Flask lightweight HTTP server'
+
+# loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
 - id: cdu01
-  image: sonatanfv/vnf-ids-logstash
-  resource_requirements:
-    cpu:
-      vcpus: 2
-    memory:
-      size: 1024
-      size_unit: MB
-    storage:
-      size: 20
-      size_unit: GB
+  image: sonatanfv/vnf-ids-logstash:latest
   connection_points:
-  - id: cp2l
-    interface: ipv4
-    type: internal
-    port: 5400
+  - id: logstash5044
+    port: 5044
 - id: cdu02
-  image: sonatanfv/vnf-ids-flask
-  resource_requirements:
-    cpu:
-      vcpus: 1
-    memory:
-      size: 512
-      size_unit: MB
-    storage:
-      size: 10
-      size_unit: GB
+  image: sonatanfv/vnf-ids-http:latest
   connection_points:
-  - id: cp2h
-    interface: ipv4
-    type: internal
+  - id: flask5000
     port: 5000
+    
+# corresponds to the k8s service layer: connection to the outside world
 connection_points:
-- id: cp0
-  interface: ipv4
-  type: external
-- id: cp1f
-  interface: ipv4
-  type: internal
-- id: cp2l
-  interface: ipv4
-  type: internal
-- id: cp2h
-  interface: ipv4
-  type: internal
-- id: cp3
-  interface: ipv4
-  type: internal
-  port: 9200
+  - id: logstash5044
+    interface: ipv4
+    type: serviceendpoint
+    port: 5044
+  - id: flask5000
+    interface: ipv4
+    type: serviceendpoint
+    port: 5000
+  
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links:
-- id: vl02
-  connectivity_type: E-Line
+- id: logstash5044link
+  connectivity_type: E-Tree
   connection_points_reference:
-  - cp0
-  - cp2h
-  dhcp: true
-- id: vl12
-  connectivity_type: E-Line
+    - logstash5044
+    - cdu01:logstash5044
+- id: flask5000link
+  connectivity_type: E-Tree
   connection_points_reference:
-  - cp1f
-  - cp2l
-  dhcp: true
-- id: vl23
-  connectivity_type: E-Line
-  connection_points_reference:
-  - cp2l
-  - cp3
-  dhcp: true
+    - flask5000
+    - cdu02:flask5000

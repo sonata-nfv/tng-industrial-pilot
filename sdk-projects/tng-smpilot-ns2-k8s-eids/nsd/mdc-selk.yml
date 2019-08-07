@@ -1,9 +1,38 @@
+#  Copyright (c) 2018 5GTANGO
+# ALL RIGHTS RESERVED.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Neither the name of the SONATA-NFV, 5GTANGO
+# nor the names of its contributors may be used to endorse or promote
+# products derived from this software without specific prior written
+# permission.
+#
+# This work has also been performed in the framework of the 5GTANGO project,
+# funded by the European Commission under Grant number 761493 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.5gtango.eu).
+
+
+---
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
-name: tng-smpilot-mdc-eids
+name: tng-smpilot-ns2-eids
 version: '0.1'
 author: sm-pilot@5gtango.eu
 description: 'a CNF for MDC with SELK (sidecar) enhanced security barrier'
+
 network_functions:
 - vnf_id: vnf1
   vnf_vendor: eu.5gtango
@@ -21,95 +50,58 @@ network_functions:
   vnf_vendor: eu.5gtango
   vnf_name: k-vnf4
   vnf_version: '0.1'
+  
+# external CPs of the NS. only need to define what needs to be accessible from the outside
 connection_points:
-- id: cp0
-  interface: ipv4
-  type: external
 - id: smb139
   interface: ipv4
-  type: internal
+  type: external
 - id: smb445
   interface: ipv4
-  type: internal
-- id: cp1a
+  type: external
+- id: logstash5044
   interface: ipv4
-  type: internal
-- id: cp1s
+  type: external
+- id: flask5000
   interface: ipv4
-  type: internal
-- id: cp1f
+  type: external
+- id: kibana5601
   interface: ipv4
-  type: internal
-- id: cp2l
+  type: external
+- id: elastic9200
   interface: ipv4
-  type: internal
-- id: cp3
-  interface: ipv4
-  type: internal
-- id: cp4
-  interface: ipv4
-  type: internal
+  type: external
+
+# connects the extral CPs of the NS with the CPs of the VNFs
 virtual_links:
-- id: vl01139
-  connectivity_type: E-Line
+- id: smb139link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - cp0
-  - vnf1:smb139
-- id: vl01445
-  connectivity_type: E-Line
+    - smb139
+    - vnf1:smb139
+- id: smb445link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - cp0
-  - vnf1:smb445
-- id: vl01aea
-  connectivity_type: E-Line
+    - smb445
+    - vnf1:smb445
+- id: logstash5044link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - cp0
-  - vnf1:cp1a
-- id: vl01s
-  connectivity_type: E-Line
+    - logstash5044
+    - vnf2:logstash5044
+- id: flask5000link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - cp0
-  - vnf1:cp1s
-- id: vl12
-  connectivity_type: E-Line
+    - flask5000
+    - vnf2:flask5000
+- id: elastic9200link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - vnf1:cp1f
-  - vnf2:cp2l
-- id: vl23
-  connectivity_type: E-Line
+    - elastic9200
+    - vnf3:elastic9200
+- id: kibana5601link
+  connectivity_type: E-LAN
   connection_points_reference:
-  - vnf2:cp2l
-  - vnf3:cp3
-- id: vl34
-  connectivity_type: E-Line
-  connection_points_reference:
-  - vnf3:cp3
-  - vnf4:cp4
-#forwarding_graphs:
-#- fg_id: fg01
-#  number_of_endpoints: 1
-#  number_of_virtual_links: 4
-#  constituent_virtual_links:
-#  - vl01
-#  - vl12
-#  - vl23
-#  - vl34
-#  constituent_vnfs:
-#  - vnf1
-#  - vnf2
-#  - vnf3
-#  - vnf4
-#  network_forwarding_paths:
-#  - fp_id: fg01:fp01
-#    policy: none
-#    connection_points:
-#    - connection_point_ref: cp0
-#      position: 1
-#    - connection_point_ref: vnf1:cp1
-#      position: 2
-#    - connection_point_ref: vnf2:cp2
-#      position: 3
-#    - connection_point_ref: vnf3:cp3
-#      position: 4
-#    - connection_point_ref: vnf4:cp4
-#      position: 5
+    - kibana5601
+    - vnf4:kibana5601
+      
