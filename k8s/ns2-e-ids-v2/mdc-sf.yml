@@ -102,7 +102,7 @@ spec:
         securityContext:
           privileged: false
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:6.7.1
+        image: docker.elastic.co/beats/filebeat:6.8.1
         imagePullPolicy: IfNotPresent
         args: [
           "-e",
