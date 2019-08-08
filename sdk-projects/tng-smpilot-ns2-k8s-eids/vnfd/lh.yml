@@ -1,0 +1,41 @@
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+vendor: eu.5gtango
+name: lh-vnf2
+version: '0.2'
+author: sm-pilot@5gtango.eu
+description: 'a CNF based on official Logstash image from Elastic and Flask lightweight HTTP server'
+
+cloudnative_deployment_units:
+- id: cdu01
+  image: sonatanfv/vnf-ids-logstash:latest
+  connection_points:
+  - id: logstash5044
+    port: 5044
+- id: cdu02
+  image: sonatanfv/vnf-ids-http:latest
+  connection_points:
+  - id: flask5000
+    port: 5000
+
+connection_points:
+- id: logstash5044
+  interface: ipv4
+  type: serviceendpoint
+  port: 5044
+- id: flask5000
+  interface: ipv4
+  type: serviceendpoint
+  port: 5000
+
+virtual_links:
+- id: flask5000link
+  connectivity_type: E-Tree
+  connection_points_reference:
+  - flask5000
+  - cdu02:flask5000
+- id: logstash5044link
+  connectivity_type: E-Tree
+  connection_points_reference:
+  - logstash5044
+  - cdu01:logstash5044
+
