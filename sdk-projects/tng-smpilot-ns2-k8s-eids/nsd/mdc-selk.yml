@@ -99,9 +99,9 @@ virtual_links:
   connection_points_reference:
     - elastic9200
     - vnf3:elastic9200
-- id: kibanalink
+- id: kibana5601link
   connectivity_type: E-LAN
   connection_points_reference:
-    - kibana
+    - kibana5601
     - vnf4:kibana5601
  

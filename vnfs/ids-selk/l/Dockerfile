@@ -19,6 +19,7 @@ WORKDIR /usr/share/logstash
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
 COPY logging.yml ./config/
+VOLUME /usr/share/logstash/logs
 
 # RUN DAEMON
 EXPOSE 5044/tcp 9600/tcp
@@ -30,6 +31,6 @@ EXPOSE 5044/tcp 9600/tcp
 
 ###
 # $ docker build -t tng-smp-logstash - < Dockerfile
-# $ docker run --rm --name logstash -d tng-smp-logstash
+# $ docker run --rm --name logstash -v /usr/share/logstash/logs:/usr/share/logstash/logs -d tng-smp-logstash
 # $ docker exec -it logstash bash
 ###

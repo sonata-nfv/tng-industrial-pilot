@@ -18,5 +18,5 @@ CMD ["-c","/usr/share/suricata/suricata.yaml","-i","eth0"]
 
 ## USAGE
 ## $ docker build -t sonatanfv/tng-smp-suricata .
-## $ docker run --rm --name suricata -d sonatanfv/tng-smp-suricata
+## $ docker run --rm --name suricata -v /var/log/suricata:/var/log/suricata -d sonatanfv/tng-smp-suricata
 ## $ docker exec -it suricata bash
