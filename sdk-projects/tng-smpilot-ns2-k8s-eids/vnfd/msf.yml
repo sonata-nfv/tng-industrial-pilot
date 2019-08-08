@@ -1,18 +1,46 @@
+#  Copyright (c) 2018 5GTANGO
+# ALL RIGHTS RESERVED.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Neither the name of the SONATA-NFV, 5GTANGO
+# nor the names of its contributors may be used to endorse or promote
+# products derived from this software without specific prior written
+# permission.
+#
+# This work has also been performed in the framework of the 5GTANGO project,
+# funded by the European Commission under Grant number 761493 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.5gtango.eu).
+
+
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.2'
+version: '0.3'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
+
+# loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
 - id: cdu01
   image: 'sonatanfv/vnf-mdc:latest'
   connection_points:
-  - id: smb139
-    port: 139
-  - id: smb445
-    port: 445
-  - id: cp1a
+    - id: smb139
+      port: 139
+    - id: smb445
+      port: 445
   parameters:
     env:
       # TODO: this should point to the k8s service layer of the CC
@@ -20,86 +48,35 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: sonatanfv/tng-smp-suricata
-  resource_requirements:
-    cpu:
-      vcpus: 1
-    memory:
-      size: 512
-      size_unit: MB
-    storage:
-      size: 10
-      size_unit: GB
-  connection_points:
-  - id: cp1s
-    interface: ipv4
-    type: internal
+  image: sonatanfv/vnf-ids-suricata:latest
+  connection_points: []
 - id: cdu03
-  image: sonatanfv/tng-smp-filebeat
-  resource_requirements:
-    cpu:
-      vcpus: 1
-    memory:
-      size: 512
-      size_unit: MB
-    storage:
-      size: 10
-      size_unit: GB
-  connection_points:
-  - id: cp1f
-    interface: ipv4
-    type: internal
-    port: 5044
+  image: sonatanfv/vnf-ids-filebeat:latest
+  connection_points: []
+    
+# corresponds to the k8s service layer: connection of CNFs to the outside world
+# no need to worry about connections inside the CNF. these go via localhost and don't need to be defined here
 connection_points:
-- id: cp0
-  interface: ipv4
-  type: external
 - id: smb139
   interface: ipv4
-  type: internal
+  type: serviceendpoint
+  port: 139
 - id: smb445
   interface: ipv4
-  type: internal
-- id: cp1a
-  interface: ipv4
-  type: internal
-- id: cp1s
-  interface: ipv4
-  type: internal
-- id: cp1f
-  interface: ipv4
-  type: internal
-- id: cp2l
-  interface: ipv4
-  type: internal
+  type: serviceendpoint
+  port: 445
+
+
+# CNFs only use E-Tree links to map external ports/cp to internal ports/cp
+# no need to worry about connections inside the CNF. these go via localhost and don't need to be defined here
 virtual_links:
-- id: vl01aea
-  connectivity_type: E-Line
+- id: samba139link
+  connectivity_type: E-Tree
   connection_points_reference:
-  - cp1a
-  - cp0
-  dhcp: true
-- id: vl01139
-  connectivity_type: E-Line
+    - smb139
+    - cdu01:smb139
+- id: samba445link
+  connectivity_type: E-Tree
   connection_points_reference:
-  - smb139
-  - cp0
-  dhcp: true
-- id: vl01445
-  connectivity_type: E-Line
-  connection_points_reference:
-  - smb445
-  - cp0
-  dhcp: true
-- id: vl01s
-  connectivity_type: E-Line
-  connection_points_reference:
-  - cp1s
-  - cp0
-  dhcp: true
-- id: vl12
-  connectivity_type: E-Line
-  connection_points_reference:
-  - cp1f
-  - cp2l
-  dhcp: true
+    - smb445
+    - cdu01:smb445

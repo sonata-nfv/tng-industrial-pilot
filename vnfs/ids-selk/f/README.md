@@ -2,13 +2,13 @@
 
 ## Get FILEBEAT official image
 
-`docker pull docker.elastic.co/beats/filebeat:6.7.1`
+`docker pull docker.elastic.co/beats/filebeat:6.8.1`
 
 ## Run FILEBEAT
 
 * Default configuration: Load Templates for Elasticsearch and Load Dashboards for Kibana
 
-`$ docker run docker.elastic.co/beats/filebeat:6.7.1 setup -E setup.kibana.host=localhost:5601 -E output.elasticsearch.hosts="localhost:9200"`
+`$ docker run docker.elastic.co/beats/filebeat:6.8.1 setup -E setup.kibana.host=localhost:5601 -E output.elasticsearch.hosts="localhost:9200"`
 
 * Startup configuration for SELK NS
 

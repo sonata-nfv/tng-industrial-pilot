@@ -40,3 +40,4 @@ exec grafana-server                                         \
   cfg:default.paths.logs="/var/logs/grafana"                \
   cfg:default.paths.plugins="/var/lib/grafana/plugins"      \
   cfg:default.paths.provisioning="/etc/grafana/provisioning"
+
