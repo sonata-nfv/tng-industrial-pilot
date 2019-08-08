@@ -30,5 +30,13 @@ echo "EAE: Reconfiguring Grafana based on env vars"
 python3 reconfigure_grafana.py
 #set grafana password
 #grafana-cli --homepath "usr/share/grafana" admin reset-admin-password tango
-echo "EAE: Starting Grafana..."
-service grafana-server start > /var/grafana.log 2>&1 &
+echo "EAE: Starting Grafana..." #this is copied from the grafana docker containers run.sh
+exec grafana-server                                         \
+  --homepath="/usr/share/grafana"                           \
+  --config="/etc/grafana/grafana.ini"                       \
+  "$@"                                                      \
+  cfg:default.log.mode="console"                            \
+  cfg:default.paths.data="/var/lib/grafana"                 \
+  cfg:default.paths.logs="/var/logs/grafana"                \
+  cfg:default.paths.plugins="/var/lib/grafana/plugins"      \
+  cfg:default.paths.provisioning="/etc/grafana/provisioning"
