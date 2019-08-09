@@ -19,6 +19,7 @@ ENV XPACK_MONITORING_ENABLED="true"
 ENV ELASTICSEARCH_HOSTS=elasticsearch
 ENV PATH=$PATH:/usr/share/kibana/bin
 
+WORKDIR /
 RUN echo "$e_vnf3_eu_5gtango_0_4_elastic9200_ip elasticsearch" >> /etc/hosts
 
 USER kibana
