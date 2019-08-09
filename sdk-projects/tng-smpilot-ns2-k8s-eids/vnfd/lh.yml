@@ -13,7 +13,6 @@ cloudnative_deployment_units:
     port: 5044
   parameters:
     env:
-      e_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
       e_vnf3_eu_5gtango_0_4_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
 - id: cdu02
   image: sonatanfv/vnf-ids-http:latest

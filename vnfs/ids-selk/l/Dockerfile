@@ -13,6 +13,8 @@ RUN yum clean all && \
     yum clean all && \
     rm -rf /var/cache/yum
 
+RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
+
 # CONFIG
 USER logstash
 WORKDIR /usr/share/logstash
