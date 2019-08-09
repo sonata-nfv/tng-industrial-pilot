@@ -11,7 +11,7 @@ data:
   kibana.yml: |
     server.host: "0"
     server.name: kibana
-    elasticsearch.url: http://elasticsearch:9200
+    elasticsearch.hosts: ["http://elasticsearch:9200"]
     xpack.monitoring.enabled: true
     #xpack.monitoring.collection.enabled: true
     #xpack.monitoring.elasticsearch.collection.enabled: true
@@ -45,7 +45,7 @@ spec:
           name: kibana-static-configfile
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:6.8.1
+        image: docker.elastic.co/kibana/kibana:7.3.0
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_HOSTS
