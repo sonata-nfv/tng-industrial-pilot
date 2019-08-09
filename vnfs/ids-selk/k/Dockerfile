@@ -10,17 +10,16 @@ RUN yum update -y && \
     yum clean all -y && \
     rm -fr /var/cache/yum
 
-ARG e_vnf4_eu_5gtango_0_4_kibana5601_ip
-ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
+#ARG e_vnf4_eu_5gtango_0_4_kibana5601_ip
+#ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
 # docker build --build-arg some_variable_name=a_value
+
+RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
-ENV ELASTICSEARCH_HOSTS=elasticsearch
+#ENV ELASTICSEARCH_HOSTS=elasticseach
 ENV PATH=$PATH:/usr/share/kibana/bin
-
-WORKDIR /
-RUN echo "$e_vnf3_eu_5gtango_0_4_elastic9200_ip elasticsearch" >> /etc/hosts
 
 USER kibana
 WORKDIR /usr/share/kibana/
