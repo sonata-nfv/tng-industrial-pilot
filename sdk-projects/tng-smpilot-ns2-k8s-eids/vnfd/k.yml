@@ -28,7 +28,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: k-vnf4
-version: '0.3'
+version: '0.4'
 author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Kibana image'
 
@@ -39,7 +39,11 @@ cloudnative_deployment_units:
   connection_points:
   - id: kibana5601
     port: 5601
-    
+  parameters:
+    env:
+      e_vnf4_eu_5gtango_0_4_kibana5601_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
+      e_vnf3_eu_5gtango_0_4_elastic9200_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+ 
 # corresponds to the k8s service layer: connection to the outside world 
 connection_points:
 - id: kibana5601
