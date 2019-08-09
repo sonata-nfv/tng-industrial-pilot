@@ -28,7 +28,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.3'
+version: '0.4'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 
@@ -53,7 +53,11 @@ cloudnative_deployment_units:
 - id: cdu03
   image: sonatanfv/vnf-ids-filebeat:latest
   connection_points: []
-    
+  parameters:
+    env:
+      e_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+
+ 
 # corresponds to the k8s service layer: connection of CNFs to the outside world
 # no need to worry about connections inside the CNF. these go via localhost and don't need to be defined here
 connection_points:
