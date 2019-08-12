@@ -1,7 +1,7 @@
 version: '2'
 services:
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.8.1
+    image: docker.elastic.co/kibana/kibana:7.3.0
     container_name: kibana
     environment:
       SERVER_NAME: kibana

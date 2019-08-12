@@ -102,7 +102,7 @@ spec:
         securityContext:
           privileged: false
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:6.8.1
+        image: docker.elastic.co/beats/filebeat:7.3.0
         imagePullPolicy: IfNotPresent
         args: [
           "-e",
@@ -176,9 +176,9 @@ data:
       enabled: true
       paths:
       - /var/log/suricata/eve.json
-    #processors:
-    #- add_host_metadata: ~
-    #- add_cloud_metadata: ~
+    processors:
+    - add_host_metadata: ~
+    - add_cloud_metadata: ~
     filebeat.config:
       modules:
         path: ${path.config}/modules.d/*.yml

@@ -1,6 +1,6 @@
 # Dockerfile with a cusomized configuration for Logstash
 
-FROM docker.elastic.co/logstash/logstash:6.8.1
+FROM docker.elastic.co/logstash/logstash:7.3.0
 
 MAINTAINER sm-pilot@5gtango.eu
 
@@ -13,8 +13,6 @@ RUN yum clean all && \
     yum clean all && \
     rm -rf /var/cache/yum
 
-RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
-
 # CONFIG
 USER logstash
 WORKDIR /usr/share/logstash
@@ -25,14 +23,10 @@ VOLUME /usr/share/logstash/logs
 
 # RUN DAEMON
 EXPOSE 5044/tcp 9600/tcp
-#RUN bin/logstash-plugin install logstash-output-exec && bin/logstash-plugin install logstash-input-beats
-#COPY docker-entrypoint.sh /usr/local/bin/
-#RUN chown logstash:root /usr/local/bin/docker-entrypoint.sh && chmod 775 /usr/local/bin/docker-entrypoint.sh
-#RUN ln -s docker-entrypoint.sh / # backwards compat
-#ENTRYPOINT ["docker-entrypoint.sh"]
+RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 
-###
-# $ docker build -t tng-smp-logstash - < Dockerfile
+### USAGE: 
+# $ docker build -t tng-smp-logstash .
 # $ docker run --rm --name logstash -v /usr/share/logstash/logs:/usr/share/logstash/logs -d tng-smp-logstash
 # $ docker exec -it logstash bash
 ###

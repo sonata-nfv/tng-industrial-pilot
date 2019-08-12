@@ -1,4 +1,4 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:6.8.1
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
 RUN yum update -y && \
@@ -20,8 +20,8 @@ COPY logging.yml ./config/
 VOLUME [/usr/share/elasticsearch/data]
 EXPOSE 9200/tcp 9300/tcp
 
-##
-## $ docker build  -t tng-smp-elasticsearch - < Dockerfile
-## $ docker run --rm --name elasticsearch -d tng-smp-elasticsearch:6.8.1
+## USAGE: 
+## $ docker build -t tng-smp-elasticsearch .
+## $ docker run --rm --name elasticsearch -d tng-smp-elasticsearch
 ## $ docker exec -it elasticsearch bash
 ##
