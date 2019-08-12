@@ -5,6 +5,6 @@ server.port: 5601 # Default
 server.name: kibana
 server.host: "0.0.0.0"
 #elasticsearch.url: http://elasticsearch:9200
-elasticsearch.hosts: [http://elasticsearch:9200]
+elasticsearch.hosts: ["http://elasticsearch:9200"]
 xpack.monitoring.ui.container.elasticsearch.enabled: true
 
