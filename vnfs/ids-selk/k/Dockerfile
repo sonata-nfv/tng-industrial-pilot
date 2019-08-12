@@ -1,4 +1,4 @@
-FROM docker.elastic.co/kibana/kibana:6.8.1
+FROM docker.elastic.co/kibana/kibana:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 USER root
 RUN yum update -y && \
@@ -14,11 +14,9 @@ RUN yum update -y && \
 #ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
 # docker build --build-arg some_variable_name=a_value
 
-RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
-
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
-#ENV ELASTICSEARCH_HOSTS=elasticseach
+ENV ELASTICSEARCH_HOSTS=elasticseach
 ENV PATH=$PATH:/usr/share/kibana/bin
 
 USER kibana
@@ -28,8 +26,7 @@ COPY ./logging.yml ./config/logging.yml
 VOLUME [/usr/share/kibana/data]
 EXPOSE 5601/tcp
 
-#ENTRYPOINT ["./bin/../node/bin/node"]
-#CMD ["--no-warnings","--max-http-header-size=65536","./bin/../src/cli","--cpu.cgroup.path.override=/","--cpuacct.cgroup.path.override=/","NODE_ENV=production","ELASTIC_CONTAINER=true"]
+RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 
 ###
 ## $ docker build  -t tng-smp-kibana - < Dockerfile

@@ -1,6 +1,6 @@
-## STEP 1: GET FILEBEAT FROM OFFICIAL IMAGE REPOSITORY
+## STEP 1: GET 'FILEBEAT' FROM OFFICIAL IMAGE REPOSITORY
 
-FROM elastic/filebeat:6.8.1
+FROM elastic/filebeat:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 USER root
 RUN yum update -y && \
@@ -9,28 +9,25 @@ RUN yum update -y && \
     rm -fr /var/cache/yum
     #hostnamectl set-hostname filebeat
 
-RUN export LOGSTASH_HOSTS=$( echo $lh_vnf2_eu_5gtango_0_4_logstash5044_ip ); echo $LOGSTASH_HOSTS
 
-## STEP 2: CONFIGURE FILEBEAT TO USE LOGSTASH
+## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
 USER filebeat
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./
 COPY logging.yml ./
 VOLUME /var/log/suricata
 
-## STEP 2: CONFIGURE FILEBEAT TO ENABLE suricata MODULE AND kibana DASHBOARDS
+## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
 RUN /usr/share/filebeat/filebeat modules enable suricata
 ## Loading dashboards (Kibana must be running and reachable)
    #/usr/share/filebeat/filebeat setup --dashboards && \
    #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
    #/usr/share/filebeat/filebeat setup --template
 
-# START filebeat LOG SHIPPER
-#ENTRYPOINT ["/usr/share/filebeat/filebeat"]
-#CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","o utput.logstash.hosts=['logstash:5044']"]
+RUN export LOGSTASH_HOSTS=$( echo $lh_vnf2_eu_5gtango_0_4_logstash5044_ip ); echo $LOGSTASH_HOSTS
 
-##
-## $ docker build  -t tng-smp-filebeat - < Dockerfile
-## $ docker run --rm --name filebeat -d tng-smp-filebeat
+## USAGE:
+## $ docker build -t tng-smp-filebeat .
+## $ docker run --rm --name filebeat -v /var/log/suricata/:/usr/share/logstash/logs -d tng-smp-filebeat
 ## $ docker exec --rm  -it filebeat bash
 ##

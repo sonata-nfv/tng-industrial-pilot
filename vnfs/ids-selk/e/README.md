@@ -3,11 +3,11 @@
 ## Get the official ELASTICSEARCH Docker Image
 
 $ docker pull ubuntu
-$ docker pull docker.elastic.co/elasticsearch/elasticsearch:6.8.1
+$ docker pull docker.elastic.co/elasticsearch/elasticsearch:7.3.0
 
 ## Run the ELASTICSEARCH Docker image
 
-`$ docker run --rm -d [-p 9200:9200 -p 9300:9300] -e "discovery.type=single-node" --hostname=elastic --name=elastic --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:6.8.1`
+`$ docker run --rm -d [-p 9200:9200 -p 9300:9300] -e "discovery.type=single-node" --hostname=elastic --name=elastic --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:7.3.0`
 
 
 * `path.home=/usr/share/elasticsearch`
