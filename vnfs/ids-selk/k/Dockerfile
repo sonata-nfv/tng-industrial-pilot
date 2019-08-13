@@ -10,11 +10,11 @@ MAINTAINER "smpilot@5gtango.eu"
 #    yum clean all -y && \
 #    rm -fr /var/cache/yum
 
-#ARG e_vnf4_eu_5gtango_0_4_kibana5601_ip
-#ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
-# docker build --build-arg some_variable_name=a_value
 
 #USER kibana
+ARG e_vnf4_eu_5gtango_0_4_kibana5601_ip
+ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
+# docker build --build-arg some_variable_name=a_value
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 ENV ELASTICSEARCH_HOSTS=elasticseach
