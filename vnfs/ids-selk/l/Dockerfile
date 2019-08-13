@@ -4,9 +4,12 @@ FROM logstash:7.3.0
 
 MAINTAINER sm-pilot@5gtango.eu
 
+ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
+ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}
+
 # CONFIG
 #USER logstash
-RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
+#RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 WORKDIR /usr/share/logstash
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
