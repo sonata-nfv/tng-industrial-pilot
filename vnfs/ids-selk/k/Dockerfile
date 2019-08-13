@@ -1,6 +1,10 @@
 FROM kibana:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
+RUN echo "elasticsearch ${e_vnf3_eu_5gtango_0_4_elastic9200_ip}.default.pod.cluster.local" > /etc/host.aliases && \
+    echo "export HOSTALIASES=/etc/host.aliases" >> /etc/profile
+ENV HOSTALIASES=/etc/host.aliases
+
 #USER kibana
 ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 ENV SERVER_NAME="kibana"
