@@ -4,7 +4,7 @@ MAINTAINER "smpilot@5gtango.eu"
 USER root
 WORKDIR /
 RUN echo "elasticsearch ${e_vnf3_eu_5gtango_0_4_elastic9200_ip}.default.pod.cluster.local" > /etc/host.aliases && \
-    echo "export HOSTALIASES=/etc/host.aliases" >> /etc/profile
+    echo "export HOSTALIASES=/etc/host.aliases" >> /etc/bashrc
 ENV HOSTALIASES=/etc/host.aliases
 
 USER kibana
