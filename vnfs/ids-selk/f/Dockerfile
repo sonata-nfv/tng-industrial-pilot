@@ -5,8 +5,10 @@ MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
 #USER filebeat
-RUN export LOGSTASH_HOSTS=$( echo $lh_vnf2_eu_5gtango_0_4_logstash5044_ip ); echo $LOGSTASH_HOSTS && \
-    export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
+ARG lh_vnf2_eu_5gtango_0_4_logstash5044_ip
+ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
+ENV LOGSTASH_HOSTS=${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}
+ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./
 COPY logging.yml ./
