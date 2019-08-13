@@ -1,21 +1,21 @@
 # Dockerfile with a cusomized configuration for Logstash
 
-FROM docker.elastic.co/logstash/logstash:7.3.0
+FROM logstash:7.3.0
 
 MAINTAINER sm-pilot@5gtango.eu
 
 # INSTALL 'jq'
-USER root
-RUN yum clean all && \
-    yum update -y && \
-    yum install epel-release -y && \
-    yum install jq -y && \
-    yum clean all && \
-    rm -rf /var/cache/yum
-RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
+#USER root
+#RUN yum clean all && \
+#    yum update -y && \
+#    yum install epel-release -y && \
+#    yum install jq -y && \
+#    yum clean all && \
+#    rm -rf /var/cache/yum
+#RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 
 # CONFIG
-USER logstash
+#USER logstash
 WORKDIR /usr/share/logstash
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
