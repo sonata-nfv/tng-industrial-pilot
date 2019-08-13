@@ -8,7 +8,7 @@ RUN yum update -y && \
     yum clean all -y && \
     rm -fr /var/cache/yum
     #hostnamectl set-hostname filebeat
-
+RUN export LOGSTASH_HOSTS=$( echo $lh_vnf2_eu_5gtango_0_4_logstash5044_ip ); echo $LOGSTASH_HOSTS
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
 USER filebeat

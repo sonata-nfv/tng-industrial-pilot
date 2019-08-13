@@ -18,6 +18,7 @@ ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 ENV ELASTICSEARCH_HOSTS=elasticseach
 ENV PATH=$PATH:/usr/share/kibana/bin
+RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 
 USER kibana
 WORKDIR /usr/share/kibana/
