@@ -7,8 +7,8 @@ MAINTAINER "smpilot@5gtango.eu"
 #USER filebeat
 ARG lh_vnf2_eu_5gtango_0_4_logstash5044_ip
 ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
-ENV LOGSTASH_HOSTS=${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}
-ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}
+ENV LOGSTASH_HOSTS=${lh_vnf2_eu_5gtango_0_4_logstash5044_ip:-logstash}
+ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip:-elasticsearch}
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./
 COPY logging.yml ./

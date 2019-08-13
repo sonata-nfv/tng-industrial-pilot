@@ -1,11 +1,9 @@
 # Dockerfile with a cusomized configuration for Logstash
 
 FROM logstash:7.3.0
-
 MAINTAINER sm-pilot@5gtango.eu
-
 ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip
-ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}
+ENV ELASTICSEARCH_HOSTS=${e_vnf3_eu_5gtango_0_4_elastic9200_ip:-elasticsearch}
 
 # CONFIG
 #USER logstash
