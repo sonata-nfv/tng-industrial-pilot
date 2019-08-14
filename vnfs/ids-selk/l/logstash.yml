@@ -1,4 +1,5 @@
 http.host: "0.0.0.0"
 xpack.monitoring.enabled: true
-xpack.monitoring.elasticsearch.hosts: '${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200'
+#xpack.monitoring.elasticsearch.hosts: '${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200'
+output.logstash.hosts: '${lh_vnf2_eu_5gtango_0_4_logstash_ip}:5044'
 
