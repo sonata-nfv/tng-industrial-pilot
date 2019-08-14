@@ -10,12 +10,12 @@ MAINTAINER "smpilot@5gtango.eu"
 
 #USER kibana
 #ENV HOSTALIASES=/etc/host.aliases
-ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 ENV PATH=$PATH:/usr/share/kibana/bin
 WORKDIR /usr/share/kibana/
-RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
+#RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
 COPY ./kibana.yml ./config/kibana.yml
 #COPY ./logging.yml ./config/logging.yml
 VOLUME [/usr/share/kibana/data]
