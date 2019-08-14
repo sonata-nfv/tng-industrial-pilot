@@ -20,6 +20,7 @@ COPY ./kibana.yml ./config/kibana.yml
 #COPY ./logging.yml ./config/logging.yml
 VOLUME [/usr/share/kibana/data]
 EXPOSE 5601/tcp
+WORKDIR /
 CMD ["export", "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200", "&&", "/usr/local/bin/kibana-docker"]
 
 ###
