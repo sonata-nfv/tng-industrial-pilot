@@ -27,9 +27,13 @@
 # partner consortium (www.5gtango.eu).
 
 
-echo "Logstash: setting ENV vars"
-export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
+echo "Filebeat: setting ENV vars"
+export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elasticsearch9200_ip}:9200
 echo "ELASTICSEARCH_HOSTS: $ELASTICSEARCH_HOSTS"
+export LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}:5044
+echo "LOGSTASH_HOSTS: $LOGSTASH_HOSTS"
+export KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_4_kibana5601_ip}:5601
+echo "KIBANA_HOSTS: $KIBANA_HOSTS"
 
 # Start dockerized Logstash
-logstash
+filebeat -e

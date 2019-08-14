@@ -4,9 +4,11 @@ FROM store/elastic/filebeat:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
-#USER filebeat
+USER root
 WORKDIR /usr/share/filebeat
-COPY filebeat.yml ./
+COPY filebeat.yml ./filebeat.yml
+RUN chown root:filebeat ./filebeat.yml && \
+    chmod go-w ./filebeat.yml
 #COPY logging.yml ./
 VOLUME /var/log/suricata
 
@@ -16,6 +18,12 @@ RUN filebeat modules enable suricata
    #/usr/share/filebeat/filebeat setup --dashboards && \
    #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
    #/usr/share/filebeat/filebeat setup --template
+
+# add start.sh
+ADD start.sh start.sh
+RUN chmod +x start.sh && \
+    chown root:filebeat ./start.sh
+ENTRYPOINT ["./start.sh"]
 
 
 ## USAGE:

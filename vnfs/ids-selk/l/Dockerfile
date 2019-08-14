@@ -4,7 +4,6 @@ FROM logstash:7.3.0
 MAINTAINER sm-pilot@5gtango.eu
 
 # CONFIG
-#USER logstash
 WORKDIR /usr/share/logstash
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
@@ -15,9 +14,10 @@ EXPOSE 5044/tcp 9600/tcp
 # add start.sh
 USER root
 ADD start.sh start.sh
-RUN chmod +x start.sh
+RUN chmod +x start.sh && \
+    chown logstash:root ./start.sh
 USER logstash
-CMD ./start.sh
+ENTRYPOINT ["./start.sh"]
 
 
 ### USAGE: 
