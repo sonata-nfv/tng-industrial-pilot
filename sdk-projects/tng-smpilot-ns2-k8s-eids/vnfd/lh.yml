@@ -14,6 +14,7 @@ cloudnative_deployment_units:
   parameters:
     env:
       e_vnf3_eu_5gtango_0_4_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
+      e_vnf3_eu_5gtango_0_4_elastic9200_port: 9200
 - id: cdu02
   image: sonatanfv/vnf-ids-http:latest
   connection_points:

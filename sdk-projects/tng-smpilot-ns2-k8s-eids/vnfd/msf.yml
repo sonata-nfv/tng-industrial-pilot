@@ -55,7 +55,8 @@ cloudnative_deployment_units:
   connection_points: []
   parameters:
     env:
-      e_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lh_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lh_vnf2_eu_5gtango_0_4_logstash5044_port: 5044
 
  
 # corresponds to the k8s service layer: connection of CNFs to the outside world
