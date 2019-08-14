@@ -8,7 +8,6 @@ MAINTAINER sm-pilot@5gtango.eu
 WORKDIR /usr/share/logstash
 ENV ELASTICSEARCH_HOSTS=elasticsearch
 #RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
-RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
 #COPY logging.yml ./config/
