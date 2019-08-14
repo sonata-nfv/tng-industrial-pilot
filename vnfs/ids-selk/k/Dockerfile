@@ -1,38 +1,22 @@
 FROM kibana:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
-# workaround to provide hostname resolution
-#USER root
-#WORKDIR /
-#RUN echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip && \
-#    echo "export HOSTALIASES=/etc/host.aliases" >> /etc/bashrc && \
-#    echo "elasticsearch ${e_vnf3_eu_5gtango_0_4_elastic9200_ip}.default.pod.cluster.local" > /etc/host.aliases
-
-#USER kibana
-#ENV HOSTALIASES=/etc/host.aliases
 #ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 ENV PATH=$PATH:/usr/share/kibana/bin
 WORKDIR /usr/share/kibana/
-#RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
 COPY ./kibana.yml ./config/kibana.yml
 #COPY ./logging.yml ./config/logging.yml
 VOLUME [/usr/share/kibana/data]
 EXPOSE 5601/tcp
-#WORKDIR ~
-#CMD ["export", "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200", "&&", "/usr/local/bin/kibana-docker"]
 
 # add start.sh
 USER root
 ADD start.sh start.sh
 RUN chmod +x start.sh
-
 USER kibana
-
 CMD ./start.sh
-
-
 
 ###
 ## $ docker build  -t tng-smp-kibana - < Dockerfile

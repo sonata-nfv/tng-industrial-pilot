@@ -27,8 +27,8 @@
 # partner consortium (www.5gtango.eu).
 
 
-echo "Kibana: setting ENV vars"
+echo "Logstash: setting ENV vars"
 export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
 echo "ELASTICSEARCH_HOSTS: $ELASTICSEARCH_HOSTS"
-# Start dockerized Kibana
-/usr/local/bin/kibana-docker
+# Start dockerized Logstash
+./bin/logstash
