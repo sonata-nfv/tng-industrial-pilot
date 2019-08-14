@@ -5,11 +5,13 @@ MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
 #USER filebeat
-ENV LOGSTASH_HOSTS=http://logstash:5044
-ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#ENV LOGSTASH_HOST=http://logstash:5044
+#ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 WORKDIR /usr/share/filebeat
+#RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200 && \
+#    export LOGSTASH_HOST=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}:5044
 COPY filebeat.yml ./
-COPY logging.yml ./
+#COPY logging.yml ./
 VOLUME /var/log/suricata
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS

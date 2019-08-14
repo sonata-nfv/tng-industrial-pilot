@@ -9,7 +9,7 @@ ENV discovery.type="single-node"
 ENV PATH=$PATH:/usr/share/elasticsearch/bin
 WORKDIR /usr/share/elasticsearch
 COPY elasticsearch.yml ./config/
-COPY logging.yml ./config/
+#COPY logging.yml ./config/
 VOLUME [/usr/share/elasticsearch/data]
 EXPOSE 9200/tcp 9300/tcp
 
