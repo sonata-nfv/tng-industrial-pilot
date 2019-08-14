@@ -1,6 +1,7 @@
 FROM kibana:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
+# workaround to provide hostname resolution
 USER root
 WORKDIR /
 RUN echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip && \
