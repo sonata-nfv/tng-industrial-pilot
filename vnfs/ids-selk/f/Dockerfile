@@ -4,26 +4,26 @@ FROM store/elastic/filebeat:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
-#USER filebeat
-#ENV LOGSTASH_HOST=http://logstash:5044
-#ENV ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+USER root
+ENV LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip:-logstash}:5044
+ENV KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_4_kibana5601_ip:-kibana}:5601
 WORKDIR /usr/share/filebeat
-#RUN export ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200 && \
-#    export LOGSTASH_HOST=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}:5044
-COPY filebeat.yml ./
+COPY filebeat.yml ./filebeat.yml
+RUN chown root:filebeat ./filebeat.yml && \
+    chmod go-w ./filebeat.yml
 #COPY logging.yml ./
 VOLUME /var/log/suricata
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
-RUN /usr/share/filebeat/filebeat modules enable suricata
+RUN filebeat modules enable suricata
 ## Loading dashboards (Kibana must be running and reachable)
    #/usr/share/filebeat/filebeat setup --dashboards && \
    #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
    #/usr/share/filebeat/filebeat setup --template
 
 
-## USAGE:
+### USAGE:
 ## $ docker build -t tng-smp-filebeat .
 ## $ docker run --rm --name filebeat -v /var/log/suricata/:/usr/share/logstash/logs -d tng-smp-filebeat
 ## $ docker exec --rm  -it filebeat bash
-##
+###

@@ -4,15 +4,14 @@ FROM logstash:7.3.0
 MAINTAINER sm-pilot@5gtango.eu
 
 # CONFIG
-#USER logstash
+ENV ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip:-elasticsearch}:9200
 WORKDIR /usr/share/logstash
-ENV ELASTICSEARCH_HOSTS=elasticsearch
-#RUN export ELASTICSEARCH_HOSTS=$( echo $e_vnf3_eu_5gtango_0_4_elastic9200_ip ); echo $ELASTICSEARCH_HOSTS
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
 #COPY logging.yml ./config/
 VOLUME /usr/share/logstash/logs
 EXPOSE 5044/tcp 9600/tcp
+
 
 ### USAGE: 
 # $ docker build -t tng-smp-logstash .
