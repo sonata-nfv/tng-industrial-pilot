@@ -5,6 +5,8 @@ MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
 USER root
+ENV LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip:-logstash}:5044
+ENV KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_4_kibana5601_ip:-kibana}:5601
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./filebeat.yml
 RUN chown root:filebeat ./filebeat.yml && \
@@ -19,15 +21,9 @@ RUN filebeat modules enable suricata
    #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
    #/usr/share/filebeat/filebeat setup --template
 
-# add start.sh
-ADD start.sh start.sh
-RUN chmod +x start.sh && \
-    chown root:filebeat ./start.sh
-ENTRYPOINT ["./start.sh"]
 
-
-## USAGE:
+### USAGE:
 ## $ docker build -t tng-smp-filebeat .
 ## $ docker run --rm --name filebeat -v /var/log/suricata/:/usr/share/logstash/logs -d tng-smp-filebeat
 ## $ docker exec --rm  -it filebeat bash
-##
+###

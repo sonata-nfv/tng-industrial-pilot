@@ -17,4 +17,4 @@ EXPOSE 9200/tcp 9300/tcp
 ## $ docker build -t tng-smp-elasticsearch .
 ## $ docker run --rm --name elasticsearch -d tng-smp-elasticsearch
 ## $ docker exec -it elasticsearch bash
-##
+###
