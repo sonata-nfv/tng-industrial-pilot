@@ -5,7 +5,8 @@
 ```
 $ docker pull sonatanfv/vnf-ids-elasticsearch
 
-$ docker run --rm --name my-es -d sonatanfv/vnf-ids-elasticsearch
+$ docker run --rm --name my-es \
+  -d sonatanfv/vnf-ids-elasticsearch
 
 $ docker exec -it my-es bash
 

@@ -7,7 +7,9 @@ $ docker pull sonatanfv/vnf-ids-logstash
 
 $ export e_vnf3_eu_5gtango_0_4_elastic9200_ip=172.17.0.2
 
-$ docker run --rm --name my-ls -e "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200" -d sonatanfv/vnf-ids-logstash
+$ docker run --rm --name my-ls \
+  -e "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200" \
+  -d sonatanfv/vnf-ids-logstash
 
 $ docker exec -it my-ls bash
 
