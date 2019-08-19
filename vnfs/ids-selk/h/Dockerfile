@@ -6,12 +6,12 @@ ENV container_name=logstash
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
-VOLUME /usr/share/logstash/logs
+#VOLUME /usr/share/logstash/logs
 ENTRYPOINT ["python"]
 CMD ["httptangosrv.py"]
 
 ##
-## docker build -t tng-smp-http .
-## docker run -t http -v /usr/share/logstash/logs:/var/log/logstash -d tng-smp-http
+## docker build -t vnf-ids-http .
+## docker run -t http -v /usr/share/logstash/logs:/var/log/logstash -d vnf-ids-http
 ## docker exec -it http bash
 ##

@@ -14,7 +14,7 @@ VOLUME [/usr/share/elasticsearch/data]
 EXPOSE 9200/tcp 9300/tcp
 
 ## USAGE: 
-## $ docker build -t tng-smp-elasticsearch .
-## $ docker run --rm --name elasticsearch -d tng-smp-elasticsearch
+## $ docker build -t vnf-ids-elasticsearch .
+## $ docker run --rm --name elasticsearch -d vnf-ids-elasticsearch
 ## $ docker exec -it elasticsearch bash
 ###

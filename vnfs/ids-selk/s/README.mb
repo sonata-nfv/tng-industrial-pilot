@@ -1,22 +1,40 @@
-#
+# Suricata IDPS
 
-## Create a SURICATA Docker Image
+## Suricata CNF for SMP deployment via SP
 
-`$ docker build --progress=plain --no-cache -t suricata .`
+```
+$ docker pull sonatanfv/vnf-ids-suricata
+
+$ docker run --rm --name my-sc \
+  -v /var/log/suricata:/var/log/suricata \
+  -d sonatanfv/vnf-ids-suricata
+
+$ docker exec -it my-sc bash
+```
+
+## Standalone Suricata
+
+Create a SURICATA Docker Image
+
+```$ docker build --progress=plain --no-cache -t suricata .```
 
 
-## Pre-requirements to run IDS on promiscuous mode
+Pre-requirements to run IDS on promiscuous mode
 
-`$ sudo ip link set <INTERFACE> multicast off`
+```
+$ sudo ip link set <INTERFACE> multicast off
 
-`$ sudo ip link set <INTERFACE> promisc on`
+$ sudo ip link set <INTERFACE> promisc on
 
-`$ sudo ip link set <INTERFACE> up`
+$ sudo ip link set <INTERFACE> up
+``` 
 
 
-## How to run
+How to run
 
-`$ docker run -d --rm --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -t suricata -i eth0`
+```
+$ docker run -d --rm --network=host --hostname=suricata --name=suricata --mount src=suricata,dst=/var/log/suricata/ -t suricata -i eth0
+```
 
 
 ## CLI
