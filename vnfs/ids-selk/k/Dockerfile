@@ -13,7 +13,7 @@ EXPOSE 5601/tcp
 CMD ["bin/kibana"]
 
 ### USAGE:
-## $ docker build  -t tng-smp-kibana .
-## $ docker run --rm --name kibana -e "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200" -d tng-smp-kibana
+## $ docker build  -t vnf-ids-kibana .
+## $ docker run --rm --name kibana -e "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200" -d vnf-ids-kibana
 ## $ docker exec -it kibana bash
 ###
