@@ -39,3 +39,6 @@ docker push sonatanfv/vnf-ids-logstash:latest
 docker push sonatanfv/vnf-ids-http:latest
 docker push sonatanfv/vnf-ids-elasticsearch:latest
 docker push sonatanfv/vnf-ids-kibana:latest
+
+# FSMs
+docker push sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest
