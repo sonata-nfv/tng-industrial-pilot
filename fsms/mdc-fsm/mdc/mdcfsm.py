@@ -63,7 +63,7 @@ class MdcFsm(smbase):
         :param description: description
         """
 
-        self.sm_id = "sonfsmindustry-pilotmdc-vnfcss1"
+        self.sm_id = "sonfsmindustry-pilotmdc-vnf1"
         self.sm_version = "0.1"
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
@@ -132,6 +132,7 @@ class MdcFsm(smbase):
         """
 
         # Dummy content
+        LOG.info("MDC FSM: start event triggered")
         response = {'status': 'completed'}
         return response
 
@@ -141,6 +142,7 @@ class MdcFsm(smbase):
         """
 
         # Dummy content
+        LOG.info("MDC FSM: stop event triggered")
         response = {'status': 'completed'}
         return response
 
@@ -149,7 +151,7 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the Media Server.
         """
-        LOG.info("MDC FSM configuration event triggered")
+        LOG.info("MDC FSM: configuration event triggered")
         """
         # Original code from communciation pilot MS FSM as reference:
         ds_ip = ''

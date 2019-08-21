@@ -35,7 +35,7 @@ MAINTAINER 5GTANGO
 
 #RUN apt-get update && apt-get install -y python-pip
 #RUN apt-get install python2.7
-RUN apt-get install -y net-tools iproute2 iputils-ping
+RUN apt-get update&& apt-get install -y net-tools iproute2 iputils-ping
 
 # configrurations
 ENV broker_host amqp://guest:guest@broker:5672/%2F
