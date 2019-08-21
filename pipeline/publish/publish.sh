@@ -41,4 +41,4 @@ docker push sonatanfv/vnf-ids-elasticsearch:latest
 docker push sonatanfv/vnf-ids-kibana:latest
 
 # FSMs
-docker push sonfsmindustry-pilotmdc-vnf1:latest
+docker push sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest
