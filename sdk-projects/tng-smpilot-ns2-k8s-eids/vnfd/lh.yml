@@ -15,11 +15,18 @@ cloudnative_deployment_units:
     env:
       e_vnf3_eu_5gtango_0_4_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
       e_vnf3_eu_5gtango_0_4_elastic9200_port: 9200
+    volume_mounts:
+    - id: logs
+      location: '/usr/share/logstash/logs'
 - id: cdu02
   image: sonatanfv/vnf-ids-http:latest
   connection_points:
   - id: flask5000
     port: 5000
+  parameters:
+    volume_mounts:
+    - id: logs
+      location: '/var/log/logstash'
 
 connection_points:
 - id: logstash5044
@@ -42,4 +49,3 @@ virtual_links:
   connection_points_reference:
   - logstash5044
   - cdu01:logstash5044
-
