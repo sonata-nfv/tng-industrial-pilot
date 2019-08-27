@@ -1,4 +1,4 @@
-from mdcfsm import mdcfsm
+from mdc import mdcfsm
 
 
 def main():

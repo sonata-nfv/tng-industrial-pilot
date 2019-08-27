@@ -67,7 +67,7 @@ setup(
     setup_requires=[],
 
     entry_points={
-        'console_scripts': ['mdcfsm=mdcfsm.__main__:main'],
+        'console_scripts': ['mdcfsm=mdc.__main__:main'],
     },
 
 )
