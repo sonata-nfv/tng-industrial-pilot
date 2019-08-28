@@ -7,8 +7,8 @@ $ docker pull sonatanfv/vnf-ids-kibana
 
 $ export e_vnf3_eu_5gtango_0_4_elastic9200_ip=172.17.0.2
 
-$ docker run  --name my-kb \
-  -e "ELASTICSEARCH_HOSTS=http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200" \
+$ docker run --name my-kb \
+  -e "e_vnf3_eu_5gtango_0_4_elastic9200=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}" \
   -d sonatanfv/vnf-ids-kibana
 
 $ docker exec -it my-kb bash
