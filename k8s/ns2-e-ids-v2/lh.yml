@@ -20,6 +20,10 @@ data:
       mutate {
         add_field => { "[@metadata][source]" => "${SMB_CLIENT_NAME}" }
         add_field => { "[@metadata][user]" => "${SMB_USER_NAME}" }
+        add_field => { "[@metadata][elastichost]" => "${ELASTICSEARCH_HOSTS}" }
+        }
+      grok {
+        match => { "%{[@metadata][elastichost]}" => "%{WORD:prot}://%{IP:host}:%{NUMBER:port}" }
         }
       json {
         source => "message"
@@ -78,7 +82,7 @@ data:
       }
     output {
       elasticsearch {
-        hosts => ["elasticsearch:9200"]
+        hosts => ["%{host}:%{port}"]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
         manage_template => false
         document_type => "%{[@metadata][type]}"
