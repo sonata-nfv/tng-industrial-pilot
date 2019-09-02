@@ -1,16 +1,18 @@
 FROM elastic/kibana:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
-ARG e_vnf3_eu_5gtango_0_4_elastic9200_ip=elasticsearch
-ENV e_vnf3_eu_5gtango_0_4_elastic9200_ip=$e_vnf3_eu_5gtango_0_4_elastic9200_ip
-#ENV ELASTICSEARCH_HOSTS=$e_vnf3_eu_5gtango_0_4_elastic9200_ip
+#ARG EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
+#ENV EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
+#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 
+USER kibana
 WORKDIR /usr/share/kibana
 COPY kibana.yml config/kibana.yml
+COPY start.sh .
 EXPOSE 5601/tcp
-ENTRYPOINT bin/kibana -e http://${e_vnf3_eu_5gtango_0_4_elastic9200_ip}:9200
+ENTRYPOINT ["start.sh"]
 
 #USER root
 #RUN chmod +x ./entrypoint.sh
