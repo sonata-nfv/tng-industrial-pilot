@@ -10,7 +10,8 @@ USER root
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./filebeat.yml
 COPY start.sh .
-RUN chown root:filebeat ./filebeat.yml && \
+RUN chmod +x start.sh && \
+    chown root:filebeat ./filebeat.yml && \
     chmod go-w ./filebeat.yml
 #VOLUME /var/log/suricata
 
