@@ -12,6 +12,7 @@ WORKDIR /usr/share/logstash
 COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
 COPY start.sh .
+RUN chmod +x start.sh
 VOLUME /usr/share/logstash/logs
 #VOLUME /usr/share/logstash/data
 EXPOSE 5044/tcp 9600/tcp
