@@ -12,7 +12,7 @@ WORKDIR /usr/share/kibana
 COPY kibana.yml config/kibana.yml
 COPY start.sh .
 USER root
-RUN chown +x start.sh
+RUN chmod +x start.sh
 USER kibana
 EXPOSE 5601/tcp
 ENTRYPOINT ["./start.sh"]

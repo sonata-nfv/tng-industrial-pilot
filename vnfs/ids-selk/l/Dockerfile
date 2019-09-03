@@ -13,7 +13,7 @@ COPY logstash.yml ./config/
 COPY logstash.conf ./pipeline/
 COPY start.sh .
 USER root
-RUN chown +x start.sh
+RUN chmod +x start.sh
 VOLUME /usr/share/logstash/logs
 #VOLUME /usr/share/logstash/data
 USER logstash
