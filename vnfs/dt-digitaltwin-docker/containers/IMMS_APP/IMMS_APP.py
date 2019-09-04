@@ -50,7 +50,7 @@ from em63 import rmFile
 import plotly
 import plotly.graph_objs as go
 import numpy as np
-from opcua import Client
+from opcua import ua, Client, Server
 
 app = Flask(__name__)
 
@@ -158,17 +158,8 @@ ActiveReports,	;
 ActiveEvents,	;
 """
 
-# Set OPC UA server address and port or use defaults
-OPCUA_SERVER = os.environ.get("OPCUA_SERVER", "localhost")
+OPCUA_HOST = os.environ.get("OPCUA_HOST", "0.0.0.0")
 OPCUA_PORT = os.environ.get("OPCUA_PORT", "4840")
-client = Client("opc.tcp://%s:%s/freeopcua/server/" % (OPCUA_SERVER, OPCUA_PORT))
-client.connect()
-root = client.get_root_node()
-# Each instance gets a separate number, because it writes updates to a
-# different OPC UA object on the server
-IMMS_NUMBER = os.environ.get("IMMS_NUMBER", "1")
-imms = root.get_child(["0:Objects", "2:IMMS_" + IMMS_NUMBER])
-
 
 @app.route('/')
 def home():
@@ -307,14 +298,29 @@ def start_EM63():
     thread2.start()
     return
 
-def _start_OPCUA():
+
+def _start_OPCUA_server():
+    run_OPCUA_server_start()
+
+def start_OPCUA_server():
+    thread3 = threading.Thread(target=_start_OPCUA_server)
+    thread3.daemon = True
+    thread3.start()
+    return
+
+
+def _start_OPCUA_client():
+    # Set OPC UA server address and port or use defaults
+    client = Client("opc.tcp://%s:%s/freeopcua/server/" % (OPCUA_HOST, OPCUA_PORT))
+    client.connect()
+    root = client.get_root_node()
+    imms = root.get_child(["0:Objects", "2:IMMS"])
     while True:
-        run_OPCUA()
+        run_OPCUA_write_updates(imms)
         time.sleep(.2)  # lets sleep a bit, to not utilize our CPU for 100% with this thread
 
-
-def start_OPCUA():
-    thread3 = threading.Thread(target=_start_OPCUA)
+def start_OPCUA_client():
+    thread3 = threading.Thread(target=_start_OPCUA_client)
     thread3.daemon = True
     thread3.start()
     return
@@ -629,7 +635,60 @@ def run_EM63():
         sys.stdout.flush()
 
 
-def run_OPCUA():
+def run_OPCUA_server_start():
+    print("Starting OPC UA SERVER %s:%s" % (OPCUA_HOST, OPCUA_PORT))
+    # setup our server
+    server = Server()
+    server.set_endpoint("opc.tcp://%s:%s/freeopcua/server/" % (OPCUA_HOST, OPCUA_PORT))
+
+    # setup our own namespace, not really necessary but should as spec
+    uri = "http://examples.freeopcua.github.io"
+    idx = server.register_namespace(uri)
+
+    # get Objects node, this is where we should put our nodes
+    objects = server.get_objects_node()
+
+    # populating our address space
+    imms = objects.add_object(idx, "IMMS")
+
+    imms_date = imms.add_variable(idx, "DATE", 0, varianttype=ua.VariantType.Double)
+    imms_date.set_writable()
+
+    imms_time = imms.add_variable(idx, "TIME", "", varianttype=ua.VariantType.String)
+    imms_time.set_writable()
+
+    imms_ActSimPara1 = imms.add_variable(idx, "ActSimPara1", 0, varianttype=ua.VariantType.Double)
+    imms_ActSimPara1.set_writable()
+
+    imms_ActSimPara2 = imms.add_variable(idx, "ActSimPara2", 0, varianttype=ua.VariantType.Double)
+    imms_ActSimPara2.set_writable()
+
+    imms_ActCntCyc = imms.add_variable(idx, "ActCntCyc", 0, varianttype=ua.VariantType.Double)
+    imms_ActCntCyc.set_writable()
+
+    imms_ActCntPrt = imms.add_variable(idx, "ActCntPrt", 0, varianttype=ua.VariantType.Double)
+    imms_ActCntPrt.set_writable()
+
+    imms_ActStsMach = imms.add_variable(idx, "ActStsMach", "", varianttype=ua.VariantType.String)
+    imms_ActStsMach.set_writable()
+
+    imms_ActTimCyc = imms.add_variable(idx, "ActTimCyc", 5, varianttype=ua.VariantType.Double)
+    imms_ActTimCyc.set_writable()
+
+    imms_SetCntMld = imms.add_variable(idx, "SetCntMld", 0, varianttype=ua.VariantType.Double)
+    imms_SetCntMld.set_writable()
+
+    imms_SetCntPrt = imms.add_variable(idx, "SetCntPrt", 0, varianttype=ua.VariantType.Double)
+    imms_SetCntPrt.set_writable()
+
+    imms_SetTimCyc = imms.add_variable(idx, "SetTimCyc", 0, varianttype=ua.VariantType.Double)
+    imms_SetTimCyc.set_writable()
+
+    # starting!
+    server.start()
+
+
+def run_OPCUA_write_updates(imms):
     # write values to OPC UA server
     global varActStsMach, varSetCntMld, varSetCntPrt, varSetTimCyc
     global varActCntPrt, varActCntCyc, varActTimCyc
@@ -846,7 +905,9 @@ def main():
     start_EM63()
 
     if args.enableOPCUA:
-        start_OPCUA()
+        start_OPCUA_server()
+        time.sleep(3) # wait for OPC UA server to start
+        start_OPCUA_client()
 
     if args.autostart:
         autostart_production(args)

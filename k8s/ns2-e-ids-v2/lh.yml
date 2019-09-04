@@ -17,26 +17,65 @@ data:
       }
     }
     filter {
+      mutate {
+        add_field => { "[@metadata][source]" => "${SMB_CLIENT_NAME}" }
+        add_field => { "[@metadata][user]" => "${SMB_USER_NAME}" }
+        }
       json {
         source => "message"
         target => "temp"
         }
       if [temp][event_type] {
         if [temp][event_type] == "smb" {
-          json {
-            source => "message"
-            target => "message"
+          if ([temp][smb][command] == "SMB2_COMMAND_SESSION_SETUP") and [temp][smb][ntlmssp] {
+            if [temp][smb][ntlmssp][user] == [@metadata][user] {
+              if [temp][smb][ntlmssp][host] == [@metadata][source] {
+                drop {}
+                }
+              else {
+                json {
+                  source => "message"
+                  target => "message"
+                  }
+                }
+              }
+            else {
+              json {
+                source => "message"
+                target => "message"
+                }
+              }
+            }
+          else {
+            drop {}
             }
           }
-        else
-          {
-          drop {}
+        else {
+          if [temp][event_type] == "dns" or [temp][event_type] == "stats" or [temp][event_type] == "http" or [temp][event_type] == "fileinfo" {
+            drop {}
+            }
+          else {
+            if ([temp][event_type] == "flow") and (([temp][dest_port] == 445) or ([temp][dest_port] == 139)) {
+              if ([temp][app_proto] == "smb") and ([temp][flow][reason] == "timeout") {
+                drop {}
+                }
+              else { 
+                json {
+                  source => "message"
+                  target => "message"
+                  }
+                }
+              }
+            else {
+              drop {}
+              }
+            }
           }
         }
       else {
         drop {}
         }
-    }
+      }
     output {
       elasticsearch {
         hosts => ["elasticsearch:9200"]
@@ -45,7 +84,7 @@ data:
         document_type => "%{[@metadata][type]}"
       }
       file {
-        path => "/tmp/event-%{+YYYY-MM-dd-HH-mm-ss}.json"
+        path => "/usr/share/logstash/logs/event-%{+YYYY-MM-dd-HH-mm-ss}.json"
         codec => line { format => "%{message}" }
       }
       stdout { codec => rubydebug }
@@ -84,7 +123,7 @@ spec:
         emptyDir: {}
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:6.7.1
+        image: docker.elastic.co/logstash/logstash:7.3.0
         imagePullPolicy: IfNotPresent
         #args: [
         #  "-vvv",
@@ -92,6 +131,10 @@ spec:
         env:
         - name: PIPELINE_WORKERS
           value: "2"
+        - name: SMB_CLIENT_NAME
+          value: "K8PRDCTRL1"
+        - name: SMB_USER_NAME
+          value: "stefan"
         - name: xpack.monitoring.enable
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts
@@ -104,6 +147,8 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/logstash/pipeline
           name: logstash-config
+        - mountPath: /usr/share/logstash/logs
+          name: intrusion-events
       - name: flask
         image: mesquitasonata/httptangosrv
         imagePullPolicy: IfNotPresent
@@ -114,7 +159,7 @@ spec:
         - containerPort: 5000
         volumeMounts:
         - name: intrusion-events
-          mountPath: /tmp
+          mountPath: /var/log/logstash
       dnsPolicy: ClusterFirst # service.namespace.svc.cluster.local
       hostNetwork: false
       hostname: logstash

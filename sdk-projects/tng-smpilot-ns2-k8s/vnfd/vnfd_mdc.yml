@@ -71,3 +71,12 @@ virtual_links:
     connection_points_reference:
       - samba445
       - 'cdu01:int-samba445'
+
+# Assign a FSM (for reconfiguration) to the MDC CNF
+function_specific_managers:
+ - id: "sonfsmindustry-pilotmdc-vnfcss1"
+   description: "FSM to reconfigure the MDC"
+   image: "sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest"
+   options:
+     - key: "type"
+       value: "configure"

@@ -1,0 +1,9 @@
+---
+# Default Kibana configuration from kibana-docker.
+
+server.port: 5601 # Default
+server.name: kibana
+server.host: "0"
+#elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+

@@ -44,12 +44,10 @@ $~ pip3 install plotly --user
 ```
 
 # OPC UA Support
-With `--enableOPCUA` you can enable an integrated OPC UA client.
-The two environment variables  `OPCUA_SERVER` and `OPCUA_PORT` can be set accordingly, if it is enabled.
-Default values are `OPCUA_SERVER="localhost"` and `OPCUA_PORT="4840"`.
-The corresponding OPC UA server must have one object for each IMMS (in case multiple are used at the same time).
-Additionally, within each object it must have the following variables to which updates are written periodically:
-
+With `--enableOPCUA` you can enable an integrated OPC UA server.
+The two environment variables  `OPCUA_HOST` and `OPCUA_PORT` can be set accordingly, if it is enabled.
+Default values are `OPCUA_HOST="localhost"` and `OPCUA_PORT="4840"`.
+The following Variables are created within the ``IMMS`` object on the server and get updated periodically:
 ```
 DATE <Double>
 TIME <String>
@@ -63,13 +61,6 @@ SetCntMld <Double>
 SetCntPrt <Double>
 SetTimCyc <Double>
 ```
-
-If you run multiple IMMS at the same time, you can use the environment variable ``IMMS_NUMBER`` to define an ID for each IMMS instance (default: ``IMMS_NUMBER=1``).
-It will try to write updates to an OPC UA object named ``IMMS_<IMMS_NUMBER>``.
-
-An example OPC UA server is implemented in ``OPC_UA_SERVER.py``.
-It uses the environment variable ``NUMBER_OF_IMMS`` as the total number of IMMS for which it creates objects.
-Hence, maximum ``NUMBER_OF_IMMS`` IMMS can write to that OPC UA server, separating the data for each IMMS.
 
 Data on the OPC UA server can be easily browsed and visualized using ``opcua-client``.
 

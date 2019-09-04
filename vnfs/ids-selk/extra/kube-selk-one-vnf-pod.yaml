@@ -74,7 +74,7 @@ items:
             value: "true"
           - name: discovery.type
             value: single-node
-          image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
           name: elasticsearch
           ports:
           - containerPort: 9200 # for REST API
@@ -127,7 +127,7 @@ items:
         - env:
           - name: ELASTICSEARCH_URL
             value: '"http://localhost:9200"'
-          image: docker.elastic.co/kibana/kibana:6.7.1
+          image: docker.elastic.co/kibana/kibana:7.3.0
           name: kibana
           ports:
           - containerPort: 5601
@@ -160,7 +160,7 @@ items:
             value: '"2"'
           - name: xpack.monitoring.elasticsearch.url
             value: '"http://localhost:9200"'
-          image: arocha/logstash:6.7.1
+          image: arocha/logstash:7.3.0
           name: logstash
           resources: {}
           volumeMounts:
