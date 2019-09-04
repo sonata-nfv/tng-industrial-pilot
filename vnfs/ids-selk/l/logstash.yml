@@ -1,5 +1,5 @@
 http.host: "0.0.0.0"
 xpack.monitoring.enabled: true
-output.elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
+#output.elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
 xpack.monitoring.elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
 #xpack.monitoring.elasticsearch.hosts: ["http://`env | grep EU_5GTANGO_E_VNF3_0_4 | grep 9200_TCP_ADDR | cut -d '=' -f 2`:9200"]
