@@ -1,7 +1,5 @@
-#!/bin/sh
-
-RESULTS_FILE="/output/${PROBE}/${HOSTNAME}/results.log"
-BULK_DATA='[
+{
+	"bulk_data" : [
 		{
 			"topic": "WIMMS1/EM63/DATE",
 			"value": 20190715
@@ -38,4 +36,5 @@ BULK_DATA='[
 			"topic": "WIMMS1/EM63/SetCntPrt",
 			"value": 10000
 		}
-	]'
+	]
+}
