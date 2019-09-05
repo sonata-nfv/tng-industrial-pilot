@@ -154,7 +154,7 @@ setup.kibana:
 #----------------------------- Logstash output --------------------------------
 output.logstash:
   # The Logstash hosts
-  hosts: ["${LOGSTASH_HOSTS}:5044"]
+  hosts: ["${LOGSTASH_HOSTS}"]
   #index: filebeat
 
   # Optional SSL. By default is off.

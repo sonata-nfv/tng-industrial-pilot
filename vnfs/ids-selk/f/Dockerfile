@@ -4,8 +4,10 @@ FROM store/elastic/filebeat:7.3.0
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
-ENV LOGSTASH_HOSTS=http://logstash:5044
-ENV KIBANA_HOSTS=http://kibana:5601
+ARG LOGSTASH_HOSTS
+ARG KIBANA_HOSTS
+ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
+ENV KIBANA_HOSTS=$KIBANA_HOSTS
 USER root
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./filebeat.yml
