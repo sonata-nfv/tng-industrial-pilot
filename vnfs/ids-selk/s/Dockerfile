@@ -5,11 +5,14 @@ RUN yum -y install epel-release yum-plugin-copr && \
     yum -y install suricata 
 
 # Open up the permissions on /var/log/suricata so linked containers can see it. 
-RUN chmod 755 /var/log/suricata 
+RUN chmod 755 /var/log/suricata && \
+    usermod -aG suricata root
 
 VOLUME /var/log/suricata
 
-COPY suricata.yaml /usr/share/suricata
+WORKDIR /usr/share/suricata
+
+COPY suricata.yaml .
 
 ENTRYPOINT ["/usr/sbin/suricata"] 
 
