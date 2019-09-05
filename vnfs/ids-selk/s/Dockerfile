@@ -17,7 +17,7 @@ COPY suricata.yaml .
 ENTRYPOINT ["/usr/sbin/suricata"] 
 
 # YOU MUST CHANGE THE NETWORK INTERFACE NAME TO YOUR's
-CMD ["-c","/usr/share/suricata/suricata.yaml","-i","eth0"]
+CMD ["-c","suricata.yaml","-i","eth0"]
 
 ## USAGE
 ## $ docker build -t sonatanfv/vnf-ids-suricata .
