@@ -21,7 +21,7 @@ echo "******* mqttprobe: executing benchmark *******"
 for i in $( eval echo {1..$ROUNDS} )
 do
     echo "Executing round $i"
-    mqtt-benchmark --broker tcp://$IP:$PORT --count $COUNT --size $SIZE --clients $CLIENTS --qos $QOS --format json --username $USERNAME --password $PASSWORD > $RESULTS_FILE
+    mqtt-benchmark --broker tcp://$IP:$PORT --count $(( COUNT * i )) --size $(( SIZE * i )) --clients $(( CLIENTS * i )) --qos $QOS --format json --username $USERNAME --password $PASSWORD > $RESULTS_FILE
 done
 
 echo "output redirect to: $RESULTS_FILE"
