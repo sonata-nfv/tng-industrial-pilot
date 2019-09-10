@@ -1,4 +1,4 @@
-FROM elastic/kibana:7.3.0
+FROM elastic/kibana:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
 
 #ARG EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch

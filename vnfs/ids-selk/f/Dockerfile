@@ -1,6 +1,6 @@
 ## STEP 1: GET 'FILEBEAT' FROM OFFICIAL IMAGE REPOSITORY
 
-FROM store/elastic/filebeat:7.3.0
+FROM elastic/filebeat:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
@@ -12,20 +12,21 @@ WORKDIR /usr/share/filebeat
 COPY filebeat.yml .
 COPY start.sh .
 USER root
+#VOLUME /var/log/suricata
+VOLUME /usr/share/filebeat/data
 RUN usermod -aG filebeat root && \
     chmod +x start.sh && \
-    chown root:filebeat ./filebeat.yml && \
-    chmod go-w ./filebeat.yml
-#VOLUME /var/log/suricata
+    chown root:filebeat filebeat.yml start.sh && \
+    chmod go-w filebeat.yml
 USER filebeat
 WORKDIR /usr/share/filebeat
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
 RUN filebeat modules enable suricata
 ## Loading dashboards (Kibana must be running and reachable)
-#   filebeat setup --dashboards && \
-#   filebeat setup --pipelines
-#   filebeat setup --index-management
+#    filebeat setup --pipelines
+#    filebeat setup --index-management
+#    filebeat setup --dashboards
 ENTRYPOINT ["start.sh"]
 
 
