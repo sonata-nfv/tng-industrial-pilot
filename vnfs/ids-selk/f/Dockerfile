@@ -8,21 +8,23 @@ ARG LOGSTASH_HOSTS
 ARG KIBANA_HOSTS
 ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
 ENV KIBANA_HOSTS=$KIBANA_HOSTS
-USER root
 WORKDIR /usr/share/filebeat
 COPY filebeat.yml ./filebeat.yml
 COPY start.sh .
+USER root
 RUN chmod +x start.sh && \
     chown root:filebeat ./filebeat.yml && \
     chmod go-w ./filebeat.yml
 #VOLUME /var/log/suricata
+USER filebeat
+WORKDIR /usr/share/filebeat
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
-RUN filebeat modules enable suricata
+RUN filebeat modules enable suricata && \
 ## Loading dashboards (Kibana must be running and reachable)
-   #/usr/share/filebeat/filebeat setup --dashboards && \
-   #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
-   #/usr/share/filebeat/filebeat setup --template
+#   filebeat setup --dashboards && \
+   filebeat setup --pipelines
+#   filebeat setup --index-management
 ENTRYPOINT ["start.sh"]
 
 
