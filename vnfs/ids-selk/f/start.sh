@@ -8,4 +8,4 @@ export KIP=`env | grep EU_5GTANGO_K_VNF4_0_4 | grep 5601_TCP_ADDR | cut -d "=" -
 export KIBANA_HOST=$KIP:5601
 echo $KIBANA_HOST
 
-filebeat -e -d "*"
+filebeat -e
