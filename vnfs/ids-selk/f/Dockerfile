@@ -9,10 +9,11 @@ ARG KIBANA_HOSTS
 ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
 ENV KIBANA_HOSTS=$KIBANA_HOSTS
 WORKDIR /usr/share/filebeat
-COPY filebeat.yml ./filebeat.yml
+COPY filebeat.yml .
 COPY start.sh .
 USER root
-RUN chmod +x start.sh && \
+RUN usermod -aG filebeat root && \
+    chmod +x start.sh && \
     chown root:filebeat ./filebeat.yml && \
     chmod go-w ./filebeat.yml
 #VOLUME /var/log/suricata
