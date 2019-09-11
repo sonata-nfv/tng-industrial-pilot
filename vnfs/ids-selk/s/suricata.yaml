@@ -51,7 +51,7 @@ vars:
 ## Step 2: select the rules to enable or disable
 ##
 
-default-rule-path: /etc/suricata/rules
+default-rule-path: /usr/share/suricata/rules
 rule-files:
  - botcc.rules
  # - botcc.portgrouped.rules
