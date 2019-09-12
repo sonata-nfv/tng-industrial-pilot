@@ -7,6 +7,7 @@ files:
   - eu.5gtango
   testing_tags:
   - industrial-pilot-broker
+  - industrial-pilot-NS1-functional
 - path: Definitions/vnfd/vnfd_cc.yml
   type: application/vnd.5gtango.vnfd
   tags:

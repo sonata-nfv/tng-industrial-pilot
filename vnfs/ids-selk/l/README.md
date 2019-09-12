@@ -19,7 +19,7 @@ $ docker exec -it my-ls bash
 
 Get the official LOGSTASH Docker Image
 
-```$ docker pull elastic/logstash:7.3.0```
+```$ docker pull elastic/logstash:7.3.1```
 
 
 Create a new image to include the new Logstash configuration file

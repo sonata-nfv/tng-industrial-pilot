@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "******* curlqueryprobe: starting entrypoint.sh ******"
 
@@ -12,9 +12,9 @@ echo "ip = $IP"
 echo "port = $PORT"
 echo "query = $QUERY"
 
-echo "******* curlqueryprobe: executing query : ${IP}:${PORT}/api/v1/query?query=${QUERY}*******"
+echo "******* curlqueryprobe: executing query : ${IP}:${PORT}${APIPATH}${QUERY}*******"
 
-echo $(curl ${IP}:${PORT}/api/v1/query?query=${QUERY}) > $RESULTS_FILE
+echo $(curl ${IP}:${PORT}${APIPATH}${QUERY}) > $RESULTS_FILE
 
 cat $RESULTS_FILE
 

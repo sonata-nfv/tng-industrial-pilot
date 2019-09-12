@@ -1,26 +1,32 @@
 ## STEP 1: GET 'FILEBEAT' FROM OFFICIAL IMAGE REPOSITORY
 
-FROM store/elastic/filebeat:7.3.0
+FROM elastic/filebeat:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
-ENV LOGSTASH_HOSTS=http://logstash:5044
-ENV KIBANA_HOSTS=http://kibana:5601
-USER root
+ARG LOGSTASH_HOSTS
+ARG KIBANA_HOST
+ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
+ENV KIBANA_HOST=$KIBANA_HOST
 WORKDIR /usr/share/filebeat
-COPY filebeat.yml ./filebeat.yml
+COPY filebeat.yml .
 COPY start.sh .
-RUN chmod +x start.sh && \
-    chown root:filebeat ./filebeat.yml && \
-    chmod go-w ./filebeat.yml
+USER root
 #VOLUME /var/log/suricata
+VOLUME /usr/share/filebeat/data
+RUN usermod -aG filebeat root && \
+    chmod +x start.sh && \
+    chown root:filebeat filebeat.yml start.sh && \
+    chmod go-w filebeat.yml
+USER filebeat
+WORKDIR /usr/share/filebeat
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
 RUN filebeat modules enable suricata
 ## Loading dashboards (Kibana must be running and reachable)
-   #/usr/share/filebeat/filebeat setup --dashboards && \
-   #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
-   #/usr/share/filebeat/filebeat setup --template
+#    filebeat setup --pipelines
+#    filebeat setup --index-management
+#    filebeat setup --dashboards
 ENTRYPOINT ["start.sh"]
 
 
