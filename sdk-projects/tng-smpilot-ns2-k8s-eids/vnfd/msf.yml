@@ -48,7 +48,8 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: sonatanfv/vnf-ids-suricata:latest
+  #image: sonatanfv/vnf-ids-suricata:latest
+  image: jasonish/suricata
   connection_points: []
   parameters:
     volume_mounts:
