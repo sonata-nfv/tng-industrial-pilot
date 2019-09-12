@@ -1,32 +1,30 @@
-FROM docker.elastic.co/kibana/kibana:6.8.1
+FROM elastic/kibana:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
-USER root
-RUN yum update -y && \
-    yum upgrade -y && \
-#    yum install -y hostnamectl && \
-#    hostnamectl set-hostname kibana --static && \
-#    systemctl restart systemd-hostnamed && \
-#    sysctl -w kernel.hostname=kibana && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum
 
+#ARG EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
+#ENV EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
+#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
-ENV ELASTICSEARCH_HOSTS="http://elasticsearch"
-ENV PATH=$PATH:/usr/share/kibana/bin
 
 USER kibana
-WORKDIR /usr/share/kibana/
-COPY ./kibana.yml ./config/kibana.yml
-COPY ./logging.yml ./config/logging.yml
-VOLUME [/usr/share/kibana/data]
+WORKDIR /usr/share/kibana
+COPY kibana.yml config/kibana.yml
+COPY start.sh .
+USER root
+RUN chmod +x start.sh
+USER kibana
 EXPOSE 5601/tcp
+ENTRYPOINT ["./start.sh"]
 
-ENTRYPOINT ["./bin/../node/bin/node"]
-CMD ["--no-warnings","--max-http-header-size=65536","./bin/../src/cli","--cpu.cgroup.path.override=/","--cpuacct.cgroup.path.override=/","NODE_ENV=production","ELASTIC_CONTAINER=true"]
+#USER root
+#RUN chmod +x ./entrypoint.sh
+#USER kibana
+#ENTRYPOINT ["./entrypoint.sh"]
 
-###
-## $ docker build  -t tng-smp-kibana - < Dockerfile
-## $ docker run --rm --name kibana -d tng-smp-kibana 
+
+### USAGE:
+## $ docker build -t vnf-ids-kibana .
+## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_4_elastic9200=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}" -d vnf-ids-kibana
 ## $ docker exec -it kibana bash
 ###

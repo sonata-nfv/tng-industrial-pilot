@@ -1,0 +1,40 @@
+{
+	"bulk_data" : [
+		{
+			"topic": "WIMMS1/EM63/DATE",
+			"value": 20190715
+		},
+		{
+			"topic": "WIMMS1/EM63/TIME",
+			"value": "10:39:12"
+		},
+		{
+			"topic": "WIMMS1/EM63/@ActSimPara1",
+			"value": 5
+		},
+		{
+			"topic": "WIMMS1/EM63/@ActSimPara2",
+			"value": 1.1023
+		},
+		{
+			"topic": "WIMMS1/EM63/ActCntCyc",
+			"value": 0
+		},
+		{
+			"topic": "WIMMS1/EM63/ActStsMach",
+			"value": "0A000"
+		},
+		{
+			"topic": "WIMMS1/EM63/ActTimCyc",
+			"value": 0
+		},
+		{
+			"topic": "WIMMS1/EM63/SetCntMld",
+			"value": 10
+		},
+		{
+			"topic": "WIMMS1/EM63/SetCntPrt",
+			"value": 10000
+		}
+	]
+}

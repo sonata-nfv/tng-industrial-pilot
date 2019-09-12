@@ -1,27 +1,20 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:6.8.1
+FROM elasticsearch:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
 
-RUN yum update -y && \
-    yum upgrade -y && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum
-    #hostnamectl set-hostname elasticsearch
-
+USER elasticsearch
 ENV ES_JAVA_OPTS="-Xms1g -Xmx1g"
 ENV ES_HEAP_SIZE="2g"
 ENV bootstrap.memory_lock="true"
 ENV discovery.type="single-node"
 ENV PATH=$PATH:/usr/share/elasticsearch/bin
-
-USER elasticsearch
 WORKDIR /usr/share/elasticsearch
 COPY elasticsearch.yml ./config/
-COPY logging.yml ./config/
+#COPY logging.yml ./config/
 VOLUME [/usr/share/elasticsearch/data]
 EXPOSE 9200/tcp 9300/tcp
 
-##
-## $ docker build  -t tng-smp-elasticsearch - < Dockerfile
-## $ docker run --rm --name elasticsearch -d tng-smp-elasticsearch:6.8.1
+## USAGE: 
+## $ docker build -t vnf-ids-elasticsearch .
+## $ docker run --rm --name elasticsearch -d vnf-ids-elasticsearch
 ## $ docker exec -it elasticsearch bash
-##
+###

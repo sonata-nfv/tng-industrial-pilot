@@ -28,7 +28,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.1'
+version: '0.4'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 
@@ -50,10 +50,21 @@ cloudnative_deployment_units:
 - id: cdu02
   image: sonatanfv/vnf-ids-suricata:latest
   connection_points: []
+  parameters:
+    volume_mounts:
+    - id: logs
+      location: '/var/log/suricata'
 - id: cdu03
   image: sonatanfv/vnf-ids-filebeat:latest
   connection_points: []
-    
+  parameters:
+    env:
+      lh_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lh_vnf2_eu_5gtango_0_4_logstash5044_port: 5044
+    volume_mounts:
+    - id: logs
+      location: '/var/log/suricata'
+ 
 # corresponds to the k8s service layer: connection of CNFs to the outside world
 # no need to worry about connections inside the CNF. these go via localhost and don't need to be defined here
 connection_points:
@@ -80,3 +91,12 @@ virtual_links:
   connection_points_reference:
     - smb445
     - cdu01:smb445
+
+# Assign a FSM (for reconfiguration) to the MDC CNF
+function_specific_managers:
+ - id: "sonfsmindustry-pilotmdc-vnfcss1"
+   description: "FSM to reconfigure the MDC"
+   image: "sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest"
+   options:
+     - key: "type"
+       value: "configure"

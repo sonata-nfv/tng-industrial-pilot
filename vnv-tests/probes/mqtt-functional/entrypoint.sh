@@ -12,17 +12,15 @@ echo "ip = $IP"
 echo "port = $PORT"
 
 echo "******* mqttprobe: executing benchmark *******"
-delim=' '
-input="/mqtt-functional-probe/input.txt"
-while IFS= read -r line
-do
-  echo "$line"
-  read -a strarr <<< "$line"
-  echo "topic: ${strarr[0]}"
-  echo "value: ${strarr[1]}"
-  mqtt-bench publish --host $IP --port $PORT --topic ${strarr[0]}  --message ${strarr[1]} --username 'hub-iot' --password 'hub-iot'>> $RESULTS_FILE
-done < "$input"
 
-
+for k in $(jq -r '.[] | [ .topic, .value|tostring ] | join(";")' <<< "$BULK_DATA"); do
+	echo $k
+	array= ${k//;/ }
+	topic="$(echo $k | cut -d';' -f1)"
+	value="$(echo $k | cut -d';' -f2)"
+	echo "topic: $topic"
+	echo "value: $value"
+	mqtt-bench publish --host $IP --port $PORT --topic $topic  --message $value --username 'hub-iot' --password 'hub-iot'>> $RESULTS_FILE
+done
 
 echo "output redirect to: $RESULTS_FILE"

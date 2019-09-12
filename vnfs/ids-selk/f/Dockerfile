@@ -1,34 +1,38 @@
-## STEP 1: GET FILEBEAT FROM OFFICIAL IMAGE REPOSITORY
+## STEP 1: GET 'FILEBEAT' FROM OFFICIAL IMAGE REPOSITORY
 
-FROM elastic/filebeat:6.8.1
+FROM elastic/filebeat:7.3.1
 MAINTAINER "smpilot@5gtango.eu"
-USER root
-RUN yum update -y && \
-    yum upgrade -y && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum
-    #hostnamectl set-hostname filebeat
 
-## STEP 2: CONFIGURE FILEBEAT TO USE LOGSTASH
+## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
+ARG LOGSTASH_HOSTS
+ARG KIBANA_HOST
+ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
+ENV KIBANA_HOST=$KIBANA_HOST
+WORKDIR /usr/share/filebeat
+COPY filebeat.yml .
+COPY start.sh .
+USER root
+#VOLUME /var/log/suricata
+VOLUME /usr/share/filebeat/data
+RUN usermod -aG filebeat root && \
+    chmod +x start.sh && \
+    chown root:filebeat filebeat.yml start.sh && \
+    chmod go-w filebeat.yml
 USER filebeat
 WORKDIR /usr/share/filebeat
-COPY filebeat.yml ./
-COPY logging.yml ./
-VOLUME /var/log/suricata
 
-## STEP 2: CONFIGURE FILEBEAT TO ENABLE suricata MODULE AND kibana DASHBOARDS
-RUN /usr/share/filebeat/filebeat modules enable suricata
+## STEP 2: CONFIGURE 'FILEBEAT' TO ENABLE 'SURICATA' MODULE AND 'KIBANA' DASHBOARDS
+RUN filebeat modules enable suricata
 ## Loading dashboards (Kibana must be running and reachable)
-   #/usr/share/filebeat/filebeat setup --dashboards && \
-   #/usr/share/filebeat/filebeat setup --pipelines --modules suricata && \
-   #/usr/share/filebeat/filebeat setup --template
+#    filebeat setup --pipelines
+#    filebeat setup --index-management
+#    filebeat setup --dashboards
+ENTRYPOINT ["start.sh"]
 
-# START filebeat LOG SHIPPER
-#ENTRYPOINT ["/usr/share/filebeat/filebeat"]
-#CMD ["-e", "-c","/etc/filebeat/filebeat.yml", "-E","output.elasticsearch.enabled=false","-E","output.logstash.enabled=true","-E","o utput.logstash.hosts=['logstash:5044']"]
 
-##
-## $ docker build  -t tng-smp-filebeat - < Dockerfile
-## $ docker run --rm --name filebeat -d tng-smp-filebeat
-## $ docker exec --rm  -it filebeat bash
-##
+### USAGE:
+## $ docker build -t vnf-ids-filebeat .
+## $ docker run --rm --name filebeat -v /var/log/suricata/:/usr/share/logstash/logs -d vnf-ids-filebeat
+## $ docker run --rm --name my-fb -v /var/log/suricata/:/usr/share/logstash/logs -e "LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}:5044" -e "KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_4_kibana5601_ip}:5601" -d vnf-ids-filebeat
+## $ docker exec --rm -it filebeat bash
+###

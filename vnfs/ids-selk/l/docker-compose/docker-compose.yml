@@ -1,7 +1,7 @@
 version: '2'
 services:
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.7.1
+    image: docker.elastic.co/logstash/logstash:7.3.1
     container_name: logstash
     environment:
       - http.host = "0.0.0.0"
