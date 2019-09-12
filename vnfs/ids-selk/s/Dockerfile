@@ -15,9 +15,8 @@ WORKDIR /usr/share/suricata
 
 COPY suricata.yaml .
 
-#ENTRYPOINT /usr/sbin/suricata -c suricata.yaml -S rules/*.rules -i eth0
 ENTRYPOINT ["/usr/sbin/suricata"] 
-CMD ["-c","suricata.yaml","-S","/usr/share/suricata/rules/*.rules","-i","eth0"]
+CMD ["-c","suricata.yaml","-S","rules/*.rules","-i","eth0"]
 
 ## USAGE
 ## $ docker build -t sonatanfv/vnf-ids-suricata .

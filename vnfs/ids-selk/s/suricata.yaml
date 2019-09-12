@@ -227,7 +227,7 @@ outputs:
         #    alerts: yes      # log alerts that caused drops
         #    flows: all       # start or all: 'start' logs only a single drop
         #                     # per flow direction. All logs each dropped pkt.
-        #- smtp:
+        - smtp:
             #extended: yes # enable this for extended logging information
             # this includes: bcc, message-id, subject, x_mailer, user-agent
             # custom fields logging from the list:
@@ -241,7 +241,8 @@ outputs:
             #md5: [body, subject]
 
         #- dnp3
-        #- nfs
+        - nfs
+        - smb
         - ssh
         #- stats:
         #    totals: yes       # stats for all threads merged together
