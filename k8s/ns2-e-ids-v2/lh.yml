@@ -20,6 +20,10 @@ data:
       mutate {
         add_field => { "[@metadata][source]" => "${SMB_CLIENT_NAME}" }
         add_field => { "[@metadata][user]" => "${SMB_USER_NAME}" }
+        add_field => { "[@metadata][elastichost]" => "${ELASTICSEARCH_HOSTS}" }
+        }
+      grok {
+        match => { "%{[@metadata][elastichost]}" => "%{WORD:prot}://%{IP:host}:%{NUMBER:port}" }
         }
       json {
         source => "message"
@@ -78,7 +82,7 @@ data:
       }
     output {
       elasticsearch {
-        hosts => ["elasticsearch:9200"]
+        hosts => ["%{host}:%{port}"]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
         manage_template => false
         document_type => "%{[@metadata][type]}"
@@ -135,6 +139,8 @@ spec:
           value: "K8PRDCTRL1"
         - name: SMB_USER_NAME
           value: "stefan"
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://192.168.1.173:9200"
         - name: xpack.monitoring.enable
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts
