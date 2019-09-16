@@ -20,7 +20,7 @@ services:
 
   logstash:
     # a tool for managing events and logs:  https://www.elastic.co/guide/en/logstash/current/docker-config.html
-    image: docker.elastic.co/logstash/logstash:7.3.1
+    image: docker.elastic.co/logstash/logstash:7.3.2
     container_name: logstash
     network_mode: host
 #    networks:
@@ -35,7 +35,7 @@ services:
 
   elasticsearch:
     # https://www.elastic.co/guide/en/elasticsearch/reference/6.4/docker.html
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
     container_name: elasticsearch
     network_mode: host
 #    networks:
@@ -58,7 +58,7 @@ services:
       - esdata:/usr/share/elasticsearch/data
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.3.1
+    image: docker.elastic.co/kibana/kibana:7.3.2
     container_name: kibana
     network_mode: host
 #    networks:

@@ -1,7 +1,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: lh-vnf2
-version: '0.4'
+version: '0.5'
 author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Logstash image from Elastic and Flask lightweight HTTP server'
 
@@ -13,8 +13,8 @@ cloudnative_deployment_units:
     port: 5044
   parameters:
     env:
-      e_vnf3_eu_5gtango_0_4_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
-      e_vnf3_eu_5gtango_0_4_elastic9200_port: 9200
+      e_vnf3_eu_5gtango_0_5_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
+      e_vnf3_eu_5gtango_0_5_elastic9200_port: 9200
     volume_mounts:
     - id: logs
       location: '/usr/share/logstash/logs'

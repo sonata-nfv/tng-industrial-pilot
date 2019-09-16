@@ -28,7 +28,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.4'
+version: '0.5'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 
@@ -48,7 +48,8 @@ cloudnative_deployment_units:
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
 - id: cdu02
-  image: sonatanfv/vnf-ids-suricata:latest
+  #image: sonatanfv/vnf-ids-suricata:latest
+  image: jasonish/suricata
   connection_points: []
   parameters:
     volume_mounts:
@@ -59,8 +60,8 @@ cloudnative_deployment_units:
   connection_points: []
   parameters:
     env:
-      lh_vnf2_eu_5gtango_0_4_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
-      lh_vnf2_eu_5gtango_0_4_logstash5044_port: 5044
+      lh_vnf2_eu_5gtango_0_5_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lh_vnf2_eu_5gtango_0_5_logstash5044_port: 5044
     volume_mounts:
     - id: logs
       location: '/var/log/suricata'

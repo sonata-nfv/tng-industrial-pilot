@@ -1,13 +1,12 @@
 FROM ubuntu:latest
 MAINTAINER Miguel Mesquita "mesquita@alticelabs.com"
 RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev build-essential
+    apt-get install -y python3 python3-pip python3-dev build-essential
 ENV container_name=logstash
 COPY . /app
 WORKDIR /app
-RUN pip install -r requirements.txt
-#VOLUME /usr/share/logstash/logs
-ENTRYPOINT ["python"]
+RUN pip3 install -r requirements.txt
+ENTRYPOINT ["python3"]
 CMD ["httptangosrv.py"]
 
 ##

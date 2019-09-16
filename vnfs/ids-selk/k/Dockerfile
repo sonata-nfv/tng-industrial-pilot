@@ -1,9 +1,9 @@
-FROM elastic/kibana:7.3.1
+FROM elastic/kibana:7.3.2
 MAINTAINER "smpilot@5gtango.eu"
 
-#ARG EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
-#ENV EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
-#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
+#ARG EU_5GTANGO_E_VNF3_0_5_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
+#ENV EU_5GTANGO_E_VNF3_0_5_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_5_2A7D7B13_PORT_9200_TCP_ADDR
+#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_5_2A7D7B13_PORT_9200_TCP_ADDR
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 
@@ -25,6 +25,6 @@ ENTRYPOINT ["./start.sh"]
 
 ### USAGE:
 ## $ docker build -t vnf-ids-kibana .
-## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_4_elastic9200=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}" -d vnf-ids-kibana
+## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_5_elastic9200=${e_vnf3_eu_5gtango_0_5_elastic9200_ip}" -d vnf-ids-kibana
 ## $ docker exec -it kibana bash
 ###
