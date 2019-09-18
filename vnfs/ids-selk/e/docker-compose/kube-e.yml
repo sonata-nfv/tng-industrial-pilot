@@ -47,7 +47,7 @@ items:
             value: "true"
           - name: cluster.name
             value: docker-cluster
-          image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.3.2
           name: elasticsearch
           ports:
           - containerPort: 9200
