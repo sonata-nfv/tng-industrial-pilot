@@ -1,4 +1,4 @@
-FROM python:3.7.2-slim
+FROM alpine
 
 LABEL maintainer="Aureliano Sinatra <sinaure@gmail.com>"
 
@@ -7,9 +7,7 @@ RUN mkdir -p $INSTALL_PATH
 
 WORKDIR $INSTALL_PATH
 
-RUN apt update
-RUN apt install -y  curl
-RUN apt install -y jq 
+RUN apk add --no-cache curl jq
 
 ENV PROBE "prometheus-query"
 ADD entrypoint.sh $INSTALL_PATH

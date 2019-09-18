@@ -7,6 +7,9 @@ This probe executes a stress test against a broker IP:PORT. It generates a resul
 |---|---|
 |IP| Yes|
 |PORT| Yes|
+|BULK_DATA| Yes|
 ## Local execution example
 	make build
-	make run ip=192.168.99.100 port=1883
+	make run 
+
+	

@@ -231,6 +231,7 @@ class MdcFsm(smbase):
 
 
 def main():
+    LOG.info("MDC FSM: main()")
     MdcFsm()
 
 

@@ -1,0 +1,118 @@
+---
+author: "Aureliano Sinatra (EGM)"
+description: "Functional test for NS1"
+descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/test-descriptor/testdescriptor-schema.yml
+name: "test-industrial-pilot-ns1"
+vendor: "eu.5gtango.egm"
+version: '0.1'
+
+service_platforms:
+  - "SONATA"
+test_category:
+  - "functional"
+
+
+phases:
+  - id: setup
+    steps:
+    - action: deploy
+      description: "Deploying a NS"
+      name: deployment
+    - action: configure
+      description: "Configuration"
+      name: configuration
+      probes:
+      - id: mqttfuncprobe
+        description: "A service initial configuration container"
+        image: "easyglobalmarket/mqtt-functional-probe:latest"
+        name: mqttfuncprobe
+        parameters:
+        - key: IP
+          value: '$(smpilot-cc/endpoints/id:floating_ip/address)'
+        - key: PORT
+          value: '$(smpilot-cc/endpoints/id:floating_ip/ports/id:mqtt/port)'
+        - key: BULK_DATA
+          value: '[
+		      {
+			      "topic": "WIMMS1/EM63/DATE",
+			      "value": 20190715
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/TIME",
+			      "value": "10:39:12"
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/@ActSimPara1",
+			      "value": 5
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/@ActSimPara2",
+			      "value": 1.1023
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/ActCntCyc",
+			      "value": 0
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/ActStsMach",
+			      "value": "0A000"
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/ActTimCyc",
+			      "value": 0
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/SetCntMld",
+			      "value": 10
+		      },
+		      {
+			      "topic": "WIMMS1/EM63/SetCntPrt",
+			      "value": 10000
+		      }
+	            ]'
+      - id: curlprobe
+        description: "A service initial configuration container"
+        image: "easyglobalmarket/mqtt-functional-probe:latest"
+        name: curlprobe
+        parameters:
+        - key: IP
+          value: '$(smpilot-cc/endpoints/id:floating_ip/address)'
+        - key: PORT
+          value: '$(smpilot-cc/endpoints/id:floating_ip/ports/id:mqtt/port)'
+        - key: PATH
+          value: '/api/v1/query?query='
+        - key: QUERY
+          value: 'em63_actcntprt'           
+  - id: exercise
+    steps:
+    - command: /bin/sh
+      dependencies: []
+      description: "Starting the mqtt probe"
+      entrypoint: /app/entrypoint.sh
+      index: 1
+      instances: 1
+      name: mqttfuncprobe
+      output:
+      - {results: logs.txt}
+      run: mqttfuncprobe
+    - command: /bin/sh
+      dependencies: []
+      description: "Performing curl"
+      entrypoint: /app/entrypoint.sh
+      index: 1
+      instances: 1
+      name: curlprobe
+      output:
+      - {results: logs.txt}
+      run: curlprobe  
+  - id: verification
+    steps:
+    - step: curlprobe
+      description: "Check obtained results"
+      name: curlprobe
+      conditions:
+          - condition: present
+            file: results.out
+            find: '"status":"success"'
+            name: no-error
+            verdict: pass
