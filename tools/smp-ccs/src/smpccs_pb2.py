@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1f\n\x0f\x46smRegistration\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x19\n\tFsmAction\x12\x0c\n\x04type\x18\x01 \x01(\t2[\n\rSmpFsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12.\n\nControlFsm\x12\x10.FsmRegistration\x1a\n.FsmAction\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1f\n\x0f\x46smRegistration\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x19\n\tFsmAction\x12\x0c\n\x04name\x18\x01 \x01(\t2[\n\rSmpFsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12.\n\nControlFsm\x12\x10.FsmRegistration\x1a\n.FsmAction\"\x00\x30\x01\x62\x06proto3')
 )
 
 
@@ -127,7 +127,7 @@ _FSMACTION = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='type', full_name='FsmAction.type', index=0,
+      name='name', full_name='FsmAction.name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,

@@ -24,7 +24,7 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-
+import sys
 import grpc
 import smpccs_pb2_grpc as pb2_grpc
 import smpccs_pb2 as pb2
@@ -32,12 +32,22 @@ import smpccs_pb2 as pb2
 
 def main():
     print("SMP-CC test client connecting ...")
-    with grpc.insecure_channel("localhost:50051") as channel:
+    with grpc.insecure_channel("localhost:9012") as channel:
         stub = pb2_grpc.SmpFsmControlStub(channel)
         # first test to send a simple PingPong
         ping = pb2.Ping(text="Ping!")
         print("Sending: '{}'".format(ping.text))
         pong = stub.PingPong(ping)
         print("Received: '{}'".format(pong.text))
-        # TODO: second: connect and receive streamed actions
+        # second: connect, register and wait for streamed actions
+        name = "fsm01"  # default name
+        if len(sys.argv) > 1:
+            name = sys.argv[1]
+        fsm_reg = pb2.FsmRegistration(name=name)
+        print("Registering FSM: '{}'".format(fsm_reg.name))
+        actions = stub.ControlFsm(fsm_reg)
+        # receive actions (blocking) from stream
+        for action in actions:
+            print("Received Action({})".format(action.name))
+
     print("SMP-CC test client stopped.")

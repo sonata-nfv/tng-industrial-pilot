@@ -34,10 +34,26 @@ import smpccs_pb2 as pb2
 class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
 
     def PingPong(self, request, context):
+        """
+        Simple request and reply example.
+        """
         print("Received: '{}'".format(request.text))
         reply = pb2.Pong(text="Pong!")
         print("Replying: '{}'".format(reply.text))
         return reply
+
+    def ControlFsm(self, request, context):
+        """
+        Single Request, streaming reply.
+        """
+        print("ControlFsm received: FsmRegistration({})".format(request.name))
+        for i in range(0, 5):
+            action = pb2.FsmAction(name="{}".format(i))
+            print("Sending: Action({}) to '{}'"
+                  .format(action.name, request.name))
+            yield action
+            # add some waiting time to simulate a real setup
+            time.sleep(1.0)
 
 
 def serve():
@@ -45,7 +61,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     pb2_grpc.add_SmpFsmControlServicer_to_server(
         SmpFsmControlServicer(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:9012')
     server.start()
     print("SMP-CC server started: {}".format(server))
     try:

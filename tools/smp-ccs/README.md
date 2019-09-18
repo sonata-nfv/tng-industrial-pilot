@@ -3,15 +3,17 @@
 
 ## Local testing
 
-You need two terminals:
+You need two (or more) terminals:
 
 ```sh
 # Terminal 1: SMP-CC server
 smpccs
 
 # Terminal 2: SMP-CC test client (faking the FSM connecting to the server)
-smpccc
+smpccc fsm01
 
+# Terminal N: Additional SMP-CC test clients to test multi-FSM case
+smpccc fsm02
 ```
 
 ## gRPC: How to and documentation
