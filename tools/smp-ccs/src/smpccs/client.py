@@ -24,6 +24,20 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
+
+import grpc
+import smpccs_pb2_grpc as pb2_grpc
+import smpccs_pb2 as pb2
+
+
 def main():
-    print("SMP-CC test client starting ...")
+    print("SMP-CC test client connecting ...")
+    with grpc.insecure_channel("localhost:50051") as channel:
+        stub = pb2_grpc.SmpFsmControlStub(channel)
+        # first test to send a simple PingPong
+        ping = pb2.Ping(text="Ping!")
+        print("Sending: '{}'".format(ping.text))
+        pong = stub.PingPong(ping)
+        print("Received: '{}'".format(pong.text))
+        # TODO: second: connect and receive streamed actions
     print("SMP-CC test client stopped.")

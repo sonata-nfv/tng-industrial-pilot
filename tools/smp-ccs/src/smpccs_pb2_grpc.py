@@ -14,10 +14,10 @@ class SmpFsmControlStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.HelloWorld = channel.unary_unary(
-        '/SmpFsmControl/HelloWorld',
-        request_serializer=smpccs__pb2.TestMsg.SerializeToString,
-        response_deserializer=smpccs__pb2.TestMsg.FromString,
+    self.PingPong = channel.unary_unary(
+        '/SmpFsmControl/PingPong',
+        request_serializer=smpccs__pb2.Ping.SerializeToString,
+        response_deserializer=smpccs__pb2.Pong.FromString,
         )
     self.ControlFsm = channel.unary_stream(
         '/SmpFsmControl/ControlFsm',
@@ -30,7 +30,7 @@ class SmpFsmControlServicer(object):
   """Definition of the gRPC server
   """
 
-  def HelloWorld(self, request, context):
+  def PingPong(self, request, context):
     """A simple RPC to test things.
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -47,10 +47,10 @@ class SmpFsmControlServicer(object):
 
 def add_SmpFsmControlServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'HelloWorld': grpc.unary_unary_rpc_method_handler(
-          servicer.HelloWorld,
-          request_deserializer=smpccs__pb2.TestMsg.FromString,
-          response_serializer=smpccs__pb2.TestMsg.SerializeToString,
+      'PingPong': grpc.unary_unary_rpc_method_handler(
+          servicer.PingPong,
+          request_deserializer=smpccs__pb2.Ping.FromString,
+          response_serializer=smpccs__pb2.Pong.SerializeToString,
       ),
       'ControlFsm': grpc.unary_stream_rpc_method_handler(
           servicer.ControlFsm,

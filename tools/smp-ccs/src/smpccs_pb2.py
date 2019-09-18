@@ -20,21 +20,21 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csmpccs.proto\"\x16\n\x07TestMsg\x12\x0b\n\x03msg\x18\x01 \x01(\t\"\x1f\n\x0f\x46smRegistration\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x19\n\tFsmAction\x12\x0c\n\x04type\x18\x01 \x01(\t2c\n\rSmpFsmControl\x12\"\n\nHelloWorld\x12\x08.TestMsg\x1a\x08.TestMsg\"\x00\x12.\n\nControlFsm\x12\x10.FsmRegistration\x1a\n.FsmAction\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1f\n\x0f\x46smRegistration\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x19\n\tFsmAction\x12\x0c\n\x04type\x18\x01 \x01(\t2[\n\rSmpFsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12.\n\nControlFsm\x12\x10.FsmRegistration\x1a\n.FsmAction\"\x00\x30\x01\x62\x06proto3')
 )
 
 
 
 
-_TESTMSG = _descriptor.Descriptor(
-  name='TestMsg',
-  full_name='TestMsg',
+_PING = _descriptor.Descriptor(
+  name='Ping',
+  full_name='Ping',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='msg', full_name='TestMsg.msg', index=0,
+      name='text', full_name='Ping.text', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -53,7 +53,38 @@ _TESTMSG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=16,
-  serialized_end=38,
+  serialized_end=36,
+)
+
+
+_PONG = _descriptor.Descriptor(
+  name='Pong',
+  full_name='Pong',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='text', full_name='Pong.text', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=38,
+  serialized_end=58,
 )
 
 
@@ -83,8 +114,8 @@ _FSMREGISTRATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=40,
-  serialized_end=71,
+  serialized_start=60,
+  serialized_end=91,
 )
 
 
@@ -114,21 +145,29 @@ _FSMACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=73,
-  serialized_end=98,
+  serialized_start=93,
+  serialized_end=118,
 )
 
-DESCRIPTOR.message_types_by_name['TestMsg'] = _TESTMSG
+DESCRIPTOR.message_types_by_name['Ping'] = _PING
+DESCRIPTOR.message_types_by_name['Pong'] = _PONG
 DESCRIPTOR.message_types_by_name['FsmRegistration'] = _FSMREGISTRATION
 DESCRIPTOR.message_types_by_name['FsmAction'] = _FSMACTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-TestMsg = _reflection.GeneratedProtocolMessageType('TestMsg', (_message.Message,), {
-  'DESCRIPTOR' : _TESTMSG,
+Ping = _reflection.GeneratedProtocolMessageType('Ping', (_message.Message,), {
+  'DESCRIPTOR' : _PING,
   '__module__' : 'smpccs_pb2'
-  # @@protoc_insertion_point(class_scope:TestMsg)
+  # @@protoc_insertion_point(class_scope:Ping)
   })
-_sym_db.RegisterMessage(TestMsg)
+_sym_db.RegisterMessage(Ping)
+
+Pong = _reflection.GeneratedProtocolMessageType('Pong', (_message.Message,), {
+  'DESCRIPTOR' : _PONG,
+  '__module__' : 'smpccs_pb2'
+  # @@protoc_insertion_point(class_scope:Pong)
+  })
+_sym_db.RegisterMessage(Pong)
 
 FsmRegistration = _reflection.GeneratedProtocolMessageType('FsmRegistration', (_message.Message,), {
   'DESCRIPTOR' : _FSMREGISTRATION,
@@ -152,16 +191,16 @@ _SMPFSMCONTROL = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=100,
-  serialized_end=199,
+  serialized_start=120,
+  serialized_end=211,
   methods=[
   _descriptor.MethodDescriptor(
-    name='HelloWorld',
-    full_name='SmpFsmControl.HelloWorld',
+    name='PingPong',
+    full_name='SmpFsmControl.PingPong',
     index=0,
     containing_service=None,
-    input_type=_TESTMSG,
-    output_type=_TESTMSG,
+    input_type=_PING,
+    output_type=_PONG,
     serialized_options=None,
   ),
   _descriptor.MethodDescriptor(

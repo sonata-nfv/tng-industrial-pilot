@@ -23,14 +23,39 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-import smpccs_pb2_grpc
+from concurrent import futures
+import time
+import grpc
+import smpccs_pb2_grpc as pb2_grpc
+import smpccs_pb2 as pb2
 
 
 # implements the RPC methods of SmpFsmControl
-class SmpFsmControlServicer(smpccs_pb2_grpc.SmpFsmControlServicer):
-    pass
+class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
+
+    def PingPong(self, request, context):
+        print("Received: '{}'".format(request.text))
+        reply = pb2.Pong(text="Pong!")
+        print("Replying: '{}'".format(reply.text))
+        return reply
+
+
+def serve():
+    print("SMP-CC server starting ...")
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    pb2_grpc.add_SmpFsmControlServicer_to_server(
+        SmpFsmControlServicer(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    print("SMP-CC server started: {}".format(server))
+    try:
+        while True:
+            time.sleep(10)
+    except KeyboardInterrupt:
+        print("SMP-CC server stopping ...")
+        server.stop(0)
+    print("SMP-CC server stopped.")
 
 
 def main():
-    print("SMP-CC server starting ...")
-    print("SMP-CC server stopped.")
+    serve()

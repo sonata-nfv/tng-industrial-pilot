@@ -3,7 +3,14 @@
 
 ## Local testing
 
-```
+You need two terminals:
+
+```sh
+# Terminal 1: SMP-CC server
+smpccs
+
+# Terminal 2: SMP-CC test client (faking the FSM connecting to the server)
+smpccc
 
 ```
 

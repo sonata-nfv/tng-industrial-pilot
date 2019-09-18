@@ -29,15 +29,19 @@ syntax = "proto3";
 // Definition of the gRPC server
 service SmpFsmControl {
     // A simple RPC to test things.
-    rpc HelloWorld(TestMsg) returns (TestMsg) {}
+    rpc PingPong(Ping) returns (Pong) {}
   
     // A server-to-client streaming RPC.
     rpc ControlFsm(FsmRegistration) returns (stream FsmAction) {}
 }
 
 
-message TestMsg {
-    string msg = 1;
+message Ping {
+    string text = 1;
+}
+
+message Pong {
+    string text = 1;
 }
 
 message FsmRegistration {
