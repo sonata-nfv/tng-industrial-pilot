@@ -23,3 +23,14 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
+import smpccs_pb2_grpc
+
+
+# implements the RPC methods of SmpFsmControl
+class SmpFsmControlServicer(smpccs_pb2_grpc.SmpFsmControlServicer):
+    pass
+
+
+def main():
+    print("SMP-CC server starting ...")
+    print("SMP-CC server stopped.")

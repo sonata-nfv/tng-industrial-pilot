@@ -18,12 +18,6 @@
 # products derived from this software without specific prior written
 # permission.
 #
-# This work has been performed in the framework of the SONATA project,
-# funded by the European Commission under Grant number 671517 through
-# the Horizon 2020 and 5G-PPP programmes. The authors would like to
-# acknowledge the contributions of their colleagues of the SONATA
-# partner consortium (www.sonata-nfv.eu).
-#
 # This work has also been performed in the framework of the 5GTANGO project,
 # funded by the European Commission under Grant number 761493 through
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
@@ -43,11 +37,12 @@ setup(name='smpccs',
       packages=find_packages('src'),  # dependency resolution
       #namespace_packages=['tngsdk', ],
       include_package_data=True,       # package data specified in MANIFEST.in
-      install_requires=["pytest"],
+      install_requires=["grpcio-tools"],
       zip_safe=False,
       entry_points={
           'console_scripts': [
-              'smpccs=smpccs:main',
+              'smpccs=smpccs.server:main',
+              'smpccc=smpccs.client:main',
           ],
       },
       setup_requires=[],
