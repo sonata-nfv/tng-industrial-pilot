@@ -46,8 +46,13 @@ message Pong {
 
 message FsmRegistration {
     string name = 1;
+    string si_uuid = 2;
 }
 
 message FsmAction {
     string name = 1;
+    string target_si_uuid = 2;  // uuid of the service instance the action should match to
+    string type = 3;  // e.g. "SET_QUARANTAINE_STATE"
+    string value = 4;  // e.g. 0 or 1
+    uint32 time_created = 5; // unix timestamp
 }
