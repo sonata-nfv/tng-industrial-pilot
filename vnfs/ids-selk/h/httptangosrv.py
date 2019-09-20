@@ -49,11 +49,14 @@ def stats():
     alarmedIPs = {}
     alarmedIPs["resource_id"] = os.getenv("HOSTNAME")
     ipcount = 0
-    for ev in events:
-        print("ip = ", int(ipaddress.ip_address(str(ev['dest_ip']))))
-        if(int(ipaddress.ip_address(str(ev['dest_ip']))) not in alarmedIPs.values()):
-            alarmedIPs["ip" + str(ipcount)] = str(int(ipaddress.ip_address(ev['dest_ip'])))
-            ++ipcount
+    if len(events) == 0:
+        alarmedIPs["ip0"] = "0"
+    else:
+        for ev in events:
+            print("ip = ", int(ipaddress.ip_address(str(ev['dest_ip']))))
+            if(int(ipaddress.ip_address(str(ev['dest_ip']))) not in alarmedIPs.values()):
+                alarmedIPs["ip" + str(ipcount)] = str(int(ipaddress.ip_address(ev['dest_ip'])))
+                ++ipcount
 
     lastInvocationTime = mytime
     return json.dumps(alarmedIPs)
