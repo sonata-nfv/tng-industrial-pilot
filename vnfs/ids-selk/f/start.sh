@@ -10,4 +10,4 @@ export KIP=`env | grep 5gtango_$VERSION | grep 5601_ip | cut -d "=" -f 2`
 export KIBANA_HOST=$KIP:5601
 echo $KIBANA_HOST
 
-#filebeat -e
+filebeat -e
