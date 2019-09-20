@@ -15,6 +15,7 @@ cloudnative_deployment_units:
     env:
       e_vnf3_eu_5gtango_0_6_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
       e_vnf3_eu_5gtango_0_6_elastic9200_port: 9200
+      VERSION: "0.6"
     volume_mounts:
     - id: logs
       location: '/usr/share/logstash/logs'
