@@ -16,8 +16,7 @@ USER root
 RUN chmod +x start.sh
 USER kibana
 EXPOSE 5601/tcp
-ENTRYPOINT ["./start.sh"]
-CMD [VERSION]
+ENTRYPOINT ./start.sh $VERSION
 
 #USER root
 #RUN chmod +x ./entrypoint.sh

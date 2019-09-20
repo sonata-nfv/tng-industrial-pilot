@@ -28,8 +28,7 @@ RUN filebeat modules enable suricata
 #    filebeat setup --pipelines
 #    filebeat setup --index-management
 #    filebeat setup --dashboards
-ENTRYPOINT ["./start.sh"]
-CMD [VERSION]
+ENTRYPOINT ./start.sh $VERSION
 
 ### USAGE:
 ## $ docker build -t vnf-ids-filebeat .

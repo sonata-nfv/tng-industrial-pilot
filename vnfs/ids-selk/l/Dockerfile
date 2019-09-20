@@ -12,7 +12,7 @@ ARG ELASTICSEARCH_HOSTS
 
 ENV SMB_CLIENT_NAME=$SMB_CLIENT_NAME
 ENV SMB_USER_NAME=$SMB_USER_NAME
-ARG ELASTICSEARCH_HOSTS=$ELASTICSEARCH_HOSTS
+ENV ELASTICSEARCH_HOSTS=$ELASTICSEARCH_HOSTS
 
 USER logstash
 WORKDIR /usr/share/logstash
@@ -25,8 +25,7 @@ VOLUME /usr/share/logstash/logs
 #VOLUME /usr/share/logstash/data
 USER logstash
 EXPOSE 5044/tcp 9600/tcp
-ENTRYPOINT ["./start.sh"]
-CMD [VERSION]
+ENTRYPOINT ./start.sh $VERSION
 
 ### USAGE: 
 # $ docker build -t vnf-ids-logstash .

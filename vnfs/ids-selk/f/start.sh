@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=`echo $1 | tr '.' '_'`; echo $VERSION
+export VERSION=`echo $1 | tr '.' '_'`; echo $VERSION
 
 export LIP=`env | grep 5gtango_$VERSION | grep 5044_ip | cut -d "=" -f 2`
 export LOGSTASH_HOSTS=$LIP:5044
