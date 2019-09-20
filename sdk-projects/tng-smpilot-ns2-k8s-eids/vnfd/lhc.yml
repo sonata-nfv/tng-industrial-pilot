@@ -27,7 +27,7 @@ cloudnative_deployment_units:
     volume_mounts:
     - id: logs
       location: '/var/log/logstash'
-- id: cdu02
+- id: cdu03
   image: pkarkazis/tng-stats-collector:latest
   parameters:
     env:
