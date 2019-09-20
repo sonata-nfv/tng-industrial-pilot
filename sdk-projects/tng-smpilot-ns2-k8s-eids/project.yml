@@ -15,7 +15,7 @@ files:
   type: application/vnd.5gtango.vnfd
   tags:
   - eu.5gtango
-- path: vnfd/lh.yml
+- path: vnfd/lhc.yml
   type: application/vnd.5gtango.vnfd
   tags:
   - eu.5gtango
