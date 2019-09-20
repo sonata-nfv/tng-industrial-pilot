@@ -59,8 +59,8 @@ cloudnative_deployment_units:
   connection_points: []
   parameters:
     env:
-      lh_vnf2_eu_5gtango_0_6_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
-      lh_vnf2_eu_5gtango_0_6_logstash5044_port: 5044
+      lhc_vnf2_eu_5gtango_0_6_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lhc_vnf2_eu_5gtango_0_6_logstash5044_port: 5044
     volume_mounts:
     - id: logs
       location: '/var/log/suricata'
