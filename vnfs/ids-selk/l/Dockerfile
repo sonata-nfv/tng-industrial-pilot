@@ -25,8 +25,7 @@ VOLUME /usr/share/logstash/logs
 #VOLUME /usr/share/logstash/data
 USER logstash
 EXPOSE 5044/tcp 9600/tcp
-ENTRYPOINT ["./start.sh"]
-CMD [VERSION]
+ENTRYPOINT ./start.sh $VERSION
 
 ### USAGE: 
 # $ docker build -t vnf-ids-logstash .
