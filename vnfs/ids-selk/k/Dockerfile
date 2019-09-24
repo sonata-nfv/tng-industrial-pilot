@@ -1,9 +1,10 @@
-FROM elastic/kibana:7.3.1
+FROM elastic/kibana:7.3.2
 MAINTAINER "smpilot@5gtango.eu"
 
-#ARG EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
-#ENV EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
-#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_4_2A7D7B13_PORT_9200_TCP_ADDR
+ARG VERSION=0.7
+#ARG EU_5GTANGO_E_VNF3_0_7_2A7D7B13_PORT_9200_TCP_ADDR=elasticsearch
+#ENV EU_5GTANGO_E_VNF3_0_7_2A7D7B13_PORT_9200_TCP_ADDR=$EU_5GTANGO_E_VNF3_0_7_2A7D7B13_PORT_9200_TCP_ADDR
+#ENV ELASTICSEARCH_HOSTS=$EU_5GTANGO_E_VNF3_0_7_2A7D7B13_PORT_9200_TCP_ADDR
 ENV SERVER_NAME="kibana"
 ENV XPACK_MONITORING_ENABLED="true"
 
@@ -15,7 +16,7 @@ USER root
 RUN chmod +x start.sh
 USER kibana
 EXPOSE 5601/tcp
-ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ./start.sh $VERSION
 
 #USER root
 #RUN chmod +x ./entrypoint.sh
@@ -25,6 +26,6 @@ ENTRYPOINT ["./start.sh"]
 
 ### USAGE:
 ## $ docker build -t vnf-ids-kibana .
-## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_4_elastic9200=${e_vnf3_eu_5gtango_0_4_elastic9200_ip}" -d vnf-ids-kibana
+## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_7_elastic9200=${e_vnf3_eu_5gtango_0_7_elastic9200_ip}" -d vnf-ids-kibana
 ## $ docker exec -it kibana bash
 ###

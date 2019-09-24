@@ -28,7 +28,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: e-vnf3
-version: '0.4'
+version: '0.7'
 author: sm-pilot@5gtango.eu
 description: 'a CNF based on official Elasticsearch image'
 
