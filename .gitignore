@@ -1,3 +1,4 @@
+.vscode
 vnfs/cc-cloudconnector-docker/containers/cdu_processor/CC_VNF/keys.json
 *keys.json
 *.secret
