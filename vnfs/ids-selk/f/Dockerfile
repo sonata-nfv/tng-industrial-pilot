@@ -4,7 +4,6 @@ FROM elastic/filebeat:7.3.2
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'
-ARG VERSION=0.7
 ARG LOGSTASH_HOSTS
 ARG KIBANA_HOST
 ENV LOGSTASH_HOSTS=$LOGSTASH_HOSTS
@@ -28,7 +27,7 @@ RUN filebeat modules enable suricata
 #    filebeat setup --pipelines
 #    filebeat setup --index-management
 #    filebeat setup --dashboards
-ENTRYPOINT ./start.sh $VERSION
+ENTRYPOINT ./start.sh
 
 ### USAGE:
 ## $ docker build -t vnf-ids-filebeat .
