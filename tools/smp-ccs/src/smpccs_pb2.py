@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1f\n\x0f\x46smRegistration\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x19\n\tFsmAction\x12\x0c\n\x04name\x18\x01 \x01(\t2[\n\rSmpFsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12.\n\nControlFsm\x12\x10.FsmRegistration\x1a\n.FsmAction\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x88\x01\n\x08\x46smState\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0ctime_created\x18\x03 \x01(\r\x12\x14\n\x0ctime_updated\x18\x04 \x01(\r\x12\x0e\n\x06status\x18\x05 \x01(\t\x12\x0f\n\x07\x63hanged\x18\x06 \x01(\x08\x12\x13\n\x0bquarantaine\x18\n \x01(\x08\x32S\n\rSmpFsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12&\n\nControlFsm\x12\t.FsmState\x1a\t.FsmState\"\x00\x30\x01\x62\x06proto3')
 )
 
 
@@ -88,17 +88,59 @@ _PONG = _descriptor.Descriptor(
 )
 
 
-_FSMREGISTRATION = _descriptor.Descriptor(
-  name='FsmRegistration',
-  full_name='FsmRegistration',
+_FSMSTATE = _descriptor.Descriptor(
+  name='FsmState',
+  full_name='FsmState',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='FsmRegistration.name', index=0,
+      name='uuid', full_name='FsmState.uuid', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='FsmState.name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='time_created', full_name='FsmState.time_created', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='time_updated', full_name='FsmState.time_updated', index=3,
+      number=4, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='FsmState.status', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='changed', full_name='FsmState.changed', index=5,
+      number=6, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='quarantaine', full_name='FsmState.quarantaine', index=6,
+      number=10, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -114,45 +156,13 @@ _FSMREGISTRATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=60,
-  serialized_end=91,
-)
-
-
-_FSMACTION = _descriptor.Descriptor(
-  name='FsmAction',
-  full_name='FsmAction',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='FsmAction.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=93,
-  serialized_end=118,
+  serialized_start=61,
+  serialized_end=197,
 )
 
 DESCRIPTOR.message_types_by_name['Ping'] = _PING
 DESCRIPTOR.message_types_by_name['Pong'] = _PONG
-DESCRIPTOR.message_types_by_name['FsmRegistration'] = _FSMREGISTRATION
-DESCRIPTOR.message_types_by_name['FsmAction'] = _FSMACTION
+DESCRIPTOR.message_types_by_name['FsmState'] = _FSMSTATE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Ping = _reflection.GeneratedProtocolMessageType('Ping', (_message.Message,), {
@@ -169,19 +179,12 @@ Pong = _reflection.GeneratedProtocolMessageType('Pong', (_message.Message,), {
   })
 _sym_db.RegisterMessage(Pong)
 
-FsmRegistration = _reflection.GeneratedProtocolMessageType('FsmRegistration', (_message.Message,), {
-  'DESCRIPTOR' : _FSMREGISTRATION,
+FsmState = _reflection.GeneratedProtocolMessageType('FsmState', (_message.Message,), {
+  'DESCRIPTOR' : _FSMSTATE,
   '__module__' : 'smpccs_pb2'
-  # @@protoc_insertion_point(class_scope:FsmRegistration)
+  # @@protoc_insertion_point(class_scope:FsmState)
   })
-_sym_db.RegisterMessage(FsmRegistration)
-
-FsmAction = _reflection.GeneratedProtocolMessageType('FsmAction', (_message.Message,), {
-  'DESCRIPTOR' : _FSMACTION,
-  '__module__' : 'smpccs_pb2'
-  # @@protoc_insertion_point(class_scope:FsmAction)
-  })
-_sym_db.RegisterMessage(FsmAction)
+_sym_db.RegisterMessage(FsmState)
 
 
 
@@ -191,8 +194,8 @@ _SMPFSMCONTROL = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=120,
-  serialized_end=211,
+  serialized_start=199,
+  serialized_end=282,
   methods=[
   _descriptor.MethodDescriptor(
     name='PingPong',
@@ -208,8 +211,8 @@ _SMPFSMCONTROL = _descriptor.ServiceDescriptor(
     full_name='SmpFsmControl.ControlFsm',
     index=1,
     containing_service=None,
-    input_type=_FSMREGISTRATION,
-    output_type=_FSMACTION,
+    input_type=_FSMSTATE,
+    output_type=_FSMSTATE,
     serialized_options=None,
   ),
 ])

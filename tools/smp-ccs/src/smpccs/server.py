@@ -30,6 +30,58 @@ import smpccs_pb2_grpc as pb2_grpc
 import smpccs_pb2 as pb2
 
 
+UPDATE_INTERVAL = 1.0  # how often to check for updates?
+
+
+def pprint_state(state, detailed=False):
+    print("FsmState({})".format(state.uuid))
+    if detailed:
+        print("\tname: {}".format(state.uuid))
+        print("\tstatus: {}".format(state.status))
+        print("\tcreated: {}".format(time.ctime(state.time_created)))
+        print("\tupdated: {}".format(time.ctime(state.time_updated)))
+        print("\tchanged: {}".format(state.changed))
+        print("\tquarantaine: {}".format(state.quarantaine))
+
+
+class FsmStateStore(object):
+    """
+    Global state store.
+    Stores mapping from UUID to FsmState objects.
+    """
+    def __init__(self):
+        self._store = dict()
+
+    def register(self, state):
+        """
+        Ads FsmState to store.
+        Attention: Simply overwrites existing states.
+        """
+        # ensure well-formed states:
+        if len(state.name) < 1:
+            # use a fixed default
+            state.name = "default"
+        if len(state.uuid) < 1:
+            # use name as uuid fallback
+            state.uuid = state.name
+        if len(state.status) < 1:
+            state.status = "undefined"
+        # set created and updated timestamps
+        state.time_created = int(time.time())
+        state.time_updated = int(time.time())
+        # TODO locking needed?
+        self._store[state.uuid] = state
+        print("Registered: ", end="")
+        pprint_state(state, True)
+
+    def get(self, uuid):
+        return self._store.get(uuid)
+
+
+# global state store
+FSS = FsmStateStore()      
+
+
 # implements the RPC methods of SmpFsmControl
 class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
 
@@ -42,18 +94,28 @@ class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
         print("Replying: '{}'".format(reply.text))
         return reply
 
-    def ControlFsm(self, request, context):
+    def ControlFsm(self, state, context):
         """
         Single Request, streaming reply.
+        Keeps open a long-term streaming connection to send
+        state updates to the client FSM.
         """
-        print("ControlFsm received: FsmRegistration({})".format(request.name))
-        for i in range(0, 5):
-            action = pb2.FsmAction(name="{}".format(i))
-            print("Sending: Action({}) to '{}'"
-                  .format(action.name, request.name))
-            yield action
-            # add some waiting time to simulate a real setup
-            time.sleep(1.0)
+        # 1. register FsmState
+        FSS.register(state)
+        uuid = state.uuid
+        created = state.time_created
+
+        # 2. keep connection open and stream out state if its updated
+        # loop will stop if FSM registers again!
+        while (FSS.get(uuid) is not None
+               and created == FSS.get(uuid).time_created):
+            if state.changed:
+                yield state  # send out updated state
+                state.changed = False
+            # FIXME this could be done nicer with a lock, but ok for now
+            time.sleep(UPDATE_INTERVAL)
+        print("Stopping control for: ", end="")
+        pprint_state(state)
 
 
 def serve():
