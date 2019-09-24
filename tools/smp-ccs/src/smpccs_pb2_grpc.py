@@ -21,8 +21,8 @@ class SmpFsmControlStub(object):
         )
     self.ControlFsm = channel.unary_stream(
         '/SmpFsmControl/ControlFsm',
-        request_serializer=smpccs__pb2.FsmRegistration.SerializeToString,
-        response_deserializer=smpccs__pb2.FsmAction.FromString,
+        request_serializer=smpccs__pb2.FsmState.SerializeToString,
+        response_deserializer=smpccs__pb2.FsmState.FromString,
         )
 
 
@@ -54,8 +54,8 @@ def add_SmpFsmControlServicer_to_server(servicer, server):
       ),
       'ControlFsm': grpc.unary_stream_rpc_method_handler(
           servicer.ControlFsm,
-          request_deserializer=smpccs__pb2.FsmRegistration.FromString,
-          response_serializer=smpccs__pb2.FsmAction.SerializeToString,
+          request_deserializer=smpccs__pb2.FsmState.FromString,
+          response_serializer=smpccs__pb2.FsmState.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

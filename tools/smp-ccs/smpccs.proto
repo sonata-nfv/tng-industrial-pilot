@@ -32,7 +32,7 @@ service SmpFsmControl {
     rpc PingPong(Ping) returns (Pong) {}
   
     // A server-to-client streaming RPC.
-    rpc ControlFsm(FsmRegistration) returns (stream FsmAction) {}
+    rpc ControlFsm(FsmState) returns (stream FsmState) {}
 }
 
 
@@ -44,15 +44,13 @@ message Pong {
     string text = 1;
 }
 
-message FsmRegistration {
-    string name = 1;
-    string si_uuid = 2;
-}
-
-message FsmAction {
-    string name = 1;
-    string target_si_uuid = 2;  // uuid of the service instance the action should match to
-    string type = 3;  // e.g. "SET_QUARANTAINE_STATE"
-    string value = 4;  // e.g. 0 or 1
-    uint32 time_created = 5; // unix timestamp
+message FsmState {
+    string uuid = 1; // uuid of the service instance; primary key
+    string name = 2;  // fallback primary key
+    uint32 time_created = 3;
+    uint32 time_updated = 4;
+    string status = 5; // running, fail, error etc.
+    bool changed = 6; // internal flag to indicate if update needs to be send out
+    // real state:
+    bool quarantaine = 10; // service is in quarantaine mode yes/no
 }

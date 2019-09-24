@@ -43,11 +43,11 @@ def main():
         name = "fsm01"  # default name
         if len(sys.argv) > 1:
             name = sys.argv[1]
-        fsm_reg = pb2.FsmRegistration(name=name)
-        print("Registering FSM: '{}'".format(fsm_reg.name))
-        actions = stub.ControlFsm(fsm_reg)
+        fsm_state = pb2.FsmState(name=name)
+        print("Registering FSM: FsmState({})".format(fsm_state.name))
+        new_fsm_states = stub.ControlFsm(fsm_state)
         # receive actions (blocking) from stream
-        for action in actions:
-            print("Received Action({})".format(action.name))
+        for state in new_fsm_states:
+            print("Received FsmState({})".format(state.name))
 
     print("SMP-CC test client stopped.")
