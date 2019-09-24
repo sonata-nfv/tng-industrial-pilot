@@ -36,10 +36,7 @@ MAINTAINER SONATA
 # install broker with fix
 RUN apt-get update && apt-get install -y git
 RUN git clone --single-branch --branch feature/reuse_channels https://github.com/eandersson/amqpstorm.git
-RUN git clone https://github.com/paramiko/paramiko.git
 RUN git clone https://github.com/sonata-nfv/tng-cli.git
-WORKDIR /paramiko
-RUN git checkout tags/2.6.0 && python setup.py install
 WORKDIR /amqpstorm
 RUN python setup.py install
 WORKDIR /tng-cli

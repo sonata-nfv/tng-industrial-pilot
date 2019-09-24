@@ -36,10 +36,7 @@ import logging
 import yaml
 import tnglib
 from smbase.smbase import smbase
-try:
-    from ns2 import ssh
-except:
-    import ssh
+
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
