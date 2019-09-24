@@ -1,9 +1,9 @@
 http.host: "0.0.0.0"
 xpack.monitoring.enabled: true
-output.elasticsearch:
-  hosts: ["${ELASTICSEARCH_HOSTS}"]
-  protocol: http
-xpack.monitoring.elasticsearch:
-  hosts: ["${ELASTICSEARCH_HOSTS}"]
-  protocol: http
+#output.elasticsearch:
+#  hosts: ["${ELASTICSEARCH_HOSTS}"]
+#  protocol: http
+#xpack.monitoring.elasticsearch:
+#  hosts: ["${ELASTICSEARCH_HOSTS}"]
+#  protocol: http
 
