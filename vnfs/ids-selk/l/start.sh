@@ -6,6 +6,6 @@ echo $IP
 export ELASTICSEARCH_HOSTS=$IP:9200
 echo $ELASTICSEARCH_HOSTS
 
-sed -i "s/\${ELASTICSEARCH_HOSTS}/$ELASTICSEARCH_HOSTS/g" ./config/logstash.yml
+#sed -i "s/\${ELASTICSEARCH_HOSTS}/$ELASTICSEARCH_HOSTS/g" ./config/logstash.yml
 
 bin/logstash
