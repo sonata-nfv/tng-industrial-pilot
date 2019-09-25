@@ -149,85 +149,24 @@ class MdcFsm(smbase):
     def configure_event(self, content):
         """
         This method handles a configure event. The configure event changes the configuration
-        of the Media Server.
+        of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
         LOG.info("MDC FSM: configuration event triggered")
-        """
-        # Original code from communciation pilot MS FSM as reference:
-        ds_ip = ''
-        ms_ip = ''
-        wac_ip = ''
-
-        for vnfr in content['vnfrs']:
-            if vnfr['virtual_deployment_units'][0]['vdu_reference'][:2] == 'ms':
-                for cp in vnfr['virtual_deployment_units'][0]['vnfc_instance'][0]['connection_points']:
-                    if cp['id'] == 'mgmt':
-                        ms_ip = cp['interface']['address']
-                        break
-
-            if vnfr['virtual_deployment_units'][0]['vdu_reference'][:3] == 'wac':
-                for cp in vnfr['virtual_deployment_units'][0]['vnfc_instance'][0]['connection_points']:
-                    if cp['id'] == 'internal':
-                        wac_ip = cp['interface']['address']
-                        break
-
-            if vnfr['virtual_deployment_units'][0]['vdu_reference'][:2] == 'ds':
-                for cp in vnfr['virtual_deployment_units'][0]['vnfc_instance'][0]['connection_points']:
-                    if cp['id'] == 'internal':
-                        ds_ip = cp['interface']['address']
-                        break
-
-            if vnfr['virtual_deployment_units'][0]['vdu_reference'][:2] == 'bs':
-                for cp in vnfr['virtual_deployment_units'][0]['vnfc_instance'][0]['connection_points']:
-                    if cp['id'] == 'internal':
-                        bs_ip = cp['interface']['address']
-                        break            
-
-        LOG.info('ds ip: ' + ds_ip)
-        LOG.info('ms ip: ' + ms_ip)
-        LOG.info('wac ip: ' + wac_ip)
-        LOG.info('bs ip: ' + bs_ip)
-
-
-        # Initiate SSH connection with the VM
-        ssh_client = ssh.Client(ms_ip, username='ubuntu', logger=LOG,
-                                key_filename='/root/ms/sandbox.pem', retries=40)
-
-        # Enable user ubuntu in tmp folder
-        ssh_client.sendCommand("sudo chown -R ubuntu:ubuntu /tmp/")
- 
-        # copy template file to be modified with sed command
-        ssh_client.sendCommand("sudo cp /opt/janus-wrapper/quobis-janus-config.js.template /opt/janus-wrapper/quobis-janus-config.js")
-        # Change ms conf
-        ssh_client.sendCommand(
-            "sudo sed -i 's/DS_IP/" + ds_ip + "/g' /opt/janus-wrapper/quobis-janus-config.js")
-        ssh_client.sendCommand(
-            "sudo sed -i 's/WAC_IP/" + wac_ip + "/g' /opt/janus-wrapper/quobis-janus-config.js")
-        ssh_client.sendCommand(
-            "sudo sed -i 's/MS_IP/" + ms_ip + "/g' /opt/janus-wrapper/quobis-janus-config.js")
-        ssh_client.sendCommand(
-            "sudo sed -i 's/BS_IP/" + bs_ip + "/g' /opt/janus-wrapper/quobis-janus-config.js")
-
-        # copy template for janusstats and set BS_IP value
-        ssh_client.sendCommand("sudo cp /opt/janusstats/index.js.template /opt/janusstats/index.js")
-        ssh_client.sendCommand(
-            "sudo sed -i 's/BS_IP/" + bs_ip + "/g' /opt/janusstats/index.js")
-
-        # Restart the services
-        ssh_client.sendCommand(
-            "sudo systemctl restart janus.service")
-        ssh_client.sendCommand(
-            "sudo systemctl restart janus-wrapper.service")
-        ssh_client.sendCommand(
-            "sudo systemctl restart janusstats.service")    
-
-
-        if ssh_client.connected:
-            response = {'status': 'COMPLETED', 'error': 'None'}
-        else:
-            response = {'status': 'FAILED', 'error': 'FSM SSH connection failed'}
-        """
-        return {'status': 'completed', 'error': 'None'}
+        
+        new_ns1_mqtt_host = 'XYZ'
+        
+        response = {
+            status: 'completed',
+            envs: [{
+                cdu_id: cdu01,
+                envs: {MQTT_BROKER_HOST: new_ns1_mqtt_host}
+                }],
+            error: 'None'
+            }
+            
+        LOG.info("MDC FSM response: {}".format(response))
+        
+        return response
 
 
 def main():
