@@ -151,15 +151,17 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
-        LOG.info("MDC FSM: configuration event triggered")
+        LOG.info("MDC FSM: configuration event triggered with content:")
+        LOG.info(content)
         
-        new_ns1_mqtt_host = 'XYZ'
+        # get hostname of the quarantine NS1 from the NSR
+        quarantine_ns1_host = 'XYZ'
         
         response = {
             status: 'completed',
             envs: [{
                 cdu_id: cdu01,
-                envs: {MQTT_BROKER_HOST: new_ns1_mqtt_host}
+                envs: {MQTT_BROKER_HOST: quarantine_ns1_host}
                 }],
             error: 'None'
             }
