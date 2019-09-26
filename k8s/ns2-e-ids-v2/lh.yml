@@ -139,6 +139,8 @@ spec:
           value: "K8PRDCTRL1"
         - name: SMB_USER_NAME
           value: "stefan"
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://192.168.1.173:9200"
         - name: xpack.monitoring.enable
           value: "true"
         - name: xpack.monitoring.elasticsearch.hosts

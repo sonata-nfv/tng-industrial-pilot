@@ -36,6 +36,8 @@ cloudnative_deployment_units:
     image: 'sonatanfv/vnf-cc-broker:vimemu'
     connection_points:
       - id: data
+        port: 1883
+        publish: {1883: 1883}
         # port: 5555  # TODO change
   - id: cdu02
     # CDU2: processor

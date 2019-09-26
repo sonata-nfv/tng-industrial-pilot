@@ -5,13 +5,13 @@
 ```
 $ docker pull sonatanfv/vnf-ids-filebeat
 
-$ export lh_vnf2_eu_5gtango_0_4_logstash5044_ip=172.31.0.4
+$ export lh_vnf2_eu_5gtango_0_7_logstash5044_ip=172.31.0.4
 
-$ export k_vnf4_eu_5gtango_0_4_kibana5601_ip=172.17.0.3
+$ export k_vnf4_eu_5gtango_0_7_kibana5601_ip=172.17.0.3
 
 $ docker run --rm --name my-fb \
-  -e "LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_4_logstash5044_ip}:5044" \
-  -e "KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_4_kibana5601_ip}:5601" \
+  -e "LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_7_logstash5044_ip}:5044" \
+  -e "KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_7_kibana5601_ip}:5601" \
   -v /var/log/suricata:/usr/share/filebeat/logs \
   -d sonatanfv/vnf-ids-filebeat
 
@@ -23,13 +23,13 @@ $ docker exec -it my-fb bash
 
 Get FILEBEAT official image
 
-```docker pull docker.elastic.co/beats/filebeat:7.3.1```
+```docker pull docker.elastic.co/beats/filebeat:7.3.2```
 
 Run FILEBEAT
 
 * Default configuration: Load Templates for Elasticsearch and Load Dashboards for Kibana
 
-```$ docker run docker.elastic.co/beats/filebeat:7.3.1 setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts="elasticsearch:9200"```
+```$ docker run docker.elastic.co/beats/filebeat:7.3.2 setup -E setup.kibana.host=kibana:5601 -E output.elasticsearch.hosts="elasticsearch:9200"```
 
 * Startup configuration for SELK NS
 
