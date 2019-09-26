@@ -10,6 +10,12 @@ cd $BASE_DIR
 
 # FSMs
 cd fsms/
-# trigger VNF build script
+# trigger FSM build script
+./build.sh
+cd $BASE_DIR
+
+# FSMs
+cd ssms/
+# trigger SSM build script
 ./build.sh
 cd $BASE_DIR
