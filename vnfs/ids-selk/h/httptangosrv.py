@@ -20,7 +20,7 @@ def stats():
     files = glob.glob("/var/log/logstash/*.json")
     files.sort()
     if files.count == 0:
-        response["resource_id"] = os.getenv("HOSTNAME")
+        response["resource_id"] = os.getenv("container_name")
         return json.dumps(response)
 
     name = "event-" + mytime
