@@ -21,6 +21,7 @@ def stats():
     files.sort()
     if files.count == 0:
         response["resource_id"] = os.getenv("container_name")
+        alarmedIPs["ip0"] = "0"
         return json.dumps(response)
 
     name = "event-" + mytime
@@ -47,7 +48,7 @@ def stats():
             evFile.close()
 
     alarmedIPs = {}
-    alarmedIPs["resource_id"] = os.getenv("HOSTNAME")
+    alarmedIPs["resource_id"] = os.getenv("container_name")
     ipcount = 0
     if len(events) == 0:
         alarmedIPs["ip0"] = "0"
