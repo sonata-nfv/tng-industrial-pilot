@@ -33,21 +33,21 @@ import smpccs_pb2 as pb2
 def main():
     print("SMP-CC test client connecting ...")
     with grpc.insecure_channel("localhost:9012") as channel:
-        stub = pb2_grpc.SmpFsmControlStub(channel)
+        stub = pb2_grpc.SmpSsmControlStub(channel)
         # first test to send a simple PingPong
         ping = pb2.Ping(text="Ping!")
         print("Sending: '{}'".format(ping.text))
         pong = stub.PingPong(ping)
         print("Received: '{}'".format(pong.text))
         # second: connect, register and wait for streamed actions
-        name = "fsm01"  # default name
+        name = "ssm01"  # default name
         if len(sys.argv) > 1:
             name = sys.argv[1]
-        fsm_state = pb2.FsmState(name=name)
-        print("Registering FSM: FsmState({})".format(fsm_state.name))
-        new_fsm_states = stub.ControlFsm(fsm_state)
+        fsm_state = pb2.SsmState(name=name)
+        print("Registering FSM: SsmState({})".format(fsm_state.name))
+        new_fsm_states = stub.ControlSsm(fsm_state)
         # receive actions (blocking) from stream
         for state in new_fsm_states:
-            print("Received FsmState({})".format(state.name))
+            print("Received SsmState({})".format(state.name))
 
     print("SMP-CC test client stopped.")

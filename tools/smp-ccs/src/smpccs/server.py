@@ -34,7 +34,7 @@ UPDATE_INTERVAL = 1.0  # how often to check for updates?
 
 
 def pprint_state(state, detailed=False):
-    print("FsmState({})".format(state.uuid))
+    print("SsmState({})".format(state.uuid))
     if detailed:
         print("\tname: {}".format(state.uuid))
         print("\tstatus: {}".format(state.status))
@@ -44,17 +44,17 @@ def pprint_state(state, detailed=False):
         print("\tquarantaine: {}".format(state.quarantaine))
 
 
-class FsmStateStore(object):
+class SsmStateStore(object):
     """
     Global state store.
-    Stores mapping from UUID to FsmState objects.
+    Stores mapping from UUID to SsmState objects.
     """
     def __init__(self):
         self._store = dict()
 
     def register(self, state):
         """
-        Ads FsmState to store.
+        Ads SsmState to store.
         Attention: Simply overwrites existing states.
         """
         # ensure well-formed states:
@@ -79,11 +79,11 @@ class FsmStateStore(object):
 
 
 # global state store
-FSS = FsmStateStore()      
+SS = SsmStateStore()
 
 
-# implements the RPC methods of SmpFsmControl
-class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
+# implements the RPC methods of SmpSsmControl
+class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
 
     def PingPong(self, request, context):
         """
@@ -94,21 +94,21 @@ class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
         print("Replying: '{}'".format(reply.text))
         return reply
 
-    def ControlFsm(self, state, context):
+    def ControlSsm(self, state, context):
         """
         Single Request, streaming reply.
         Keeps open a long-term streaming connection to send
         state updates to the client FSM.
         """
-        # 1. register FsmState
-        FSS.register(state)
+        # 1. register SsmState
+        SS.register(state)
         uuid = state.uuid
         created = state.time_created
 
         # 2. keep connection open and stream out state if its updated
         # loop will stop if FSM registers again!
-        while (FSS.get(uuid) is not None
-               and created == FSS.get(uuid).time_created):
+        while (SS.get(uuid) is not None
+               and created == SS.get(uuid).time_created):
             if state.changed:
                 yield state  # send out updated state
                 state.changed = False
@@ -121,8 +121,8 @@ class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
 def serve():
     print("SMP-CC server starting ...")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    pb2_grpc.add_SmpFsmControlServicer_to_server(
-        SmpFsmControlServicer(), server)
+    pb2_grpc.add_SmpSsmControlServicer_to_server(
+        SmpSsmControlServicer(), server)
     server.add_insecure_port('[::]:9012')
     server.start()
     print("SMP-CC server started: {}".format(server))
