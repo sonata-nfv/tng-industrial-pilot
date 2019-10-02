@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import Flask, request, json
+from time import sleep
 import time
 import logging
 import glob
@@ -60,6 +61,7 @@ def stats():
                 ++ipcount
 
     lastInvocationTime = mytime
+    sleep(15)
     return json.dumps(alarmedIPs)
 
 if __name__ == '__main__':
