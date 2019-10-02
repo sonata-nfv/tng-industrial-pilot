@@ -98,7 +98,7 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         """
         Single Request, streaming reply.
         Keeps open a long-term streaming connection to send
-        state updates to the client FSM.
+        state updates to the client SSM.
         """
         # 1. register SsmState
         SS.register(state)
@@ -106,7 +106,7 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         created = state.time_created
 
         # 2. keep connection open and stream out state if its updated
-        # loop will stop if FSM registers again!
+        # loop will stop if SSM registers again!
         while (SS.get(uuid) is not None
                and created == SS.get(uuid).time_created):
             if state.changed:
