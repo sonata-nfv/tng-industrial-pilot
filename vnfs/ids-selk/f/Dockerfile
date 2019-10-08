@@ -32,6 +32,6 @@ ENTRYPOINT ./start.sh
 ### USAGE:
 ## $ docker build -t vnf-ids-filebeat .
 ## $ docker run --rm --name filebeat -v /var/log/suricata/:/usr/share/logstash/logs -d vnf-ids-filebeat
-## $ docker run --rm --name my-fb -v /var/log/suricata/:/usr/share/logstash/logs -e "LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_7_logstash5044_ip}:5044" -e "KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_7_kibana5601_ip}:5601" -d vnf-ids-filebeat
+## $ docker run --rm --name my-fb -v /var/log/suricata/:/usr/share/logstash/logs -e "LOGSTASH_HOSTS=http://${lh_vnf2_eu_5gtango_0_8_logstash5044_ip}:5044" -e "KIBANA_HOSTS=http://${k_vnf4_eu_5gtango_0_8_kibana5601_ip}:5601" -d vnf-ids-filebeat
 ## $ docker exec --rm -it filebeat bash
 ###
