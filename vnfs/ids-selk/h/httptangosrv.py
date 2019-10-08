@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import Flask, request, json
+from time import sleep
 import time
 import logging
 import glob
@@ -21,6 +22,7 @@ def stats():
     files.sort()
     if files.count == 0:
         response["resource_id"] = os.getenv("container_name")
+        alarmedIPs["ip0"] = "0"
         return json.dumps(response)
 
     name = "event-" + mytime
@@ -47,7 +49,7 @@ def stats():
             evFile.close()
 
     alarmedIPs = {}
-    alarmedIPs["resource_id"] = os.getenv("HOSTNAME")
+    alarmedIPs["resource_id"] = os.getenv("container_name")
     ipcount = 0
     if len(events) == 0:
         alarmedIPs["ip0"] = "0"
@@ -59,6 +61,7 @@ def stats():
                 ++ipcount
 
     lastInvocationTime = mytime
+    sleep(15)
     return json.dumps(alarmedIPs)
 
 if __name__ == '__main__':
