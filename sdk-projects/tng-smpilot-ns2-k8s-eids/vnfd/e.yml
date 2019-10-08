@@ -40,9 +40,13 @@ cloudnative_deployment_units:
   - id: elastic9200
     port: 9200
   monitoring_parameters:
-    - name: "cpu_util"
+    - name: "container_cpu_load_average_10s"
       unit: "Percentage"
-    - name: "memory_usage"
+    - name: "container_memory_usage_bytes"
+      unit: "MB"
+    - name: "container_network_receive_bytes_total"
+      unit: "MB"
+    - name: "container_network_transmit_bytes_total"
       unit: "MB"
  
 # corresponds to the k8s service layer: connection to the outside world  
