@@ -27,6 +27,6 @@ ENTRYPOINT ./start.sh
 
 ### USAGE: 
 # $ docker build -t vnf-ids-logstash .
-# $ docker run --rm --name logstash -v /var/logs/logstash:/usr/share/logstash/logs -e "e_vnf3_eu_5gtango_0_7_elastic9200_ip=$e_vnf3_eu_5gtango_0_7_elastic9200_ip" -d vnf-ids-logstash
+# $ docker run --rm --name logstash -v /var/logs/logstash:/usr/share/logstash/logs -e "e_vnf3_eu_5gtango_0_8_elastic9200_ip=$e_vnf3_eu_5gtango_0_8_elastic9200_ip" -d vnf-ids-logstash
 # $ docker exec -it logstash bash
 ###

@@ -22,6 +22,6 @@ ENTRYPOINT ./start.sh
 
 ### USAGE:
 ## $ docker build -t vnf-ids-kibana .
-## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_7_elastic9200=${e_vnf3_eu_5gtango_0_7_elastic9200_ip}" -d vnf-ids-kibana
+## $ docker run --rm --name kibana -e "e_vnf3_eu_5gtango_0_8_elastic9200=${e_vnf3_eu_5gtango_0_8_elastic9200_ip}" -d vnf-ids-kibana
 ## $ docker exec -it kibana bash
 ###
