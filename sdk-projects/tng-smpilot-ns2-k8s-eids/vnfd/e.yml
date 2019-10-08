@@ -40,7 +40,7 @@ cloudnative_deployment_units:
   - id: elastic9200
     port: 9200
   monitoring_parameters:
-    - name: "container_cpu_load_average_10s"
+    - name: "container_cpu_usage_seconds_total"
       unit: "Percentage"
     - name: "container_memory_usage_bytes"
       unit: "MB"

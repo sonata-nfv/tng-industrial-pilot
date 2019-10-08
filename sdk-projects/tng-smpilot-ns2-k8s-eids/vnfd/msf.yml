@@ -43,7 +43,7 @@ cloudnative_deployment_units:
   - id: smb445
     port: 445
   monitoring_parameters:
-  - name: "container_cpu_load_average_10s"
+  - name: "container_cpu_usage_seconds_total"
     unit: "Percentage"
   - name: "container_memory_usage_bytes"
     unit: "MB"
@@ -72,7 +72,7 @@ cloudnative_deployment_units:
   image: sonatanfv/vnf-ids-filebeat:latest
   connection_points: []
   monitoring_parameters:
-  - name: "container_cpu_load_average_10s"
+  - name: "container_cpu_usage_seconds_total"
     unit: "Percentage"
   - name: "container_memory_usage_bytes"
     unit: "MB"

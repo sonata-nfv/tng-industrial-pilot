@@ -12,7 +12,7 @@ cloudnative_deployment_units:
   - id: logstash5044
     port: 5044
   monitoring_parameters:
-  - name: "container_cpu_load_average_10s"
+  - name: "container_cpu_usage_seconds_total"
     unit: "Percentage"
   - name: "container_memory_usage_bytes"
     unit: "MB"
@@ -34,7 +34,7 @@ cloudnative_deployment_units:
   - id: flask5000
     port: 5000
   monitoring_parameters:
-  - name: "container_cpu_load_average_10s"
+  - name: "container_cpu_usage_seconds_total"
     unit: "Percentage"
   - name: "container_memory_usage_bytes"
     unit: "MB"
