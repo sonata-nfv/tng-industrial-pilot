@@ -42,6 +42,9 @@ cloudnative_deployment_units:
     unit: "MB"
   - name: "container_network_transmit_bytes_total"
     unit: "MB"
+  # this ip0 metric changes from 0 to a positive number for ~20s when an alarm is triggered
+  - name: "ip0"
+    unit: "number"
   parameters:
     volume_mounts:
     - id: logs
