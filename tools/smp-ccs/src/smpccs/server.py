@@ -133,6 +133,12 @@ class SsmStateStore(object):
         # things are ok, do the update
         _update_state_with_dict(self._store.get(uuid), update)
 
+    def remove(self, uuid):
+        if uuid not in self._store:
+            raise SsmNotFoundException("UUID: {} not found".format(uuid))
+        del self._store[uuid]
+        print("Removed: {}".format(uuid))
+
     def get_dict(self):
         """
         Returns all entries as a standard dict.
@@ -157,6 +163,7 @@ def pprint_state(state, detailed=False):
 def _state_to_dict(state):
     return {
         "uuid": state.uuid,
+        "name": state.name,
         "status": state.status,
         "time_created": state.time_created,
         "time_updated": state.time_updated,
@@ -169,6 +176,7 @@ def _update_state_with_dict(state, update):
     state_dict = _state_to_dict(state)
     state_dict.update(update)
     state.uuid = state_dict.get("uuid")
+    state.name = state_dict.get("name")
     state.status = state_dict.get("status")
     state.time_created = state_dict.get("time_created")
     state.time_updated = int(time.time())  # set to current time
@@ -194,12 +202,22 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         Keeps open a long-term streaming connection to send
         state updates to the client SSM.
         """
-        # 1. register SsmState
+        def _cleanup():
+            print("Disconnected: {}".format(state.uuid))
+            try:
+                self.store.remove(state.uuid)
+            except BaseException as ex:
+                print("Error: {}".format(ex))
+
+        # 1. callback if client disconnects
+        context.add_callback(_cleanup)
+
+        # 2. register SsmState
         self.store.register(state)
         uuid = state.uuid
         created = state.time_created
 
-        # 2. keep connection open and stream out state if its updated
+        # 3. keep connection open and stream out state if its updated
         # loop will stop if SSM registers again!
         while (self.store.get(uuid) is not None
                and created == self.store.get(uuid).time_created):
