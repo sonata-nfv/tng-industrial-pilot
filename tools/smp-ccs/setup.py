@@ -35,9 +35,10 @@ setup(name='smpccs',
       long_description="5GTANGO industry pilot controller",
       package_dir={'': 'src'},
       packages=find_packages('src'),  # dependency resolution
-      #namespace_packages=['tngsdk', ],
+      # namespace_packages=['tngsdk', ],
       include_package_data=True,       # package data specified in MANIFEST.in
-      install_requires=["grpcio-tools"],
+      install_requires=["grpcio-tools",
+                        "flask-restplus"],
       zip_safe=False,
       entry_points={
           'console_scripts': [
