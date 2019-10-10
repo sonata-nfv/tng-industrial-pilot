@@ -37,7 +37,8 @@ cloudnative_deployment_units:
     image: 'sonatanfv/vnf-mdc:vimemu'
     connection_points:
       - id: data
-        # port: 5555  # TODO change
+        ports: [139, 445, "137/udp", "138/udp"]
+        publish: {139: 139, 445: 445, "137/udp": 137, "138/udp": 138}
         
 connection_points:
   - id: data
