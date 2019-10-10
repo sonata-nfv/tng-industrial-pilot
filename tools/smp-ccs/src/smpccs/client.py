@@ -103,6 +103,10 @@ class SsmCommandControlClient(threading.Thread):
             time.sleep(TIME_RECONNECT)
 
 
+def test_callback(state):
+    print("SMP-CC client: quarantaine={}".format(state.quarantaine))
+
+
 def main():
     # parameters
     name = "ssm01"  # default name
@@ -111,7 +115,9 @@ def main():
 
     # create state object (this must also be done by SSM)
     state = pb2.SsmState(uuid=name, name=name)
-    t = SsmCommandControlClient(state, connection="localhost:9012")
+    t = SsmCommandControlClient(state,
+                                connection="localhost:9012",
+                                callback=test_callback)
     t.start()
 
     # block (a SSM runs forever)
