@@ -34,7 +34,11 @@ from flask_restplus import inputs
 from werkzeug.contrib.fixers import ProxyFix
 
 
-UPDATE_INTERVAL = 1.0  # how often to check for updates?
+UPDATE_INTERVAL = .5  # how often to check for updates?
+
+
+class SsmNotFoundException(BaseException):
+    pass
 
 
 # Basic setup of REST server for API
@@ -84,7 +88,11 @@ class SsmStateEndpoint(Resource):
     @api_v1.response(404, "Service UUID not found")
     def put(self):
         args = ssmstate_put_parser.parse_args()
-        print(args)
+        try:
+            # do the update by sending an update dict to the store
+            app.store.update(args.uuid, dict(args))
+        except SsmNotFoundException as ex:
+            return "{}".format(ex), 404
         return "OK"
 
 
@@ -119,6 +127,12 @@ class SsmStateStore(object):
         print("Registered: ", end="")
         pprint_state(state, True)
 
+    def update(self, uuid, update):
+        if uuid not in self._store:
+            raise SsmNotFoundException("UUID: {} not found".format(uuid))
+        # things are ok, do the update
+        _update_state_with_dict(self._store.get(uuid), update)
+
     def get_dict(self):
         """
         Returns all entries as a standard dict.
@@ -144,11 +158,22 @@ def _state_to_dict(state):
     return {
         "uuid": state.uuid,
         "status": state.status,
-        "created": state.time_created,
-        "updated": state.time_updated,
+        "time_created": state.time_created,
+        "time_updated": state.time_updated,
         "changed": state.changed,
         "quarantaine": state.quarantaine
     }
+
+
+def _update_state_with_dict(state, update):
+    state_dict = _state_to_dict(state)
+    state_dict.update(update)
+    state.uuid = state_dict.get("uuid")
+    state.status = state_dict.get("status")
+    state.time_created = state_dict.get("time_created")
+    state.time_updated = int(time.time())  # set to current time
+    state.changed = True  # set update flag
+    state.quarantaine = state_dict.get("quarantaine")
 
 
 # implements the RPC methods of SmpSsmControl
