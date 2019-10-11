@@ -19,6 +19,16 @@ smpccc fsm02
 curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
 ```
 
+## Deploy as Docker
+
+```sh
+# get latest container
+docker pull sonatanfv/smp-ccs
+
+# start the container
+docker run -d -p 9011:9011 -p 9012:9012 --restart always --name smp-ccs sonatanfv/smp-ccs
+```
+
 ## REST API
 
 ### `GET /api/v1/ssmstatus`

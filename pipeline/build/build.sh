@@ -14,8 +14,14 @@ cd fsms/
 ./build.sh
 cd $BASE_DIR
 
-# FSMs
+# SSMs
 cd ssms/
 # trigger SSM build script
+./build.sh
+cd $BASE_DIR
+
+# SMP-CCS
+cd tools/smp-ccs/
+# trigger build script
 ./build.sh
 cd $BASE_DIR
