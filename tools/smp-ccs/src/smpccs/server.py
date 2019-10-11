@@ -28,33 +28,86 @@ import time
 import grpc
 import smpccs_pb2_grpc as pb2_grpc
 import smpccs_pb2 as pb2
+from flask import Flask, Blueprint
+from flask_restplus import Resource, Api, Namespace
+from flask_restplus import inputs
+from werkzeug.contrib.fixers import ProxyFix
 
 
-UPDATE_INTERVAL = 1.0  # how often to check for updates?
+UPDATE_INTERVAL = .5  # how often to check for updates?
 
 
-def pprint_state(state, detailed=False):
-    print("FsmState({})".format(state.uuid))
-    if detailed:
-        print("\tname: {}".format(state.uuid))
-        print("\tstatus: {}".format(state.status))
-        print("\tcreated: {}".format(time.ctime(state.time_created)))
-        print("\tupdated: {}".format(time.ctime(state.time_updated)))
-        print("\tchanged: {}".format(state.changed))
-        print("\tquarantaine: {}".format(state.quarantaine))
+class SsmNotFoundException(BaseException):
+    pass
 
 
-class FsmStateStore(object):
+# Basic setup of REST server for API
+app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
+blueprint = Blueprint('api', __name__, url_prefix="/api")
+api_v1 = Namespace("v1", description="SMP-CCS API v1")
+api = Api(blueprint,
+          version="0.1",
+          title='SMP-CCS API',
+          description="5GTANGO SMP-CCS REST API " +
+          "to control the industry pilot SSM.")
+app.register_blueprint(blueprint)
+api.add_namespace(api_v1)
+
+
+def serve_rest_api(service_address="0.0.0.0",
+                   service_port=9011,
+                   debug=True):
+    app.run(host=service_address,
+            port=int(service_port),
+            debug=debug,
+            # do not use the reloder: to avoid restarts and stat loss
+            use_reloader=False)
+
+
+ssmstate_put_parser = api_v1.parser()
+ssmstate_put_parser.add_argument("uuid",
+                                 type=str,
+                                 required=True,
+                                 help="Service Inst. UUID")
+ssmstate_put_parser.add_argument("quarantaine",
+                                 type=inputs.boolean,
+                                 required=False,
+                                 help="Updated quarantaine status")
+
+
+@api_v1.route("/ssmstatus")
+class SsmStateEndpoint(Resource):
+
+    @api_v1.response(200, "OK")
+    def get(self):
+        return app.store.get_dict()
+
+    @api_v1.expect(ssmstate_put_parser)
+    @api_v1.response(200, "OK")
+    @api_v1.response(404, "Service UUID not found")
+    def put(self):
+        args = ssmstate_put_parser.parse_args()
+        try:
+            # do the update by sending an update dict to the store
+            app.store.update(args.uuid, dict(args))
+        except SsmNotFoundException as ex:
+            return "{}".format(ex), 404
+        return "OK"
+
+
+class SsmStateStore(object):
     """
     Global state store.
-    Stores mapping from UUID to FsmState objects.
+    Stores mapping from UUID to SsmState objects.
     """
     def __init__(self):
+        print("Created: {}".format(self))
         self._store = dict()
 
     def register(self, state):
         """
-        Ads FsmState to store.
+        Ads SsmState to store.
         Attention: Simply overwrites existing states.
         """
         # ensure well-formed states:
@@ -74,16 +127,65 @@ class FsmStateStore(object):
         print("Registered: ", end="")
         pprint_state(state, True)
 
+    def update(self, uuid, update):
+        if uuid not in self._store:
+            raise SsmNotFoundException("UUID: {} not found".format(uuid))
+        # things are ok, do the update
+        _update_state_with_dict(self._store.get(uuid), update)
+
+    def remove(self, uuid):
+        if uuid not in self._store:
+            raise SsmNotFoundException("UUID: {} not found".format(uuid))
+        del self._store[uuid]
+        print("Removed: {}".format(uuid))
+
+    def get_dict(self):
+        """
+        Returns all entries as a standard dict.
+        uuid -> state
+        """
+        r = dict()
+        for k, v in self._store.items():
+            r[k] = _state_to_dict(v)
+        return r
+
     def get(self, uuid):
         return self._store.get(uuid)
 
 
-# global state store
-FSS = FsmStateStore()      
+def pprint_state(state, detailed=False):
+    print("SsmState({})".format(state.uuid))
+    if detailed:
+        for k, v in _state_to_dict(state).items():
+            print("\t{}: {}".format(k, v))
 
 
-# implements the RPC methods of SmpFsmControl
-class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
+def _state_to_dict(state):
+    return {
+        "uuid": state.uuid,
+        "name": state.name,
+        "status": state.status,
+        "time_created": state.time_created,
+        "time_updated": state.time_updated,
+        "changed": state.changed,
+        "quarantaine": state.quarantaine
+    }
+
+
+def _update_state_with_dict(state, update):
+    state_dict = _state_to_dict(state)
+    state_dict.update(update)
+    state.uuid = state_dict.get("uuid")
+    state.name = state_dict.get("name")
+    state.status = state_dict.get("status")
+    state.time_created = state_dict.get("time_created")
+    state.time_updated = int(time.time())  # set to current time
+    state.changed = True  # set update flag
+    state.quarantaine = state_dict.get("quarantaine")
+
+
+# implements the RPC methods of SmpSsmControl
+class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
 
     def PingPong(self, request, context):
         """
@@ -94,21 +196,31 @@ class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
         print("Replying: '{}'".format(reply.text))
         return reply
 
-    def ControlFsm(self, state, context):
+    def ControlSsm(self, state, context):
         """
         Single Request, streaming reply.
         Keeps open a long-term streaming connection to send
-        state updates to the client FSM.
+        state updates to the client SSM.
         """
-        # 1. register FsmState
-        FSS.register(state)
+        def _cleanup():
+            print("Disconnected: {}".format(state.uuid))
+            try:
+                self.store.remove(state.uuid)
+            except BaseException as ex:
+                print("Error: {}".format(ex))
+
+        # 1. callback if client disconnects
+        context.add_callback(_cleanup)
+
+        # 2. register SsmState
+        self.store.register(state)
         uuid = state.uuid
         created = state.time_created
 
-        # 2. keep connection open and stream out state if its updated
-        # loop will stop if FSM registers again!
-        while (FSS.get(uuid) is not None
-               and created == FSS.get(uuid).time_created):
+        # 3. keep connection open and stream out state if its updated
+        # loop will stop if SSM registers again!
+        while (self.store.get(uuid) is not None
+               and created == self.store.get(uuid).time_created):
             if state.changed:
                 yield state  # send out updated state
                 state.changed = False
@@ -120,15 +232,19 @@ class SmpFsmControlServicer(pb2_grpc.SmpFsmControlServicer):
 
 def serve():
     print("SMP-CC server starting ...")
+    store = SsmStateStore()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    pb2_grpc.add_SmpFsmControlServicer_to_server(
-        SmpFsmControlServicer(), server)
+    servicer = SmpSsmControlServicer()
+    servicer.store = store
+    pb2_grpc.add_SmpSsmControlServicer_to_server(
+        servicer, server)
     server.add_insecure_port('[::]:9012')
     server.start()
     print("SMP-CC server started: {}".format(server))
     try:
-        while True:
-            time.sleep(10)
+        # start the REST API server (blocks)
+        app.store = store
+        serve_rest_api()
     except KeyboardInterrupt:
         print("SMP-CC server stopping ...")
         server.stop(0)

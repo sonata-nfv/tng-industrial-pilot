@@ -27,12 +27,12 @@
 syntax = "proto3";
 
 // Definition of the gRPC server
-service SmpFsmControl {
+service SmpSsmControl {
     // A simple RPC to test things.
     rpc PingPong(Ping) returns (Pong) {}
   
     // A server-to-client streaming RPC.
-    rpc ControlFsm(FsmState) returns (stream FsmState) {}
+    rpc ControlSsm(SsmState) returns (stream SsmState) {}
 }
 
 
@@ -44,7 +44,7 @@ message Pong {
     string text = 1;
 }
 
-message FsmState {
+message SsmState {
     string uuid = 1; // uuid of the service instance; primary key
     string name = 2;  // fallback primary key
     uint32 time_created = 3;

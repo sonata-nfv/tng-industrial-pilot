@@ -4,7 +4,7 @@ import grpc
 import smpccs_pb2 as smpccs__pb2
 
 
-class SmpFsmControlStub(object):
+class SmpSsmControlStub(object):
   """Definition of the gRPC server
   """
 
@@ -15,18 +15,18 @@ class SmpFsmControlStub(object):
       channel: A grpc.Channel.
     """
     self.PingPong = channel.unary_unary(
-        '/SmpFsmControl/PingPong',
+        '/SmpSsmControl/PingPong',
         request_serializer=smpccs__pb2.Ping.SerializeToString,
         response_deserializer=smpccs__pb2.Pong.FromString,
         )
-    self.ControlFsm = channel.unary_stream(
-        '/SmpFsmControl/ControlFsm',
-        request_serializer=smpccs__pb2.FsmState.SerializeToString,
-        response_deserializer=smpccs__pb2.FsmState.FromString,
+    self.ControlSsm = channel.unary_stream(
+        '/SmpSsmControl/ControlSsm',
+        request_serializer=smpccs__pb2.SsmState.SerializeToString,
+        response_deserializer=smpccs__pb2.SsmState.FromString,
         )
 
 
-class SmpFsmControlServicer(object):
+class SmpSsmControlServicer(object):
   """Definition of the gRPC server
   """
 
@@ -37,7 +37,7 @@ class SmpFsmControlServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def ControlFsm(self, request, context):
+  def ControlSsm(self, request, context):
     """A server-to-client streaming RPC.
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -45,19 +45,19 @@ class SmpFsmControlServicer(object):
     raise NotImplementedError('Method not implemented!')
 
 
-def add_SmpFsmControlServicer_to_server(servicer, server):
+def add_SmpSsmControlServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'PingPong': grpc.unary_unary_rpc_method_handler(
           servicer.PingPong,
           request_deserializer=smpccs__pb2.Ping.FromString,
           response_serializer=smpccs__pb2.Pong.SerializeToString,
       ),
-      'ControlFsm': grpc.unary_stream_rpc_method_handler(
-          servicer.ControlFsm,
-          request_deserializer=smpccs__pb2.FsmState.FromString,
-          response_serializer=smpccs__pb2.FsmState.SerializeToString,
+      'ControlSsm': grpc.unary_stream_rpc_method_handler(
+          servicer.ControlSsm,
+          request_deserializer=smpccs__pb2.SsmState.FromString,
+          response_serializer=smpccs__pb2.SsmState.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'SmpFsmControl', rpc_method_handlers)
+      'SmpSsmControl', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

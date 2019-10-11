@@ -12,9 +12,67 @@ smpccs
 # Terminal 2: SMP-CC test client (faking the FSM connecting to the server)
 smpccc fsm01
 
-# Terminal N: Additional SMP-CC test clients to test multi-FSM case
+# Terminal 3: Additional SMP-CC test clients to test multi-FSM case
 smpccc fsm02
+
+# Terminal 4: Do REST requests to API
+curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
 ```
+
+## Deploy as Docker
+
+```sh
+# get latest container
+docker pull sonatanfv/smp-ccs
+
+# start the container
+docker run -d -p 9011:9011 -p 9012:9012 --restart always --name smp-ccs sonatanfv/smp-ccs
+```
+
+## REST API
+
+### `GET /api/v1/ssmstatus`
+
+Gets a dictionary with the states of all registered SSMs.
+
+Example: 
+
+```sh
+curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
+```
+
+Returns (Status 200):
+```json
+{
+    "ssm01": {
+        "uuid": "ssm01",
+        "status": "undefined",
+        "created": 1570696345,
+        "updated": 1570696345,
+        "changed": false,
+        "quarantaine": false
+    }
+}
+```
+
+### `PUT /api/v1/ssmstatus`
+
+Updates the state of a registered SSM.
+Fields to send:
+
+- `uuid`
+- `quarantaine`
+
+Example:
+
+```sh
+curl -X PUT 127.0.0.1:9011/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
+```
+
+Returns (Status 200):
+```
+OK
+``` 
 
 ## gRPC: How to and documentation
 

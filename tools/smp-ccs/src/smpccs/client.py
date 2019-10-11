@@ -25,29 +25,101 @@
 # partner consortium (www.5gtango.eu).
 
 import sys
+import time
+import threading
 import grpc
 import smpccs_pb2_grpc as pb2_grpc
 import smpccs_pb2 as pb2
 
 
-def main():
-    print("SMP-CC test client connecting ...")
-    with grpc.insecure_channel("localhost:9012") as channel:
-        stub = pb2_grpc.SmpFsmControlStub(channel)
-        # first test to send a simple PingPong
-        ping = pb2.Ping(text="Ping!")
-        print("Sending: '{}'".format(ping.text))
-        pong = stub.PingPong(ping)
-        print("Received: '{}'".format(pong.text))
-        # second: connect, register and wait for streamed actions
-        name = "fsm01"  # default name
-        if len(sys.argv) > 1:
-            name = sys.argv[1]
-        fsm_state = pb2.FsmState(name=name)
-        print("Registering FSM: FsmState({})".format(fsm_state.name))
-        new_fsm_states = stub.ControlFsm(fsm_state)
-        # receive actions (blocking) from stream
-        for state in new_fsm_states:
-            print("Received FsmState({})".format(state.name))
+# time to wait until connection retry
+TIME_RECONNECT = 3.0
 
-    print("SMP-CC test client stopped.")
+
+def _state_to_dict(state):
+    return {
+        "uuid": state.uuid,
+        "name": state.name,
+        "status": state.status,
+        "time_created": state.time_created,
+        "time_updated": state.time_updated,
+        "changed": state.changed,
+        "quarantaine": state.quarantaine
+    }
+
+
+def _update_state_with_dict(state, update):
+    state_dict = _state_to_dict(state)
+    state_dict.update(update)
+    state.uuid = state_dict.get("uuid")
+    state.name = state_dict.get("name")
+    state.status = state_dict.get("status")
+    state.time_created = state_dict.get("time_created")
+    state.time_updated = int(time.time())  # set to current time
+    state.changed = True  # set update flag
+    state.quarantaine = state_dict.get("quarantaine")
+
+
+class SsmCommandControlClient(threading.Thread):
+
+    def __init__(self, state, connection="localhost:9012", callback=None):
+        """
+        state: the SSMs state object (type: pb2.SsmState)
+        connection: connection string of the remote SMP-CC server.
+        callback: function to call when state updates are received.
+        """
+        super().__init__(daemon=True)
+        self.state = state
+        self.connection_str = connection
+        self.callback_func = callback
+
+    def run(self):
+        print("SMP-CC client: started ...")
+        while True:  # always retry as long as thread lives
+            try:
+                print("SMP-CC client: connecting ...")
+                with grpc.insecure_channel(self.connection_str) as channel:
+                    stub = pb2_grpc.SmpSsmControlStub(channel)
+                    # register and wait for state updates
+                    print("SMP-CC client: registering state: {}".format(
+                        self.state.name))
+                    recv_ssm_states = stub.ControlSsm(self.state)
+                    # receive state updates from stream (blocking)
+                    for new_state in recv_ssm_states:
+                        print("SMP-CC client: received SsmState({})".format(
+                            _state_to_dict(new_state)))
+                        # update the local state
+                        _update_state_with_dict(self.state,
+                                                _state_to_dict(new_state))
+                        print("SMP-CC client: updated local state")
+                        if self.callback_func:
+                            self.callback_func(new_state)
+            except BaseException as ex:
+                print("SMP-CC client: Error {}".format(type(ex)))
+                print(ex)
+                print("SMP-CC client: disconnected")
+            print("SMP-CC client: waiting {}s before reconnect ..."
+                  .format(TIME_RECONNECT))
+            time.sleep(TIME_RECONNECT)
+
+
+def test_callback(state):
+    print("SMP-CC client: quarantaine={}".format(state.quarantaine))
+
+
+def main():
+    # parameters
+    name = "ssm01"  # default name
+    if len(sys.argv) > 1:
+        name = sys.argv[1]
+
+    # create state object (this must also be done by SSM)
+    state = pb2.SsmState(uuid=name, name=name)
+    t = SsmCommandControlClient(state,
+                                connection="localhost:9012",
+                                callback=test_callback)
+    t.start()
+
+    # block (a SSM runs forever)
+    while True:
+        time.sleep(2)
