@@ -1,6 +1,6 @@
 {
 	"descriptor_schema": "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/policy-descriptor/policy-schema.yml",
-	"name": "industrial-pilot-Security-Policy",
+	"name": "industrial-pilot-Security-Policy1",
 	"vendor": "eu.5gtango",
 	"version": "0.5",
 	"network_service": {
