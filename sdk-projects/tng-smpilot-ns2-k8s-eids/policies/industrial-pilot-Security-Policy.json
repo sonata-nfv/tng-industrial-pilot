@@ -38,7 +38,7 @@
 		},
 		"actions": [{
 			"action_object": "AlertAction",
-			"action_type": "Log",
+			"action_type": "LogMessage",
 			"name": "intrusion",
 			"value": "1",
 			"target": {
