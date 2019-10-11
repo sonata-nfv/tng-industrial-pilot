@@ -14,9 +14,6 @@ smpccc fsm01
 
 # Terminal 3: Additional SMP-CC test clients to test multi-FSM case
 smpccc fsm02
-
-# Terminal 4: Do REST requests to API
-curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
 ```
 
 ## Deploy as Docker
@@ -39,6 +36,7 @@ Example:
 
 ```sh
 curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
+curl -X GET fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus
 ```
 
 Returns (Status 200):
@@ -67,6 +65,7 @@ Example:
 
 ```sh
 curl -X PUT 127.0.0.1:9011/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
+curl -X PUT fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
 ```
 
 Returns (Status 200):
