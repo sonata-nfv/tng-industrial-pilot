@@ -115,9 +115,11 @@ def main():
 
     # create state object (this must also be done by SSM)
     state = pb2.SsmState(uuid=name, name=name)
-    t = SsmCommandControlClient(state,
-                                connection="localhost:9012",
-                                callback=test_callback)
+    t = SsmCommandControlClient(
+        state,
+        connection="127.0.0.1:9012",
+        # connection="fgcn-tango-smp-ctrl.cs.upb.de:9012",
+        callback=test_callback)
     t.start()
 
     # block (a SSM runs forever)
