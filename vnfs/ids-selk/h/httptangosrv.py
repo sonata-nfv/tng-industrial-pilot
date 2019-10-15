@@ -30,7 +30,7 @@ def logins():
 
     name = "login-" + mytime
     if lastInvocationTimeForLogins is not None:
-        nameStart = "event-" + lastInvocationTimeForLogins
+        nameStart = "login-" + lastInvocationTimeForLogins
     selectedFiles = []
 
     if lastInvocationTimeForLogins is None:
@@ -64,11 +64,13 @@ def logins():
             if ev['smb']['command']:
                 print("command = ", ev['smb']['command'])
                 if(ev['smb']['command'] == 'SMB1_COMMAND_SESSION_SETUP_ANDX'):
-                    alarmedIPs["login_tried"] = str(++login_tried)
+                    login_tried += 1
+                    alarmedIPs["login_tried"] = str(login_tried)
                 else:
                     if(ev['smb']['command'] == 'SMB1_COMMAND_TRANS'):
                         if flowId != ev['flow_id']:
-                            alarmedIPs["login_successfull"] = str(++login_successfull)
+                            login_successfull += 1
+                            alarmedIPs["login_successfull"] = str(login_successfull)
                             flowId = ev['flow_id']
 
     lastInvocationTimeForLogins = mytime
