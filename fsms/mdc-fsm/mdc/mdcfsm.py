@@ -159,10 +159,11 @@ class MdcFsm(smbase):
         nsr = content['nsr']
         if 'params' not in nsr:
             LOG.warning("MDC FSM: No 'params' found in NSR")
-        if 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
+        else if 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
             LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in NSR params")
-        quarantine_ns1_host = nsr['params']['QUARANTINE_MQTT_BROKER_HOST']
-        LOG.info("MDC FSM: Quarantine NS1 host: {}".format(quarantine_ns1_host))
+        else:
+            quarantine_ns1_host = nsr['params']['QUARANTINE_MQTT_BROKER_HOST']
+            LOG.info("MDC FSM: Quarantine NS1 host: {}".format(quarantine_ns1_host))
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
