@@ -151,15 +151,14 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
-        LOG.info("MDC FSM: configuration event triggered with content:")
-        LOG.info(content)
+        LOG.debug("MDC FSM: configuration event triggered with content: {}".format(content))
         
         # get hostname of the quarantine NS1 from the NSR
         quarantine_ns1_host = 'Not set!'
         nsr = content['nsr']
         if 'params' not in nsr:
             LOG.warning("MDC FSM: No 'params' found in NSR")
-        else if 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
+        elif 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
             LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in NSR params")
         else:
             quarantine_ns1_host = nsr['params']['QUARANTINE_MQTT_BROKER_HOST']
