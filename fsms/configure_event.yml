@@ -1,0 +1,66 @@
+---
+nsr:
+  descriptor_reference: a463afa9-8b06-4ff7-b2ee-d01c8b5f7886
+  descriptor_version: null
+  id: 7596c272-f721-4058-8ef1-22e45e83d7f1
+  instance_name: foobar
+  network_functions:
+  - vnfr_id: e354fbdd-c3bf-4bde-b375-a3676a9abcfa
+  - vnfr_id: 89e014c9-2fdf-41a8-885f-bf3a4234a4af
+  status: normal operation
+  version: '1'
+  virtual_links:
+  - connection_points_reference:
+    - data
+    - cnf1:data
+    connectivity_type: E-LAN
+    id: data-2-cnfs
+vnfrs:
+- cloudnative_deployment_units:
+  - connection_points:
+    - id: data
+      port: 1883
+      type: serviceendpoint
+    id: cdu01
+    image: ubuntu:trusty
+    load_balancer_ip:
+      floating_ip: 8.8.8.8
+      internal_ip: 4.4.4.4
+    number_of_instances: 1
+    vim_id: 81c627e1-7015-4487-b8f2-ee973b53675d
+  descriptor_reference: 4d6b8c25-da93-4228-9f27-a21aa5a3919e
+  descriptor_version: null
+  id: e354fbdd-c3bf-4bde-b375-a3676a9abcfa
+  status: normal operation
+  version: '1'
+  virtual_links:
+  - connection_points_reference:
+    - data
+    - cdu01:data
+    connectivity_type: E-Tree
+    id: data-link
+- cloudnative_deployment_units:
+  - connection_points:
+    - id: data
+      port: 1883
+      type: serviceendpoint
+    id: cdu01
+    image: ubuntu:trusty
+    load_balancer_ip:
+      floating_ip: 8.8.8.9
+      internal_ip: 4.4.4.5
+    number_of_instances: 1
+    vim_id: 1ff22054-77f6-41af-abd1-281a57edc3c0
+  descriptor_reference: 2820d6a6-a371-4ea2-a94a-1d0d9f2888f7
+  descriptor_version: null
+  id: 89e014c9-2fdf-41a8-885f-bf3a4234a4af
+  status: normal operation
+  version: '1'
+  virtual_links:
+  - connection_points_reference:
+    - data
+    - cdu01:data
+    connectivity_type: E-Tree
+    id: data-link
+ingress: null
+egress: null
