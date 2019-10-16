@@ -106,7 +106,7 @@ virtual_links:
     - "vnf4:kibana5601"
  
  # Assign a SSM for reconfiguration after an IDS intrusion alarm
-function_specific_managers:
+service_specific_managers:
  - id: "tng-ssm-industry-pilot-ns2"
    description: "SSM to trigger reconfiguration via the MDC FSM"
    image: "sonatanfv/tng-ssm-industry-pilot-ns2:latest"
