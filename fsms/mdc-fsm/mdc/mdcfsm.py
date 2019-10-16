@@ -63,7 +63,7 @@ class MdcFsm(smbase):
         :param description: description
         """
 
-        self.sm_id = "sonfsmindustry-pilotmdc-vnf1"
+        self.sm_id = "tng-fsm-industry-pilot-mdc-vnf1"
         self.sm_version = "0.1"
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
