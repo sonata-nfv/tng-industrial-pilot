@@ -14,6 +14,8 @@ tng-sm execute -e configure -p configure_event.yml -s mdc-fsm
 # prints the log outputs of the SSM
 ```
 
+*Actually, this won't work at the moment because the FSM does not match the standard template!*
+
 ## Building and Publishing
 
 The SSM is automatically built and published on DockerHub, whenever a PR is merged into `master`.
