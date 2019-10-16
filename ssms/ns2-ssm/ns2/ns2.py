@@ -161,7 +161,7 @@ class ns2SSM(smbase):
             vnf_name = vnf['vnfr']['name']
             if vnf_name == 'msf-vnf1':
                 vnf_dict['configure']['trigger'] = True
-                vnf_dict['configure']['payload'] = 'IDS Alert 1'
+                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
                 
             response['vnf'].append(vnf_dict)
                 
