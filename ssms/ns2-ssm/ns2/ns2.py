@@ -146,10 +146,9 @@ class ns2SSM(smbase):
         The configure event comes from the policy manager or via the control server from the FMP.
         It indicates an intrusion and should trigger a reconfiguration event sent to the MDC FSM.
         """
-        LOG.info("NS2 SSM: configuration event triggered with content:")
-        LOG.info(content)
+        LOG.debug("NS2 SSM: configuration event triggered with content: {}".format(content))
         
-        response = {'vnf': []}
+        response = {'status': 'COMPLETED', 'vnf': []}
         
         # get IDs of all VNF instances
         for vnf in content['functions']:
@@ -159,9 +158,14 @@ class ns2SSM(smbase):
             }
             
             # trigger reconfig only for MDC VNF
-            if vnf['vnfr']['name'] == 'msf-vnf1':
+            vnf_name = vnf['vnfr']['name']
+            if vnf_name == 'msf-vnf1':
                 vnf_dict['configure']['trigger'] = True
                 vnf_dict['configure']['payload'] = 'IDS Alert 1'
+                
+            response['vnf'].append(vnf_dict)
+                
+            LOG.debug("Added VNF {} to response with {}".format(vnf_name, vnf_dict))
 
         LOG.info("NS2 SSM response: {}".format(response))
         
