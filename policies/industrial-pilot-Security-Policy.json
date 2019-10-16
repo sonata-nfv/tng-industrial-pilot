@@ -22,8 +22,8 @@
 		"name": "IntrusionAlertAction",
 		"salience": 1,
 		"inertia": {
-			"value": 30,
-			"duration_unit": "m"
+			"value": 60,
+			"duration_unit": "s"
 		},
 		"conditions": {
 			"condition": "AND",
