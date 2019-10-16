@@ -51,7 +51,7 @@ class ns2SSM(smbase):
         :param connect_to_to_broker: connect manager to broker or not
         """
 
-        self.sm_id = "ns2"
+        self.sm_id = "tng-ssm-industry-pilot-ns2"
         self.sm_version = "0.1"
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
