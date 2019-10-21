@@ -35,8 +35,8 @@ docker build -t $target_repo/vnf-ids-elasticsearch:k8s -t $target_repo/vnf-ids-e
 # k: kibana
 docker build -t $target_repo/vnf-ids-kibana:k8s -t $target_repo/vnf-ids-kibana:latest -f ids-selk/k/Dockerfile ids-selk/k/
 # usecase3
-docker build -t $target_repo/vnf-usecase3-squidproxy:k8s -t $target_repo/vnf-usecase3-squidproxy:latest -f usecase3/containers/squidproxy/Dockerfile usecase3/containers/squidproxy
-docker build -t $target_repo/vnf-usecase3-vpn-client:k8s -t $target_repo/vnf-usecase3-vpn-client:latest -f usecase3/containers/vpn-client/Dockerfile usecase3/containers/vpn-client
+docker build -t $target_repo/vnf-squidproxy:k8s -t $target_repo/vnf-squidproxy:latest -f usecase3/containers/squidproxy/Dockerfile usecase3/containers/squidproxy
+docker build -t $target_repo/vnf-vpn-client:k8s -t $target_repo/vnf-vpn-client:latest -f usecase3/containers/vpn-client/Dockerfile usecase3/containers/vpn-client
 
 
 #
