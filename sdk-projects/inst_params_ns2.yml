@@ -2,5 +2,5 @@
 MQTT_BROKER_HOST: <ns1_cc_floating_ip>
 
 # for configuration of IDS: this is the only allowed user and hostname to connect to the MDC without an alarm
-SMB_USER_NAME: localadmin
-SMB_CLIENT_NAME: k8s-master
+SMB_USER_NAME: kai
+SMB_CLIENT_NAME: fgcn-tango-shk-hannemann1
