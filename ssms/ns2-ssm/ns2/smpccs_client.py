@@ -28,6 +28,7 @@ import sys
 import time
 import threading
 import grpc
+import os
 import ns2.smpccs_pb2_grpc as pb2_grpc
 import ns2.smpccs_pb2 as pb2
 
@@ -113,12 +114,18 @@ def main():
     if len(sys.argv) > 1:
         name = sys.argv[1]
 
+    # get configurations from envs
+    con_str = os.getenv("smpcc_grpc_endpoint")
+    if con_str is None:
+        print("ENV 'smpcc_grpc_endpoint' not specified.")
+        print("Exit.")
+        exit(1)
+
     # create state object (this must also be done by SSM)
     state = pb2.SsmState(uuid=name, name=name)
     t = SsmCommandControlClient(
         state,
-        connection="127.0.0.1:9012",
-        # connection="fgcn-tango-smp-ctrl.cs.upb.de:9012",
+        connection=con_str,
         callback=test_callback)
     t.start()
 

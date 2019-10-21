@@ -45,6 +45,8 @@ RUN python setup.py install && apt-get purge -y git
 # configrurations
 ENV broker_host amqp://guest:guest@broker:5672/%2F
 ENV broker_exchange son-kernel
+# endpoint of the gRPC command and control server to use
+ENV smpcc_grpc_endpoint fgcn-tango-smp-ctrl.cs.upb.de:9012
 
 ADD ns2-ssm /root
 
