@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t sonatanfv/smp-ccs .
+docker build --no-cache -t sonatanfv/smp-ccs .
