@@ -28,8 +28,8 @@ import sys
 import time
 import threading
 import grpc
-import smpccs_pb2_grpc as pb2_grpc
-import smpccs_pb2 as pb2
+import ns2.smpccs_pb2_grpc as pb2_grpc
+import ns2.smpccs_pb2 as pb2
 
 
 # time to wait until connection retry

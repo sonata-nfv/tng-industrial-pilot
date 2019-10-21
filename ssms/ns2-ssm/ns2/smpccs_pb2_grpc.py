@@ -2,7 +2,7 @@
 # Check tools/smp-ccs for more details or to regenerate these files.
 import grpc
 
-import smpccs_pb2 as smpccs__pb2
+import ns2.smpccs_pb2 as smpccs__pb2
 
 
 class SmpSsmControlStub(object):
