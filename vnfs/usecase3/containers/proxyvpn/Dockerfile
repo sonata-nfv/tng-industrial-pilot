@@ -33,9 +33,13 @@
 from ubuntu:xenial
 
 USER root
-RUN apt update
-RUN apt -y install squid
-RUN systemctl start squid
-RUN systemctl enable squid
+RUN apt -y update && \
+    apt -y upgrade && \
+    apt -y install squid openvpn && \
+    mkdir -p /dev/net && \
+    mknod /dev/net/tun c 10 200 && \
+    chmod 660 /dev/net/tun
 COPY squid.conf /etc/squid/squid.conf
-RUN systemctl restart squid
+COPY weidmueller-client.ovpn /etc/openvpn/weidmueller-client.ovpn
+RUN squid -f /etc/squid/squid.conf 
+CMD openvpn --config /etc/openvpn/weidmueller-client.ovpn
