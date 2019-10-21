@@ -1,6 +1,7 @@
 # for MQTT connection to NS1 (get IP after instantiating NS1)
 MQTT_BROKER_HOST: <ns1_cc_floating_ip>
+QUARANTINE_MQTT_BROKER_HOST: <quarantine_ns1_cc_floating_ip>
 
 # for configuration of IDS: this is the only allowed user and hostname to connect to the MDC without an alarm
-SMB_USER_NAME: kai
-SMB_CLIENT_NAME: fgcn-tango-shk-hannemann1
+SMB_USER_NAME: localadmin
+SMB_CLIENT_NAME: K8S-MASTER

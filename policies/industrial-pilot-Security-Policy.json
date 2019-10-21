@@ -1,0 +1,51 @@
+{
+	"descriptor_schema": "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/policy-descriptor/policy-schema.yml",
+	"name": "industrial-pilot-Security-Policy1",
+	"vendor": "eu.5gtango",
+	"version": "0.5",
+	"network_service": {
+		"vendor": "eu.5gtango",
+		"name": "tng-smpilot-ns2-eids",
+		"version": "0.8"
+	},
+	"monitoring_rules": [
+		{
+			"name": "lhc-vnf2:cdu02:ip0:greater0",
+			"description": "Trigger events if ip0 is greater than 0.",
+			"duration": 1,
+			"duration_unit": "s",
+			"condition": "ip0",
+			"threshold": " > 0"
+		}
+	],
+	"policyRules": [{
+		"name": "IntrusionAlertAction",
+		"salience": 1,
+		"inertia": {
+			"value": 60,
+			"duration_unit": "s"
+		},
+		"conditions": {
+			"condition": "AND",
+			"rules": [{
+				"id": "lhc-vnf2.LogMetric",
+				"field": "lhc-vnf2.LogMetric",
+				"type": "string",
+				"input": "text",
+				"operator": "equal",
+				"value": "lhc_vnf2_cdu02_ip0_greater0"
+			}]
+		},
+		"actions": [{
+			"action_object": "AlertAction",
+			"action_type": "LogMessage",
+			"name": "intrusion",
+			"value": "1",
+			"target": {
+				"name": "lhc-vnf2",
+				"vendor": "eu.5gtango",
+				"version": "0.8"
+			}
+		}]
+	}]
+}

@@ -45,6 +45,9 @@ docker push sonatanfv/vnf-squidproxy:latest
 docker push sonatanfv/vnf-vpn-client:latest
 
 # FSMs
-docker push sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest
+docker push sonatanfv/tng-fsm-industry-pilot-mdc-vnf1:latest
 # SSMs
-docker push sonatanfv/sonfsmindustry-pilotns2-ssm:latest
+docker push sonatanfv/tng-ssm-industry-pilot-ns2:latest
+
+# SMP-CCS
+docker push sonatanfv/smp-ccs:latest

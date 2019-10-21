@@ -28,42 +28,63 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
 vendor: eu.5gtango
 name: msf-vnf1
-version: '0.7'
+version: '0.8'
 author: sm-pilot@5gtango.eu
 description: 'a CNF with three VDUs: MDC + Suricata + Filebeat'
 
 # loosely corresponds to the "containers" section in a k8s deployment
 cloudnative_deployment_units:
+
 - id: cdu01
   image: 'sonatanfv/vnf-mdc:latest'
   connection_points:
-    - id: smb139
-      port: 139
-    - id: smb445
-      port: 445
+  - id: smb139
+    port: 139
+  - id: smb445
+    port: 445
+  monitoring_parameters:
+  - name: "container_cpu_load_average_10s"
+    unit: "Percentage"
+  - name: "container_memory_usage_bytes"
+    unit: "MB"
+  - name: "container_network_receive_bytes_total"
+    unit: "MB"
+  - name: "container_network_transmit_bytes_total"
+    unit: "MB"
   parameters:
     env:
       # TODO: this should point to the k8s service layer of the CC
       # the SP should add an env variable that contains this k8s service name
       MQTT_BROKER_HOST: ns1-cc-service
       MQTT_BROKER_PORT: 1883
+
 - id: cdu02
   image: sonatanfv/vnf-ids-suricata:latest
   connection_points: []
   parameters:
     env:
-      VERSION: '0.7'
+      VERSION: '0.8'
     volume_mounts:
     - id: logs
       location: '/var/log/suricata'
+
 - id: cdu03
   image: sonatanfv/vnf-ids-filebeat:latest
   connection_points: []
+  monitoring_parameters:
+  - name: "container_cpu_load_average_10s"
+    unit: "Percentage"
+  - name: "container_memory_usage_bytes"
+    unit: "MB"
+  - name: "container_network_receive_bytes_total"
+    unit: "MB"
+  - name: "container_network_transmit_bytes_total"
+    unit: "MB"
   parameters:
     env:
-      lhc_vnf2_eu_5gtango_0_7_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
-      lhc_vnf2_eu_5gtango_0_7_logstash5044_port: 5044
-      VERSION: '0.7'
+      lhc_vnf2_eu_5gtango_0_8_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
+      lhc_vnf2_eu_5gtango_0_8_logstash5044_port: 5044
+      VERSION: '0.8'
     volume_mounts:
     - id: logs
       location: '/var/log/suricata'
@@ -97,9 +118,9 @@ virtual_links:
 
 # Assign a FSM (for reconfiguration) to the MDC CNF
 function_specific_managers:
- - id: "sonfsmindustry-pilotmdc-vnfcss1"
+ - id: "tng-fsm-industry-pilot-mdc-vnf1"
    description: "FSM to reconfigure the MDC"
-   image: "sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest"
+   image: "sonatanfv/tng-fsm-industry-pilot-mdc-vnf1:latest"
    options:
      - key: "type"
        value: "configure"

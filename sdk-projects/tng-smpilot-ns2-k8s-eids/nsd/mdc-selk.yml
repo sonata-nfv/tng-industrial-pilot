@@ -29,7 +29,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
 name: tng-smpilot-ns2-eids
-version: '0.7'
+version: '0.8'
 author: sm-pilot@5gtango.eu
 description: 'a CNF for MDC with SELK (sidecar) enhanced security barrier'
 
@@ -37,19 +37,19 @@ network_functions:
 - vnf_id: vnf1
   vnf_vendor: eu.5gtango
   vnf_name: msf-vnf1
-  vnf_version: '0.7'
+  vnf_version: '0.8'
 - vnf_id: vnf2
   vnf_vendor: eu.5gtango
   vnf_name: lhc-vnf2
-  vnf_version: '0.7'
+  vnf_version: '0.8'
 - vnf_id: vnf3
   vnf_vendor: eu.5gtango
   vnf_name: e-vnf3
-  vnf_version: '0.7'
+  vnf_version: '0.8'
 - vnf_id: vnf4
   vnf_vendor: eu.5gtango
   vnf_name: k-vnf4
-  vnf_version: '0.7'
+  vnf_version: '0.8'
   
 # external CPs of the NS. only need to define what needs to be accessible from the outside
 connection_points:
@@ -78,30 +78,38 @@ virtual_links:
   connectivity_type: E-LAN
   connection_points_reference:
     - smb139
-    - vnf1:smb139
+    - "vnf1:smb139"
 - id: smb445link
   connectivity_type: E-LAN
   connection_points_reference:
     - smb445
-    - vnf1:smb445
+    - "vnf1:smb445"
 - id: logstash5044link
   connectivity_type: E-LAN
   connection_points_reference:
     - logstash5044
-    - vnf2:logstash5044
+    - "vnf2:logstash5044"
 - id: flask5000link
   connectivity_type: E-LAN
   connection_points_reference:
     - flask5000
-    - vnf2:flask5000
+    - "vnf2:flask5000"
 - id: elastic9200link
   connectivity_type: E-LAN
   connection_points_reference:
     - elastic9200
-    - vnf3:elastic9200
+    - "vnf3:elastic9200"
 - id: kibana5601link
   connectivity_type: E-LAN
   connection_points_reference:
     - kibana5601
-    - vnf4:kibana5601
+    - "vnf4:kibana5601"
  
+ # Assign a SSM for reconfiguration after an IDS intrusion alarm
+service_specific_managers:
+ - id: "tng-ssm-industry-pilot-ns2"
+   description: "SSM to trigger reconfiguration via the MDC FSM"
+   image: "sonatanfv/tng-ssm-industry-pilot-ns2:latest"
+   options:
+     - key: "type"
+       value: "configure"
