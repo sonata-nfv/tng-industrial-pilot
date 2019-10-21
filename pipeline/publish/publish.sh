@@ -25,6 +25,8 @@ docker push sonatanfv/vnf-ids-logstash:k8s
 docker push sonatanfv/vnf-ids-http:k8s
 docker push sonatanfv/vnf-ids-elasticsearch:k8s
 docker push sonatanfv/vnf-ids-kibana:k8s
+docker push sonatanfv/vnf-squidproxy:k8s
+docker push sonatanfv/vnf-vpn-client:k8s
 
 docker push sonatanfv/vnf-dt:latest
 docker push sonatanfv/vnf-mdc:latest
@@ -39,6 +41,8 @@ docker push sonatanfv/vnf-ids-logstash:latest
 docker push sonatanfv/vnf-ids-http:latest
 docker push sonatanfv/vnf-ids-elasticsearch:latest
 docker push sonatanfv/vnf-ids-kibana:latest
+docker push sonatanfv/vnf-squidproxy:latest
+docker push sonatanfv/vnf-vpn-client:latest
 
 # FSMs
 docker push sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest
