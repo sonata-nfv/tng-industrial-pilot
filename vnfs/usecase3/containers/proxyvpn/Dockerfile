@@ -1,4 +1,4 @@
-#  Copyright (c) 2015 SONATA-NFV, 5GTANGO, Paderborn University
+#  Copyright (c) 2015 SONATA-NFV, 5GTANGO, UBIWHERE, Paderborn University
 # ALL RIGHTS RESERVED.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,10 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither the name of the SONATA-NFV, 5GTANGO, Paderborn University
+# Neither the name of the SONATA-NFV, 5GTANGO, UBIWHERE, Paderborn University
 # nor the names of its contributors may be used to endorse or promote
 # products derived from this software without specific prior written
 # permission.
+#
+# This work has been performed in the framework of the SONATA project,
+# funded by the European Commission under Grant number 671517 through
+# the Horizon 2020 and 5G-PPP programmes. The authors would like to
+# acknowledge the contributions of their colleagues of the SONATA
+# partner consortium (www.sonata-nfv.eu).
 #
 # This work has also been performed in the framework of the 5GTANGO project,
 # funded by the European Commission under Grant number 761493 through
@@ -24,27 +30,16 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 
-from setuptools import setup, find_packages
+from ubuntu:xenial
 
-setup(name='smpccs',
-      license='Apache License, Version 2.0',
-      version='0.1',
-      url='https://github.com/sonata-nfv/tng-industrial-pilot',
-      author='Manuel Peuster',
-      author_email='manuel.peuster@uni-paderborn.de',
-      long_description="5GTANGO industry pilot controller",
-      package_dir={'': 'src'},
-      packages=find_packages('src'),  # dependency resolution
-      # namespace_packages=['tngsdk', ],
-      include_package_data=True,       # package data specified in MANIFEST.in
-      install_requires=["grpcio-tools",
-                        "flask-restplus"],
-      zip_safe=False,
-      entry_points={
-          'console_scripts': [
-              'smpccs=smpccs.server:main',
-              'smpccc=smpccs.client:main',
-          ],
-      },
-      setup_requires=[],
-      tests_require=['pytest'])
+USER root
+RUN apt -y update && \
+    apt -y upgrade && \
+    apt -y install squid openvpn && \
+    mkdir -p /dev/net && \
+    mknod /dev/net/tun c 10 200 && \
+    chmod 660 /dev/net/tun
+COPY squid.conf /etc/squid/squid.conf
+COPY weidmueller-client.ovpn /etc/openvpn/weidmueller-client.ovpn
+RUN squid -f /etc/squid/squid.conf 
+CMD openvpn --config /etc/openvpn/weidmueller-client.ovpn

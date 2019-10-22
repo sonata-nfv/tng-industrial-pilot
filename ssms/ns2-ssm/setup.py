@@ -64,10 +64,16 @@ setup(
 
     packages=find_packages(),
     install_requires=[],
+    # install_requires=["grpcio-tools",
+    #                  "flask-restplus"],
     setup_requires=[],
 
     entry_points={
-        'console_scripts': ['ns2=ns2.__main__:main'],
+        'console_scripts': [
+            'ns2=ns2.__main__:main',
+            # direct entry point for gRPC CCS client (for debugging only)
+            'smpccc=ns2.smpccs_client:main'
+        ],
     },
 
 )
