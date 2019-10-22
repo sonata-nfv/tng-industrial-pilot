@@ -63,8 +63,9 @@ setup(
     keywords='NFV orchestrator',
 
     packages=find_packages(),
-    install_requires=["grpcio-tools",
-                      "flask-restplus"],
+    install_requires=[],
+    # install_requires=["grpcio-tools",
+    #                  "flask-restplus"],
     setup_requires=[],
 
     entry_points={
