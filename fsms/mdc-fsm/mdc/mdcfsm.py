@@ -168,7 +168,7 @@ class MdcFsm(smbase):
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
-            'status': 'completed',
+            'status': 'COMPLETED',
             'envs': [{
                 'cdu_id': 'cdu01',
                 'envs': {'MQTT_BROKER_HOST': quarantine_ns1_host}
