@@ -155,22 +155,32 @@ class MdcFsm(smbase):
         
         # get hostname of the quarantine NS1 from the NSR. Note: Only possible if set as instantiation param, when starting the NS (not preconfigured env)!
         # example content: http://logs.sonata-nfv.eu/messages/graylog_65/fbe87433-f568-11e9-a4e4-0242ac130004
-        quarantine_ns1_host = 'Not set!'
-        # envs are the same for all CDUs of CNF; so just taking the first one
-        envs = content['generic_envs'][0]['envs']
-        if 'QUARANTINE_MQTT_BROKER_HOST' in envs:
-            quarantine_ns1_host = envs['QUARANTINE_MQTT_BROKER_HOST']
-            error_msg = 'None'
-            LOG.info("MDC FSM: Quarantine NS1 host: {}".format(quarantine_ns1_host))
-        else:
-            error_msg = "'QUARANTINE_MQTT_BROKER_HOST' not found in envs"
-            LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in envs")
+        cdu_id = None
+        quarantine_ns1_host = None
+        error_msg = 'None'
+        
+        # loop over CDUs to find CDU01 which belongs to the MDC
+        for cdu in content['generic_envs']:
+            id = cdu['cdu_id']
+            if id.startswith('cdu01'):
+                cdu_id = id
+                if 'QUARANTINE_MQTT_BROKER_HOST' in cdu['envs']:
+                    quarantine_ns1_host = cdu['envs']['QUARANTINE_MQTT_BROKER_HOST']
+                    LOG.info("MDC FSM: Quarantine NS1 host: {} for CDU: {}".format(quarantine_ns1_host, cdu_id))
+                else:
+                    error_msg = "MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in envs"
+                    LOG.error(error_msg)
+                break
+                
+        if cdu_id is None:
+            error_msg = "MDC FSM: MDC cdu01 ID not found"
+            LOG.error(error_msg)
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
             'status': 'COMPLETED',
             'envs': [{
-                'cdu_id': 'cdu01',
+                'cdu_id': cdu_id,
                 'envs': {'MQTT_BROKER_HOST': quarantine_ns1_host}
                 }],
             'error': error_msg
