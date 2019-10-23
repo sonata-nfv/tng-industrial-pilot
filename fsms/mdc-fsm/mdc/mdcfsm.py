@@ -151,18 +151,20 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
-        LOG.debug("MDC FSM: configuration event triggered with content: {}".format(content))
+        LOG.debug("MDC FSM: Starting configuration event")
         
-        # get hostname of the quarantine NS1 from the NSR
+        # get hostname of the quarantine NS1 from the NSR. Note: Only possible if set as instantiation param, when starting the NS (not preconfigured env)!
+        # example content: http://logs.sonata-nfv.eu/messages/graylog_65/fbe87433-f568-11e9-a4e4-0242ac130004
         quarantine_ns1_host = 'Not set!'
-        nsr = content['nsr']
-        if 'params' not in nsr:
-            LOG.warning("MDC FSM: No 'params' found in NSR")
-        elif 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
-            LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in NSR params")
-        else:
-            quarantine_ns1_host = nsr['params']['QUARANTINE_MQTT_BROKER_HOST']
+        # envs are the same for all CDUs of CNF; so just taking the first one
+        envs = content['generic_envs'][0]['envs']
+        if 'QUARANTINE_MQTT_BROKER_HOST' in envs:
+            quarantine_ns1_host = envs['QUARANTINE_MQTT_BROKER_HOST']
+            error_msg = 'None'
             LOG.info("MDC FSM: Quarantine NS1 host: {}".format(quarantine_ns1_host))
+        else:
+            error_msg = "'QUARANTINE_MQTT_BROKER_HOST' not found in envs"
+            LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in envs")
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
@@ -171,9 +173,9 @@ class MdcFsm(smbase):
                 cdu_id: cdu01,
                 envs: {MQTT_BROKER_HOST: quarantine_ns1_host}
                 }],
-            error: 'None'
+            error: error_msg
             } 
-        LOG.info("MDC FSM response: {}".format(response))
+        LOG.info("MDC FSM: Configuration event complete")
         
         return response
 
