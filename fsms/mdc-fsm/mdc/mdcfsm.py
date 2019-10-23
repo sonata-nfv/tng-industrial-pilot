@@ -168,12 +168,12 @@ class MdcFsm(smbase):
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
-            status: 'completed',
-            envs: [{
-                cdu_id: cdu01,
-                envs: {MQTT_BROKER_HOST: quarantine_ns1_host}
+            'status': 'completed',
+            'envs': [{
+                'cdu_id': 'cdu01',
+                'envs': {'MQTT_BROKER_HOST': quarantine_ns1_host}
                 }],
-            error: error_msg
+            'error': error_msg
             } 
         LOG.info("MDC FSM: Configuration event complete")
         
