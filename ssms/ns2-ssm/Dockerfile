@@ -34,7 +34,9 @@ FROM python:3.4-slim
 MAINTAINER SONATA
 
 # install broker with fix
-RUN apt-get update && apt-get install -y git gcc g++ python3-dev
+RUN apt-get update && apt-get install -y git
+RUN pip install grpcio-tools
+RUN pip install flask-restplus
 RUN git clone --single-branch --branch feature/reuse_channels https://github.com/eandersson/amqpstorm.git
 RUN git clone https://github.com/sonata-nfv/tng-cli.git
 WORKDIR /amqpstorm
