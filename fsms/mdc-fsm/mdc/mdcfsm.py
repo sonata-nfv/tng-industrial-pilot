@@ -151,29 +151,41 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
-        LOG.debug("MDC FSM: configuration event triggered with content: {}".format(content))
+        LOG.debug("MDC FSM: Starting configuration event")
         
-        # get hostname of the quarantine NS1 from the NSR
-        quarantine_ns1_host = 'Not set!'
-        nsr = content['nsr']
-        if 'params' not in nsr:
-            LOG.warning("MDC FSM: No 'params' found in NSR")
-        elif 'QUARANTINE_MQTT_BROKER_HOST' not in nsr['params']:
-            LOG.warning("MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in NSR params")
-        else:
-            quarantine_ns1_host = nsr['params']['QUARANTINE_MQTT_BROKER_HOST']
-            LOG.info("MDC FSM: Quarantine NS1 host: {}".format(quarantine_ns1_host))
+        # get hostname of the quarantine NS1 from the NSR. Note: Only possible if set as instantiation param, when starting the NS (not preconfigured env)!
+        # example content: http://logs.sonata-nfv.eu/messages/graylog_65/fbe87433-f568-11e9-a4e4-0242ac130004
+        cdu_id = None
+        quarantine_ns1_host = None
+        error_msg = 'None'
+        
+        # loop over CDUs to find CDU01 which belongs to the MDC
+        for cdu in content['generic_envs']:
+            id = cdu['cdu_id']
+            if id.startswith('cdu01'):
+                cdu_id = id
+                if 'QUARANTINE_MQTT_BROKER_HOST' in cdu['envs']:
+                    quarantine_ns1_host = cdu['envs']['QUARANTINE_MQTT_BROKER_HOST']
+                    LOG.info("MDC FSM: Quarantine NS1 host: {} for CDU: {}".format(quarantine_ns1_host, cdu_id))
+                else:
+                    error_msg = "MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in envs"
+                    LOG.error(error_msg)
+                break
+                
+        if cdu_id is None:
+            error_msg = "MDC FSM: MDC cdu01 ID not found"
+            LOG.error(error_msg)
         
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
-            status: 'completed',
-            envs: [{
-                cdu_id: cdu01,
-                envs: {MQTT_BROKER_HOST: quarantine_ns1_host}
+            'status': 'COMPLETED',
+            'envs': [{
+                'cdu_id': cdu_id,
+                'envs': {'MQTT_BROKER_HOST': quarantine_ns1_host}
                 }],
-            error: 'None'
+            'error': error_msg
             } 
-        LOG.info("MDC FSM response: {}".format(response))
+        LOG.info("MDC FSM: Configuration event complete")
         
         return response
 
