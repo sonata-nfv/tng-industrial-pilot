@@ -107,9 +107,13 @@ virtual_links:
  
  # Assign a SSM for reconfiguration after an IDS intrusion alarm
 service_specific_managers:
- - id: "tng-ssm-industry-pilot-ns2"
-   description: "SSM to trigger reconfiguration via the MDC FSM"
-   image: "sonatanfv/tng-ssm-industry-pilot-ns2:latest"
-   options:
-     - key: "type"
-       value: "configure"
+  - id: "tng-ssm-industry-pilot-ns2"
+    description: "SSM to trigger reconfiguration via the MDC FSM"
+    image: "sonatanfv/tng-ssm-industry-pilot-ns2:latest"
+    options:
+      - key: "type"
+        value: "configure"
+      - key: "type"
+        value: "task"
+      - key: "type"
+        value: "monitor"
