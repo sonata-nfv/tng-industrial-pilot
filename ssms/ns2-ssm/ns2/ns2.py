@@ -53,6 +53,8 @@ class ns2SSM(smbase):
 
         self.sm_id = "tng-ssm-industry-pilot-ns2"
         self.sm_version = "0.1"
+        self.vnfrs = []
+        self.service_id = None
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
                                              sm_version=self.sm_version,
@@ -136,8 +138,15 @@ class ns2SSM(smbase):
         This method handles a task event.
         """
 
-        # Dummy content
-        response = {'status': 'COMPLETED'}
+        # Update the received schedule
+        schedule = content['schedule']
+
+        schedule.insert(11, 'configure_ssm')
+
+        response = {'schedule': schedule, 'status': 'COMPLETED'}
+
+        LOG.info("task request responded to: " + str(response))
+
         return response
 
     def configure_event(self, content):
@@ -149,27 +158,42 @@ class ns2SSM(smbase):
         LOG.debug("NS2 SSM: Starting configuration event")
         
         response = {'status': 'COMPLETED', 'vnf': []}
-        
-        # get IDs of all VNF instances
-        for vnf in content['functions']:
-            vnf_name = vnf['vnfr']['name']
-            vnf_dict = {
-                'id': vnf['vnfr']['id'],
-                'name': vnf_name,
-                'configure': {'trigger': False}
-            }
-            
-            # trigger reconfig only for MDC VNF
-            if vnf_name == 'msf-vnf1':
-                vnf_dict['configure']['trigger'] = True
-                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
-                
-            response['vnf'].append(vnf_dict)
-                
-            LOG.debug("Added VNF {} to response with {}".format(vnf_name, vnf_dict))
 
-        LOG.info("NS2 SSM configure event complete")
-        
+        if content['workflow'] == 'instantiation':
+
+            LOG.info("Extracting service intance id and vnfrs")
+
+            self.service_id = content['service']['id']
+
+            for function in content['functions']:
+                self.vnfrs.append(function['vnfr'])
+
+            LOG.info(self.service_id)
+            LOG.info(len(self.vnfrs))
+            
+            # TODO: link between MANO and 3rd party app
+
+        else:
+            # get IDs of all VNF instances
+            for vnf in content['functions']:
+                vnf_name = vnf['vnfr']['name']
+                vnf_dict = {
+                    'id': vnf['vnfr']['id'],
+                    'name': vnf_name,
+                    'configure': {'trigger': False}
+                }
+                
+                # trigger reconfig only for MDC VNF
+                if vnf_name == 'msf-vnf1':
+                    vnf_dict['configure']['trigger'] = True
+                    vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
+                    
+                response['vnf'].append(vnf_dict)
+                    
+                LOG.debug("Added VNF {} to response with {}".format(vnf_name, vnf_dict))
+
+            LOG.info("NS2 SSM configure event complete")
+            
         return response
 
     def state_event(self, content):
