@@ -31,13 +31,13 @@ echo "DT: Wait for MDC ... (3 seconds)"
 sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
 
 echo "DT: Mount em63_share from MDC ..."
-#mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
+mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
 
-# auto fs: set MDC address in configs, then start autofs
-sed "s/EM63_HOST/$DT_EM63_SHARE_HOST/" /etc/autofs/auto.master
-sed "s/EM63_HOST/$DT_EM63_SHARE_HOST/" /etc/autofs/auto.em63
-service autofs restart
-sleep 2
+# auto fs (instead of mount): set MDC address in configs, then start autofs
+#sed "s/EM63_HOST/$DT_EM63_SHARE_HOST/" /etc/autofs/auto.master
+#sed "s/EM63_HOST/$DT_EM63_SHARE_HOST/" /etc/autofs/auto.em63
+#service autofs restart
+#sleep 2
 
 
 echo "DT: Starting DigitalTwin generator ..."

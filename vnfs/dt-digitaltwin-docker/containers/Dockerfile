@@ -46,8 +46,8 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 # copy autofs configuration
-ADD auto.master /etc/autofs/auto.master
-ADD auto.em63 /etc/autofs/auto.em63
+#ADD auto.master /etc/autofs/auto.master
+#ADD auto.em63 /etc/autofs/auto.em63
 
 # digital twin tool
 ADD IMMS_APP IMMS_APP
