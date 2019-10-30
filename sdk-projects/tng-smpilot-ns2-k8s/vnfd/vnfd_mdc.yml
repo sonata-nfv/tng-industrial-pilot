@@ -74,9 +74,9 @@ virtual_links:
 
 # Assign a FSM (for reconfiguration) to the MDC CNF
 function_specific_managers:
- - id: "sonfsmindustry-pilotmdc-vnfcss1"
+ - id: "tng-fsm-industry-pilot-mdc-vnf1"
    description: "FSM to reconfigure the MDC"
-   image: "sonatanfv/sonfsmindustry-pilotmdc-vnf1:latest"
+   image: "sonatanfv/tng-fsm-industry-pilot-mdc-vnf1:latest"
    options:
      - key: "type"
        value: "configure"
