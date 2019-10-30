@@ -34,14 +34,18 @@ partner consortium (www.5gtango.eu).
 
 import logging
 import yaml
+import os
+import time
 import tnglib
 from smbase.smbase import smbase
 try:  # Docker
     from ns2.smpccs_client import SsmCommandControlClient
     from ns2.smpccs_pb2 import SsmState
+    INIT_DELAY = 1  # only wait a small amount of time
 except:  # tmg-sdk-sm
     from smpccs_client import SsmCommandControlClient
     from smpccs_pb2 import SsmState
+    INIT_DELAY = 5  # wait longer for debugging
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
@@ -171,6 +175,25 @@ class ns2SSM(smbase):
             LOG.info("NS2 SSM: configure/reconfiguration event triggered")
             return self._configure_event_reconfiguration(content)
 
+    def _get_service_instance_uuid(self):
+        try:
+            return self._service_info['service']['id']
+        except BaseException as ex:
+            LOG.error("NS2 SSM: Coudn't fetch instance UUID: {}"
+                      .format(ex))
+            return None
+
+    def _get_service_name(self):
+        try:
+            vendor = self._service_info['service']['nsd']['vendor']
+            name = self._service_info['service']['nsd']['name']
+            version = self._service_info['service']['nsd']['version']
+            return "{}.{}.{}".format(vendor, name, version)
+        except BaseException as ex:
+            LOG.error("NS2 SSM: Coudn't fetch service name: {}"
+                      .format(ex))
+            return None
+
     def _configure_event_instantiation(self, content):
         """
         Configure event called upon instantiaten of the service.
@@ -183,12 +206,32 @@ class ns2SSM(smbase):
         LOG.debug("NS2 SSM: Stored service instance information: {}"
                   .format(self._service_info))
 
-        #self.service_id = content['service']['id']
-        #for function in content['functions']:
-        #    self.vnfrs.append(function['vnfr'])
-        #LOG.info(self.service_id)
-        #LOG.info(len(self.vnfrs))
-        # TODO: link between MANO and 3rd party app
+        # initialize local service state
+        suuid = self._get_service_instance_uuid()
+        sname = self._get_service_name()
+        if suuid is not None and sname is not None:
+            self._service_state = SsmState(uuid=suuid, name=sname)
+
+        # get address of remote SMP-CC server
+        con_str = os.getenv("smpcc_grpc_endpoint")
+        if con_str is None:
+            LOG.error("NS2 SSM: Could not find 'smpcc_grpc_endpoint'")
+
+        # initialize SMP-CC client and connect to remote control server
+        if con_str is not None and self._service_state is not None:
+            smpccc = SsmCommandControlClient(
+                self._service_state,
+                connection=con_str,
+                callback=None)
+            smpccc.start()  # runs in dedicated daemon thread
+
+        # Give the client some time start
+        # TODO this is an ugly hack! better build a lock-based mechanism
+        LOG.info("NS2 SSM: Waiting for SMP-CC client to start ({}s)"
+                 .format(INIT_DELAY))
+        time.sleep(INIT_DELAY)
+
+        # TODO: Implement callback upon remote state change!
 
         # done
         LOG.info("NS2 SSM: configure/instantiation event completed")
