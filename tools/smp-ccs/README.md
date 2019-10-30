@@ -24,6 +24,9 @@ docker pull sonatanfv/smp-ccs
 
 # start the container
 docker run -d -p 9011:9011 -p 9012:9012 --restart always --name smp-ccs sonatanfv/smp-ccs
+
+# remotly monitor the server using REST (since its logs are quite limited)
+watch curl -X GET fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus
 ```
 
 ## REST API
