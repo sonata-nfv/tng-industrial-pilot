@@ -58,8 +58,12 @@ class ns2SSM(smbase):
 
         self.sm_id = "tng-ssm-industry-pilot-ns2"
         self.sm_version = "0.1"
-        self.vnfrs = []
-        self.service_id = None
+
+        # local state/info initialized during initial configuration event
+        # local copy of service info (configuration event content)
+        self._service_info = None
+        # state of the service (e.g. quarantaine yes/no)
+        self._service_state = None
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
                                              sm_version=self.sm_version,
@@ -160,10 +164,11 @@ class ns2SSM(smbase):
         It calls either an initial configuration or a
         reconfiguration of the MDC.
         """
-        LOG.debug("NS2 SSM: Starting configuration event")
         if content['workflow'] == 'instantiation':
+            LOG.info("NS2 SSM: configure/instantiation event triggered")
             return self._configure_event_instantiation(content)
         else:
+            LOG.info("NS2 SSM: configure/reconfiguration event triggered")
             return self._configure_event_reconfiguration(content)
 
     def _configure_event_instantiation(self, content):
@@ -173,15 +178,22 @@ class ns2SSM(smbase):
         and establishes the connection to the external control server (SMP-CC).
         """
         response = {'status': 'COMPLETED', 'vnf': []}
-        LOG.info("Extracting service intance id and vnfrs")
-        self.service_id = content['service']['id']
-        for function in content['functions']:
-            self.vnfrs.append(function['vnfr'])
-        LOG.info(self.service_id)
-        LOG.info(len(self.vnfrs))
+        # store local copy of service information for later use
+        self._service_info = content.copy()
+        LOG.debug("NS2 SSM: Stored service instance information: {}"
+                  .format(self._service_info))
+
+        #self.service_id = content['service']['id']
+        #for function in content['functions']:
+        #    self.vnfrs.append(function['vnfr'])
+        #LOG.info(self.service_id)
+        #LOG.info(len(self.vnfrs))
         # TODO: link between MANO and 3rd party app
+
         # done
-        LOG.info("NS2 SSM init-configure event complete")
+        LOG.info("NS2 SSM: configure/instantiation event completed")
+        LOG.debug("NS2 SSM: configure/instantiation event response: {}"
+                  .format(response))
         return response
 
     def _configure_event_reconfiguration(self, content):
@@ -207,10 +219,10 @@ class ns2SSM(smbase):
                 vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
             # build the response
             response['vnf'].append(vnf_dict)
-            LOG.debug("Added VNF {} to response with {}"
-                      .format(vnf_name, vnf_dict))
         # done
-        LOG.info("NS2 SSM re-configure event complete")
+        LOG.info("NS2 SSM: configure/reconfiguration event completed")
+        LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"
+                  .format(response))
         return response
 
     def state_event(self, content):
