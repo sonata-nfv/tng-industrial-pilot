@@ -35,8 +35,7 @@ RUN apt-get update && apt-get install -y \
     iptables \
     python3-pip \
     smbclient \
-    cifs-utils \
-	autofs
+    cifs-utils
 
 ENV LC_ALL C.UTF-8
 
@@ -44,10 +43,6 @@ ENV LC_ALL C.UTF-8
 RUN pip3 install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
-
-# copy autofs configuration
-ADD auto.master /etc/autofs/auto.master
-ADD auto.em63 /etc/autofs/auto.em63
 
 # digital twin tool
 ADD IMMS_APP IMMS_APP

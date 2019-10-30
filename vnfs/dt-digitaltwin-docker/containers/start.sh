@@ -33,13 +33,6 @@ sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
 echo "DT: Mount em63_share from MDC ..."
 mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
 
-# auto fs (instead of mount): set MDC address in configs, then start autofs
-#sed "s/EM63_SHARE$DT_EM63_SHARE/" /etc/autofs/auto.master
-#sed "s/EM63_HOST/$DT_EM63_SHARE_HOST/" /etc/autofs/auto.em63
-#service autofs restart
-#sleep 2
-
-
 echo "DT: Starting DigitalTwin generator ..."
 cd IMMS_APP
 python3 IMMS_APP.py --autostart
