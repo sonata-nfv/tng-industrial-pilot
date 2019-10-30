@@ -1,0 +1,678 @@
+---
+egress: null
+functions:
+- vnfr:
+    name: msf-vnf1
+    id: aa1b793b-a075-4b00-a947-887be5b5f1aa
+- configure:
+    payload: {}
+    trigger: true
+  deployed: true
+  flavour: null
+  id: 171b793b-a075-4b00-a947-887be5b5f1b1
+  scale:
+    payload: {}
+    trigger: true
+  start:
+    payload: {}
+    trigger: true
+  stop:
+    payload: {}
+    trigger: true
+  vim_uuid: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+  vnfd:
+    author: 5GTANGO Test Team
+    connection_points:
+    - id: mgmt
+      interface: ipv4
+      type: management
+    - id: input
+      interface: ipv4
+      type: external
+    - id: output
+      interface: ipv4
+      type: external
+    description: This is a integration test artifact.
+    descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+    function_specific_managers:
+    - description: FSM to do some dummy config on the cirros for testing purposes
+      id: cirros
+      image: tsoenen/cirros-fsm
+      options:
+      - key: type
+        value: start
+      - key: type
+        value: configure
+      - key: type
+        value: state
+    name: testvnf
+    uuid: 7eeace27-7758-4e16-9cab-ee7ab05a361f
+    vendor: eu.5gtango
+    version: '0.1'
+    virtual_deployment_units:
+    - connection_points:
+      - fip: true
+        id: eth0
+        interface: ipv4
+        network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+        type: internal
+      - fip: true
+        id: eth1
+        interface: ipv4
+        network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+        type: internal
+      - fip: true
+        id: eth2
+        interface: ipv4
+        network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+        type: internal
+      id: vdu01-171b793b-a075-4b00-a947-887be5b5f1b1
+      resource_requirements:
+        cpu:
+          vcpus: 1
+        memory:
+          size: 2
+          size_unit: GB
+        storage:
+          size: 10
+          size_unit: GB
+      vm_image: http://www.google.com
+      vm_image_format: qcow2
+      vm_image_md5: ee1eca47dc88f4879d8a229cc70a07c6
+    virtual_links:
+    - connection_points_reference:
+      - vdu01:eth0
+      - mgmt
+      connectivity_type: E-LAN
+      dhcp: true
+      id: mgmt-2-mgmt
+    - connection_points_reference:
+      - vdu01:eth1
+      - input
+      connectivity_type: E-Line
+      dhcp: true
+      id: input-2-vdu01
+    - connection_points_reference:
+      - vdu01:eth2
+      - output
+      connectivity_type: E-Line
+      dhcp: true
+      id: vdu01-2-output
+  vnfr:
+    descriptor_reference: 7eeace27-7758-4e16-9cab-ee7ab05a361f
+    descriptor_version: vnfr-schema-01
+    id: 171b793b-a075-4b00-a947-887be5b5f1b1
+    name: testvnf
+    status: offline
+    version: '1'
+    virtual_deployment_units:
+    - id: vdu01
+      number_of_instances: 1
+      resource_requirements:
+        cpu:
+          vcpus: 1
+        memory:
+          size: 2
+          size_unit: GB
+        storage:
+          size: 10
+          size_unit: GB
+      vdu_reference: testvnf:vdu01-171b793b-a075-4b00-a947-887be5b5f1b1
+      vm_image: http://www.google.com
+      vnfc_instance:
+      - connection_points:
+        - id: eth0
+          interface:
+            address: 10.120.0.206
+            hardware_address: fa:16:3e:05:32:f5
+          type: internal
+        - id: eth1
+          interface:
+            address: 10.120.0.207
+            hardware_address: fa:16:3e:c2:ed:7c
+          type: internal
+        - id: eth2
+          interface:
+            address: 10.120.0.205
+            hardware_address: fa:16:3e:38:04:d5
+          type: internal
+        id: '0'
+        vc_id: ce0ca8f8-ec3a-4152-a9a3-b69fb9ef2fec
+        vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    virtual_links:
+    - connection_points_reference:
+      - vdu01:eth0
+      - mgmt
+      connectivity_type: E-LAN
+      descriptor_reference: mgmt-2-mgmt
+      dhcp: true
+      id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+      vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    - connection_points_reference:
+      - vdu01:eth1
+      - input
+      connectivity_type: E-Line
+      descriptor_reference: input-2-vdu01
+      dhcp: true
+      id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+      vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    - connection_points_reference:
+      - vdu01:eth2
+      - output
+      connectivity_type: E-Line
+      descriptor_reference: vdu01-2-output
+      dhcp: true
+      id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+      vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+ingress: null
+ip_mapping:
+- floating_ip: 10.120.0.206
+  internal_ip: 172.20.0.37
+- floating_ip: 10.120.0.207
+  internal_ip: 172.20.0.76
+- floating_ip: 10.120.0.205
+  internal_ip: 172.20.0.5
+service:
+  act_corr_id: fa637270-5ebe-4a51-8b7a-b1f8919bb86f
+  calculated_mapping:
+    du:
+      171b793b-a075-4b00-a947-887be5b5f1b1: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    vl:
+      input-2-test_vnf:
+      - refs:
+        - input
+        - test_vnf1:input
+        vim_id:
+        - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+      mgmt:
+      - refs:
+        - mgmt
+        - test_vnf1:mgmt
+        vim_id:
+        - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+      test_vnf-2-output:
+      - refs:
+        - test_vnf1:output
+        - output
+        vim_id:
+        - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+  cnf: false
+  config_status: ready
+  current_workflow: instantiation
+  customer_policies: {}
+  egress: null
+  error: null
+  flavour: null
+  function:
+  - configure:
+      payload: {}
+      trigger: true
+    deployed: true
+    flavour: null
+    id: 171b793b-a075-4b00-a947-887be5b5f1b1
+    scale:
+      payload: {}
+      trigger: true
+    start:
+      payload: {}
+      trigger: true
+    stop:
+      payload: {}
+      trigger: true
+    vim_uuid: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    vnfd:
+      author: 5GTANGO Test Team
+      connection_points:
+      - id: mgmt
+        interface: ipv4
+        type: management
+      - id: input
+        interface: ipv4
+        type: external
+      - id: output
+        interface: ipv4
+        type: external
+      description: This is a integration test artifact.
+      descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+      function_specific_managers:
+      - description: FSM to do some dummy config on the cirros for testing purposes
+        id: cirros
+        image: tsoenen/cirros-fsm
+        options:
+        - key: type
+          value: start
+        - key: type
+          value: configure
+        - key: type
+          value: state
+      name: testvnf
+      uuid: 7eeace27-7758-4e16-9cab-ee7ab05a361f
+      vendor: eu.5gtango
+      version: '0.1'
+      virtual_deployment_units:
+      - connection_points:
+        - fip: true
+          id: eth0
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+          type: internal
+        - fip: true
+          id: eth1
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+          type: internal
+        - fip: true
+          id: eth2
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+          type: internal
+        id: vdu01-171b793b-a075-4b00-a947-887be5b5f1b1
+        resource_requirements:
+          cpu:
+            vcpus: 1
+          memory:
+            size: 2
+            size_unit: GB
+          storage:
+            size: 10
+            size_unit: GB
+        vm_image: http://www.google.com
+        vm_image_format: qcow2
+        vm_image_md5: ee1eca47dc88f4879d8a229cc70a07c6
+      virtual_links:
+      - connection_points_reference:
+        - vdu01:eth0
+        - mgmt
+        connectivity_type: E-LAN
+        dhcp: true
+        id: mgmt-2-mgmt
+      - connection_points_reference:
+        - vdu01:eth1
+        - input
+        connectivity_type: E-Line
+        dhcp: true
+        id: input-2-vdu01
+      - connection_points_reference:
+        - vdu01:eth2
+        - output
+        connectivity_type: E-Line
+        dhcp: true
+        id: vdu01-2-output
+    vnfr:
+      descriptor_reference: 7eeace27-7758-4e16-9cab-ee7ab05a361f
+      descriptor_version: vnfr-schema-01
+      id: 171b793b-a075-4b00-a947-887be5b5f1b1
+      name: testvnf
+      status: offline
+      version: '1'
+      virtual_deployment_units:
+      - id: vdu01
+        number_of_instances: 1
+        resource_requirements:
+          cpu:
+            vcpus: 1
+          memory:
+            size: 2
+            size_unit: GB
+          storage:
+            size: 10
+            size_unit: GB
+        vdu_reference: testvnf:vdu01-171b793b-a075-4b00-a947-887be5b5f1b1
+        vm_image: http://www.google.com
+        vnfc_instance:
+        - connection_points:
+          - id: eth0
+            interface:
+              address: 10.120.0.206
+              hardware_address: fa:16:3e:05:32:f5
+            type: internal
+          - id: eth1
+            interface:
+              address: 10.120.0.207
+              hardware_address: fa:16:3e:c2:ed:7c
+            type: internal
+          - id: eth2
+            interface:
+              address: 10.120.0.205
+              hardware_address: fa:16:3e:38:04:d5
+            type: internal
+          id: '0'
+          vc_id: ce0ca8f8-ec3a-4152-a9a3-b69fb9ef2fec
+          vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+      virtual_links:
+      - connection_points_reference:
+        - vdu01:eth0
+        - mgmt
+        connectivity_type: E-LAN
+        descriptor_reference: mgmt-2-mgmt
+        dhcp: true
+        id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+        vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+      - connection_points_reference:
+        - vdu01:eth1
+        - input
+        connectivity_type: E-Line
+        descriptor_reference: input-2-vdu01
+        dhcp: true
+        id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+        vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+      - connection_points_reference:
+        - vdu01:eth2
+        - output
+        connectivity_type: E-Line
+        descriptor_reference: vdu01-2-output
+        dhcp: true
+        id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+        vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+  id: ecab541d-89de-42a5-b880-46e9ed47a9fd
+  infrastructure:
+    vims:
+      nep_list: []
+      vim_list:
+      - core_total: 17
+        core_used: 4
+        memory_total: 102400
+        memory_used: 8192
+        type: vm
+        vim_city: Athens
+        vim_domain: default
+        vim_endpoint: 10.100.33.2
+        vim_name: Athens-33
+        vim_uuid: eef1946c-8e33-429d-bd3b-8bfde82b25b4
+      - core_total: 200
+        core_used: 0
+        memory_total: 51200
+        memory_used: 0
+        type: vm
+        vim_city: Barcelona
+        vim_domain: default
+        vim_endpoint: 10.120.0.18
+        vim_name: Barcelona-120
+        vim_uuid: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    wims: []
+  ingress: null
+  input_mapping:
+    vls: []
+    vnfs: []
+  ip_mapping:
+  - floating_ip: 10.120.0.206
+    internal_ip: 172.20.0.37
+  - floating_ip: 10.120.0.207
+    internal_ip: 172.20.0.76
+  - floating_ip: 10.120.0.205
+    internal_ip: 172.20.0.5
+  kill_chain: false
+  mapping:
+    function:
+      171b793b-a075-4b00-a947-887be5b5f1b1:
+        new: true
+        vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+        vl:
+          input-2-vdu01:
+            fip: true
+            id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+            new: false
+            vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+          mgmt-2-mgmt:
+            fip: true
+            id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+            new: false
+            vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+          vdu01-2-output:
+            fip: true
+            id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+            new: false
+            vim_id: 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+    service:
+      vl:
+        input-2-test_vnf:
+          id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+          new: true
+          vim_id:
+          - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+        mgmt:
+          id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+          new: true
+          vim_id:
+          - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+        test_vnf-2-output:
+          id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+          new: true
+          vim_id:
+          - 5c84e1d0-95b0-4427-af34-c515a5d23b1e
+  nsd:
+    author: 5GTANGO Test Team
+    connection_points:
+    - id: mgmt
+      interface: ipv4
+      type: management
+    - id: input
+      interface: ipv4
+      type: external
+    - id: output
+      interface: ipv4
+      type: external
+    description: This is a integration test artifact.
+    descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+    name: test-nsid1v
+    network_functions:
+    - vnf_id: test_vnf1
+      vnf_name: testvnf
+      vnf_vendor: eu.5gtango
+      vnf_version: '0.1'
+    service_specific_managers:
+    - description: SSM to do some dummy config on the cirros for testing purposes
+      id: config
+      image: tsoenen/config-ssm
+      options:
+      - key: type
+        value: task
+      - key: type
+        value: configure
+      - key: type
+        value: state
+    uuid: cacd89ab-39e4-4784-83ad-b3ceb6f3d21a
+    vendor: eu.5gtango
+    version: '0.1'
+    virtual_links:
+    - connection_points_reference:
+      - mgmt
+      - test_vnf1:mgmt
+      connectivity_type: E-LAN
+      id: mgmt
+    - connection_points_reference:
+      - input
+      - test_vnf1:input
+      connectivity_type: E-Line
+      id: input-2-test_vnf
+    - connection_points_reference:
+      - test_vnf1:output
+      - output
+      connectivity_type: E-Line
+      id: test_vnf-2-output
+  operator_policies:
+    policy: load balanced
+  original_corr_id: c21eb69e-58da-4de6-be0e-22dff9b0609c
+  pause_chain: false
+  payload:
+    NSD:
+      author: 5GTANGO Test Team
+      connection_points:
+      - id: mgmt
+        interface: ipv4
+        type: management
+      - id: input
+        interface: ipv4
+        type: external
+      - id: output
+        interface: ipv4
+        type: external
+      description: This is a integration test artifact.
+      descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
+      name: test-nsid1v
+      network_functions:
+      - vnf_id: test_vnf1
+        vnf_name: testvnf
+        vnf_vendor: eu.5gtango
+        vnf_version: '0.1'
+      service_specific_managers:
+      - description: SSM to do some dummy config on the cirros for testing purposes
+        id: config
+        image: tsoenen/config-ssm
+        options:
+        - key: type
+          value: task
+        - key: type
+          value: configure
+        - key: type
+          value: state
+      uuid: cacd89ab-39e4-4784-83ad-b3ceb6f3d21a
+      vendor: eu.5gtango
+      version: '0.1'
+      virtual_links:
+      - connection_points_reference:
+        - mgmt
+        - test_vnf1:mgmt
+        connectivity_type: E-LAN
+        id: mgmt
+      - connection_points_reference:
+        - input
+        - test_vnf1:input
+        connectivity_type: E-Line
+        id: input-2-test_vnf
+      - connection_points_reference:
+        - test_vnf1:output
+        - output
+        connectivity_type: E-Line
+        id: test_vnf-2-output
+    VNFD0:
+      author: 5GTANGO Test Team
+      connection_points:
+      - id: mgmt
+        interface: ipv4
+        type: management
+      - id: input
+        interface: ipv4
+        type: external
+      - id: output
+        interface: ipv4
+        type: external
+      description: This is a integration test artifact.
+      descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-descriptor/vnfd-schema.yml
+      function_specific_managers:
+      - description: FSM to do some dummy config on the cirros for testing purposes
+        id: cirros
+        image: tsoenen/cirros-fsm
+        options:
+        - key: type
+          value: start
+        - key: type
+          value: configure
+        - key: type
+          value: state
+      name: testvnf
+      uuid: 7eeace27-7758-4e16-9cab-ee7ab05a361f
+      vendor: eu.5gtango
+      version: '0.1'
+      virtual_deployment_units:
+      - connection_points:
+        - fip: true
+          id: eth0
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_mgmt
+          type: internal
+        - fip: true
+          id: eth1
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_input-2-test_vnf
+          type: internal
+        - fip: true
+          id: eth2
+          interface: ipv4
+          network_id: ecab541d-89de-42a5-b880-46e9ed47a9fd_ns_test_vnf-2-output
+          type: internal
+        id: vdu01-171b793b-a075-4b00-a947-887be5b5f1b1
+        resource_requirements:
+          cpu:
+            vcpus: 1
+          memory:
+            size: 2
+            size_unit: GB
+          storage:
+            size: 10
+            size_unit: GB
+        vm_image: http://www.google.com
+        vm_image_format: qcow2
+        vm_image_md5: ee1eca47dc88f4879d8a229cc70a07c6
+      virtual_links:
+      - connection_points_reference:
+        - vdu01:eth0
+        - mgmt
+        connectivity_type: E-LAN
+        dhcp: true
+        id: mgmt-2-mgmt
+      - connection_points_reference:
+        - vdu01:eth1
+        - input
+        connectivity_type: E-Line
+        dhcp: true
+        id: input-2-vdu01
+      - connection_points_reference:
+        - vdu01:eth2
+        - output
+        connectivity_type: E-Line
+        dhcp: true
+        id: vdu01-2-output
+    flavor: null
+    user_data:
+      customer:
+        email: ''
+        name: ''
+        sla_id: null
+      developer:
+        email: ''
+        phone: ''
+        username: ''
+  policy_id: null
+  private_key: null
+  public_key: null
+  schedule:
+  - vnfs_config
+  - vnf_chain
+  - wan_configure
+  - store_nsr
+  - start_monitoring
+  - inform_gk_instantiation
+  sla_id: null
+  ssm:
+    configure:
+      id: config
+      image: tsoenen/config-ssm
+      instantiated: true
+      uuid: ecab541d-89de-42a5-b880-46e9ed47a9fd
+    state:
+      id: config
+      image: tsoenen/config-ssm
+      instantiated: true
+      uuid: ecab541d-89de-42a5-b880-46e9ed47a9fd
+    task:
+      id: config
+      image: tsoenen/config-ssm
+      instantiated: true
+      uuid: ecab541d-89de-42a5-b880-46e9ed47a9fd
+  status: INSTANTIATING
+  topic: service.instances.create
+  topo_responses: 0
+  user_data:
+    customer:
+      email: ''
+      name: ''
+      sla_id: null
+    developer:
+      email: ''
+      phone: ''
+      username: ''
+  vims_to_resp: 0
+  vnfs_to_resp: 0
+ssm_type: configure
+workflow: reconfigure

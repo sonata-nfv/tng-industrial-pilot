@@ -36,7 +36,12 @@ import logging
 import yaml
 import tnglib
 from smbase.smbase import smbase
-
+try:  # Docker
+    from ns2.smpccs_client import SsmCommandControlClient
+    from ns2.smpccs_pb2 import SsmState
+except:  # tmg-sdk-sm
+    from smpccs_client import SsmCommandControlClient
+    from smpccs_pb2 import SsmState
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
@@ -151,49 +156,61 @@ class ns2SSM(smbase):
 
     def configure_event(self, content):
         """
-        This method handles a configure event. 
-        The configure event comes from the policy manager or via the control server from the FMP.
-        It indicates an intrusion and should trigger a reconfiguration event sent to the MDC FSM.
+        This method handles a configure event.
+        It calls either an initial configuration or a
+        reconfiguration of the MDC.
         """
         LOG.debug("NS2 SSM: Starting configuration event")
-        
-        response = {'status': 'COMPLETED', 'vnf': []}
-
         if content['workflow'] == 'instantiation':
-
-            LOG.info("Extracting service intance id and vnfrs")
-
-            self.service_id = content['service']['id']
-
-            for function in content['functions']:
-                self.vnfrs.append(function['vnfr'])
-
-            LOG.info(self.service_id)
-            LOG.info(len(self.vnfrs))
-            
-            # TODO: link between MANO and 3rd party app
-
+            return self._configure_event_instantiation(content)
         else:
-            # get IDs of all VNF instances
-            for vnf in content['functions']:
-                vnf_name = vnf['vnfr']['name']
-                vnf_dict = {
-                    'id': vnf['vnfr']['id'],
-                    'name': vnf_name,
-                    'configure': {'trigger': False}
-                }
-                
-                # trigger reconfig only for MDC VNF
-                if vnf_name == 'msf-vnf1':
-                    vnf_dict['configure']['trigger'] = True
-                    vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
-                    
-                response['vnf'].append(vnf_dict)
-                    
-                LOG.debug("Added VNF {} to response with {}".format(vnf_name, vnf_dict))
+            return self._configure_event_reconfiguration(content)
 
-            LOG.info("NS2 SSM configure event complete")
-            
+    def _configure_event_instantiation(self, content):
+        """
+        Configure event called upon instantiaten of the service.
+        It is used to collect basic information of the service instance
+        and establishes the connection to the external control server (SMP-CC).
+        """
+        response = {'status': 'COMPLETED', 'vnf': []}
+        LOG.info("Extracting service intance id and vnfrs")
+        self.service_id = content['service']['id']
+        for function in content['functions']:
+            self.vnfrs.append(function['vnfr'])
+        LOG.info(self.service_id)
+        LOG.info(len(self.vnfrs))
+        # TODO: link between MANO and 3rd party app
+        # done
+        LOG.info("NS2 SSM init-configure event complete")
+        return response
+
+    def _configure_event_reconfiguration(self, content):
+        """
+        Configure event called upon reconfiguration (e.g. called by the policy
+        manager or the SMP-CC server from the FMP).
+        It indicates an intrusion and should trigger a reconfiguration event.
+        The reconfiguration event is forwarded to the MDC FSM.
+        """
+        response = {'status': 'COMPLETED', 'vnf': []}
+        # get IDs of all VNF instances
+        for vnf in content['functions']:
+            # create the response
+            vnf_name = vnf['vnfr']['name']
+            vnf_dict = {
+                'id': vnf['vnfr']['id'],
+                'name': vnf_name,
+                'configure': {'trigger': False}
+            }
+            # trigger reconfig only for MDC VNF
+            if vnf_name == 'msf-vnf1':
+                vnf_dict['configure']['trigger'] = True
+                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
+            # build the response
+            response['vnf'].append(vnf_dict)
+            LOG.debug("Added VNF {} to response with {}"
+                      .format(vnf_name, vnf_dict))
+        # done
+        LOG.info("NS2 SSM re-configure event complete")
         return response
 
     def state_event(self, content):
@@ -209,6 +226,7 @@ class ns2SSM(smbase):
 
 def main():
     ns2SSM()
+
 
 if __name__ == '__main__':
     main()
