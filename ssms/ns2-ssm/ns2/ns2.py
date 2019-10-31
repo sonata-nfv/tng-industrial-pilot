@@ -103,6 +103,10 @@ class ns2SSM(smbase):
         request = yaml.load(payload)
 
         # Don't trigger on non-request messages
+        if not request:
+            LOG.info("Received a non-request message, ignoring...")
+            return
+
         if "ssm_type" not in request.keys():
             LOG.info("Received a non-request message, ignoring...")
             return
