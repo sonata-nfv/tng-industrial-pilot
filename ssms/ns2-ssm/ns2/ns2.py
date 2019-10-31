@@ -34,9 +34,18 @@ partner consortium (www.5gtango.eu).
 
 import logging
 import yaml
+import os
+import time
 import tnglib
 from smbase.smbase import smbase
-
+try:  # Docker
+    from ns2.smpccs_client import SsmCommandControlClient
+    from ns2.smpccs_pb2 import SsmState
+    INIT_DELAY = 1  # only wait a small amount of time
+except:  # tmg-sdk-sm
+    from smpccs_client import SsmCommandControlClient
+    from smpccs_pb2 import SsmState
+    INIT_DELAY = 5  # wait longer for debugging
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
@@ -53,8 +62,12 @@ class ns2SSM(smbase):
 
         self.sm_id = "tng-ssm-industry-pilot-ns2"
         self.sm_version = "0.1"
-        self.vnfrs = []
-        self.service_id = None
+
+        # local state/info initialized during initial configuration event
+        # local copy of service info (configuration event content)
+        self._service_info = None
+        # state of the service (e.g. quarantaine yes/no)
+        self._service_state = None
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
                                              sm_version=self.sm_version,
@@ -151,49 +164,108 @@ class ns2SSM(smbase):
 
     def configure_event(self, content):
         """
-        This method handles a configure event. 
-        The configure event comes from the policy manager or via the control server from the FMP.
-        It indicates an intrusion and should trigger a reconfiguration event sent to the MDC FSM.
+        This method handles a configure event.
+        It calls either an initial configuration or a
+        reconfiguration of the MDC.
         """
-        LOG.debug("NS2 SSM: Starting configuration event")
-        
-        response = {'status': 'COMPLETED', 'vnf': []}
-
         if content['workflow'] == 'instantiation':
-
-            LOG.info("Extracting service intance id and vnfrs")
-
-            self.service_id = content['service']['id']
-
-            for function in content['functions']:
-                self.vnfrs.append(function['vnfr'])
-
-            LOG.info(self.service_id)
-            LOG.info(len(self.vnfrs))
-            
-            # TODO: link between MANO and 3rd party app
-
+            LOG.info("NS2 SSM: configure/instantiation event triggered")
+            return self._configure_event_instantiation(content)
         else:
-            # get IDs of all VNF instances
-            for vnf in content['functions']:
-                vnf_name = vnf['vnfr']['name']
-                vnf_dict = {
-                    'id': vnf['vnfr']['id'],
-                    'name': vnf_name,
-                    'configure': {'trigger': False}
-                }
-                
-                # trigger reconfig only for MDC VNF
-                if vnf_name == 'msf-vnf1':
-                    vnf_dict['configure']['trigger'] = True
-                    vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
-                    
-                response['vnf'].append(vnf_dict)
-                    
-                LOG.debug("Added VNF {} to response with {}".format(vnf_name, vnf_dict))
+            LOG.info("NS2 SSM: configure/reconfiguration event triggered")
+            return self._configure_event_reconfiguration(content)
 
-            LOG.info("NS2 SSM configure event complete")
-            
+    def _get_service_instance_uuid(self):
+        try:
+            return self._service_info['service']['id']
+        except BaseException as ex:
+            LOG.error("NS2 SSM: Coudn't fetch instance UUID: {}"
+                      .format(ex))
+            return None
+
+    def _get_service_name(self):
+        try:
+            vendor = self._service_info['service']['nsd']['vendor']
+            name = self._service_info['service']['nsd']['name']
+            version = self._service_info['service']['nsd']['version']
+            return "{}.{}.{}".format(vendor, name, version)
+        except BaseException as ex:
+            LOG.error("NS2 SSM: Coudn't fetch service name: {}"
+                      .format(ex))
+            return None
+
+    def _configure_event_instantiation(self, content):
+        """
+        Configure event called upon instantiaten of the service.
+        It is used to collect basic information of the service instance
+        and establishes the connection to the external control server (SMP-CC).
+        """
+        response = {'status': 'COMPLETED', 'vnf': []}
+        # store local copy of service information for later use
+        self._service_info = content.copy()
+        LOG.debug("NS2 SSM: Stored service instance information: {}"
+                  .format(self._service_info))
+
+        # initialize local service state
+        suuid = self._get_service_instance_uuid()
+        sname = self._get_service_name()
+        if suuid is not None and sname is not None:
+            self._service_state = SsmState(uuid=suuid, name=sname)
+
+        # get address of remote SMP-CC server
+        con_str = os.getenv("smpcc_grpc_endpoint")
+        if con_str is None:
+            LOG.error("NS2 SSM: Could not find 'smpcc_grpc_endpoint'")
+
+        # initialize SMP-CC client and connect to remote control server
+        if con_str is not None and self._service_state is not None:
+            smpccc = SsmCommandControlClient(
+                self._service_state,
+                connection=con_str,
+                callback=None)
+            smpccc.start()  # runs in dedicated daemon thread
+
+        # Give the client some time start
+        # TODO this is an ugly hack! better build a lock-based mechanism
+        LOG.info("NS2 SSM: Waiting for SMP-CC client to start ({}s)"
+                 .format(INIT_DELAY))
+        time.sleep(INIT_DELAY)
+
+        # TODO: Implement callback upon remote state change!
+
+        # done
+        LOG.info("NS2 SSM: configure/instantiation event completed")
+        LOG.debug("NS2 SSM: configure/instantiation event response: {}"
+                  .format(response))
+        return response
+
+    def _configure_event_reconfiguration(self, content):
+        """
+        Configure event called upon reconfiguration (e.g. called by the policy
+        manager or the SMP-CC server from the FMP).
+        It indicates an intrusion and should trigger a reconfiguration event.
+        The reconfiguration event is forwarded to the MDC FSM.
+        """
+        response = {'status': 'COMPLETED', 'vnf': []}
+        # get IDs of all VNF instances
+        for vnf in content['functions']:
+            # create the response
+            vnf_name = vnf['vnfr']['name']
+            vnf_dict = {
+                'id': vnf['vnfr']['id'],
+                'name': vnf_name,
+                'configure': {'trigger': False}
+            }
+            # trigger reconfig only for MDC VNF
+            if vnf_name == 'msf-vnf1':
+                vnf_dict['configure']['trigger'] = True
+                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
+            # build the response
+            response['vnf'].append(vnf_dict)
+        # done
+        LOG.info("NS2 SSM: configure/reconfiguration event completed")
+        LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"
+                  .format(response))
         return response
 
     def state_event(self, content):
@@ -209,6 +281,7 @@ class ns2SSM(smbase):
 
 def main():
     ns2SSM()
+
 
 if __name__ == '__main__':
     main()

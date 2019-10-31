@@ -29,8 +29,12 @@ import time
 import threading
 import grpc
 import os
-import ns2.smpccs_pb2_grpc as pb2_grpc
-import ns2.smpccs_pb2 as pb2
+try:  # Docker
+    import ns2.smpccs_pb2_grpc as pb2_grpc
+    import ns2.smpccs_pb2 as pb2
+except:  # tng-sdk-sm
+    import smpccs_pb2_grpc as pb2_grpc
+    import smpccs_pb2 as pb2
 
 
 # time to wait until connection retry

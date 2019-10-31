@@ -19,3 +19,15 @@ docker run --rm -it sonatanfv/tng-ssm-industry-pilot-ns2:latest /bin/bash
 # test the gRPC SMP-CC client
 smpccc
 ```
+
+
+#  Test locally using `tng-sdk-sm`
+
+```sh
+# set remote address of SMP-CC
+export smpcc_grpc_endpoint=fgcn-tango-smp-ctrl.cs.upb.de:9012
+# test configure/initialisation 
+tng-sm execute -s ns2-ssm -e configure -p configure_event_initialisation.yml
+# test configure/reconfiguration
+tng-sm execute -s ns2-ssm -e configure -p configure_event_reconfiguration.yml
+```
