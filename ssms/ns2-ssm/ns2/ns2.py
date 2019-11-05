@@ -231,7 +231,8 @@ class ns2SSM(smbase):
                  .format(INIT_DELAY))
         time.sleep(INIT_DELAY)
 
-        # TODO: Implement callback upon remote state change!
+        # TODO: Implement callback upon remote state change! and call: self._print_state()
+        # TODO: Trigger reconfig event using the content from self._service_info
 
         # done
         LOG.info("NS2 SSM: configure/instantiation event completed")
@@ -262,11 +263,30 @@ class ns2SSM(smbase):
                 vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
             # build the response
             response['vnf'].append(vnf_dict)
+        # try to update internal state
+        self._set_quarantaine(True)
+        # TODO (optional): trigger a callback function to update state at SMP-CCS
         # done
         LOG.info("NS2 SSM: configure/reconfiguration event completed")
         LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"
                   .format(response))
         return response
+
+    def _set_quarantaine(self, value):
+        # FIXME: add locks for thread safety
+        if self._service_state is None:
+            LOG.error("NS2 SSM: Cannot set state. State store is None.")
+            return
+        LOG.info("NS2 SSM: setting quarantaine state")
+        self._service_state.quarantaine = value
+        self._print_state()
+
+    def _print_state(self):
+        if self._service_state is None:
+            LOG.error("NS2 SSM: Cannot print state. State store is None.")
+            return
+        LOG.info("NS2 SSM: quarantaine state is: {}"
+                 .format(self._service_state.quarantaine))
 
     def state_event(self, content):
         """
