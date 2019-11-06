@@ -24,12 +24,8 @@
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
-
-set -e
-
 echo "DT: Wait for MDC ... (3 seconds)"
 sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
-
 echo "DT: Mount em63_share from MDC ..."
 mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
 
