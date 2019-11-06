@@ -93,14 +93,14 @@ class SambaAccess:
         except OperationFailure:
             if overwrite:
                 print("File exists already, overwriting...", flush=True)
-                self.delete_files(filename)
+                self.delete_file(filename)
                 return self.write_file(filename, file_path)
             else:
                 print("File exists already, NOT overwriting...", flush=True)
         return uploaded_bytes
         
-    def delete_files(self, filename):
-        """Delete files in the Samba share matching the filename (may include wildcards)."""
+    def delete_file(self, filename):
+        """Delete files in the Samba share matching the filename."""
         conn = self.samba_connect()
         print("Deleting files matching {} from the Samba share".format(filename), flush=True)
         try:
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # some code to test and experiment: specify floating IP of NS2 MDC
     smb = SambaAccess("10.200.16.14")
     smb.print_filenames()
-    smb.delete_files('remote_test.txt')
+    smb.delete_file('remote_test.txt')
     print(smb.write_file('remote_test2.txt', 'test.txt'))
     print(smb.get_file("remote_test2.txt", return_content=True))
     smb.print_filenames()
