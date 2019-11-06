@@ -56,7 +56,7 @@ class SambaAccess:
  
         return conn 
         
-    def list_files(self):
+    def print_filenames(self):
         """Print name of all files and directories in the Samba share"""
         conn = self.samba_connect()
         print("Listing files and dirs in Samba share:", flush=True)
@@ -66,12 +66,12 @@ class SambaAccess:
             
     def get_file(self, filename, return_content=False):
         """
-        Retrievs and saves specified file from Samba share locally. 
+        Retrieves and saves specified file from Samba share locally. 
         Returns path to downloaded file (default). Or file contents (if return_content=True).
         """
         conn = self.samba_connect()
-        #file_obj = tempfile.NamedTemporaryFile()
         file_path = os.path.join(self.local_dir, filename)
+        print("Downloading {} from the Samba share to {}".format(filename, file_path), flush=True)
         file_obj = open(file_path, 'wb')
         file_attr, filesize = conn.retrieveFile(self.smb_share, filename, file_obj)        
         file_obj.close()
@@ -80,12 +80,27 @@ class SambaAccess:
             with open(file_path, 'r') as f:
                 return f.read()
         return file_path
+        
+    def write_file(self, filename, file_path):
+        """Write the local file at file_path to the Samba share with the specified name."""
+        conn = self.samba_connect()
+        uploaded_bytes = 0
+        remote_filename = os.path.join(self.smb_share, filename)
+        print("Writing local file {} to Samba share to {}".format(file_path, remote_filename))
+        with open(file_path, 'rb') as f:
+            uploaded_bytes = conn.storeFile(self.smb_share, filename, f)
+        return uploaded_bytes
+        
+    
                     
         
 if __name__ == "__main__":
     # specify floating IP of NS2 MDC
     smb = SambaAccess("10.200.16.14")
-    smb.list_files()
-    smb_file = smb.get_file("00010010.JOB", return_content=True)
-    print(smb_file)
+    smb.print_filenames()
+    #smb_file = smb.get_file("remote_test.txt", return_content=True)
+    #print(smb_file)
+    bytes = smb.write_file('remote_test.txt', 'test.txt')
+    #print(bytes)
+    #smb.print_filenames()
 

@@ -1,6 +1,7 @@
 # DT/Samba files
 *.JOB
 *.REQ
+*.txt
 
 .vscode
 vnfs/cc-cloudconnector-docker/containers/cdu_processor/CC_VNF/keys.json
