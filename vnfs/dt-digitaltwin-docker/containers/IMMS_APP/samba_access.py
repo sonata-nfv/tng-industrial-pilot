@@ -26,16 +26,19 @@
 # partner consortium (www.5gtango.eu).
 
 # code from https://pysmb.readthedocs.io/en/latest/api/smb_SMBConnection.html
+import os
 import time
 import datetime
 import tempfile
+from pathlib import Path
 from smb.SMBConnection import SMBConnection
 
 
 class SambaAccess:
-    def __init__(self, smb_host, smb_share="guest"):
+    def __init__(self, smb_host, smb_share="guest", local_dir=Path("../em63_share")):
         self.smb_host = smb_host
         self.smb_share = smb_share
+        self.local_dir = local_dir
 
     def samba_connect(self):
         """Connect to Samba host. Block and retry forever if connection times out"""
@@ -61,19 +64,28 @@ class SambaAccess:
         for f in file_list:
             print(f.filename, flush=True)
             
-    def get_file(self, filename):
-        """Return specified file from Samba share"""
+    def get_file(self, filename, return_content=False):
+        """
+        Retrievs and saves specified file from Samba share locally. 
+        Returns path to downloaded file (default). Or file contents (if return_content=True).
+        """
         conn = self.samba_connect()
-        file_obj = tempfile.NamedTemporaryFile()
+        #file_obj = tempfile.NamedTemporaryFile()
+        file_path = os.path.join(self.local_dir, filename)
+        file_obj = open(file_path, 'wb')
         file_attr, filesize = conn.retrieveFile(self.smb_share, filename, file_obj)        
-        print(file_obj)
-        # TODO: not sure what to do with file object or how to read contents
-        return file_obj
+        file_obj.close()
+        
+        if return_content:
+            with open(file_path, 'r') as f:
+                return f.read()
+        return file_path
                     
         
 if __name__ == "__main__":
     # specify floating IP of NS2 MDC
-    smb = SambaAccess("10.200.16.24")
+    smb = SambaAccess("10.200.16.14")
     smb.list_files()
-    smb.get_file("00010010.JOB")
+    smb_file = smb.get_file("00010010.JOB", return_content=True)
+    print(smb_file)
 
