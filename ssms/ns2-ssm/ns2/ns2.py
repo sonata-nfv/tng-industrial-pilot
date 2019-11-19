@@ -104,11 +104,13 @@ class ns2SSM(smbase):
 
         # Don't trigger on non-request messages
         if not request:
-            LOG.info("Received a non-request message, ignoring...")
+            LOG.info("Received an empty request message, ignoring...")
+            LOG.debug("Ignoring: {}".format(payload))
             return
 
         if "ssm_type" not in request.keys():
             LOG.info("Received a non-request message, ignoring...")
+            LOG.debug("Ignoring: {}".format(request))
             return
 
         # Create the response
