@@ -41,11 +41,11 @@ from smbase.smbase import smbase
 try:  # Docker
     from ns2.smpccs_client import SsmCommandControlClient
     from ns2.smpccs_pb2 import SsmState
-    INIT_DELAY = 1  # only wait a small amount of time
+    INIT_DELAY = 1  # wait small amount of time in production
 except:  # tmg-sdk-sm
     from smpccs_client import SsmCommandControlClient
     from smpccs_pb2 import SsmState
-    INIT_DELAY = 5  # wait longer for debugging
+    INIT_DELAY = -1  # wait longer for debugging
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
@@ -226,22 +226,24 @@ class ns2SSM(smbase):
             smpccc = SsmCommandControlClient(
                 self._service_state,
                 connection=con_str,
-                callback=None)
+                # configure callback that is called if SMP-CC sends an update
+                callback_obj=self)
             smpccc.start()  # runs in dedicated daemon thread
 
         # Give the client some time start
         # TODO this is an ugly hack! better build a lock-based mechanism
         LOG.info("NS2 SSM: Waiting for SMP-CC client to start ({}s)"
-                 .format(INIT_DELAY))
-        time.sleep(INIT_DELAY)
-
-        # TODO: Implement callback upon remote state change! and call: self._print_state()
-        # TODO: Trigger reconfig event using the content from self._service_info
+                 .format(abs(INIT_DELAY)))
+        time.sleep(abs(INIT_DELAY))
 
         # done
         LOG.info("NS2 SSM: configure/instantiation event completed")
         LOG.debug("NS2 SSM: configure/instantiation event response: {}"
                   .format(response))
+        # in the local/debugging case: block and wait:
+        if INIT_DELAY < 0:
+            LOG.info("NS2 SSM: Blocking SSM for debugging ...")
+            input("... Press <ENTER> to continue ...")
         return response
 
     def _configure_event_reconfiguration(self, content):
@@ -267,14 +269,25 @@ class ns2SSM(smbase):
                 vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
             # build the response
             response['vnf'].append(vnf_dict)
-        # try to update internal state
+        # update internal state
         self._set_quarantaine(True)
-        # TODO (optional): trigger a callback function to update state at SMP-CCS
+        # TODO (optional): trigger a callback to update state at SMP-CCS
         # done
         LOG.info("NS2 SSM: configure/reconfiguration event completed")
         LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"
                   .format(response))
         return response
+
+    def smpcc_callback(self, state):
+        """
+        This method is called when the remote SMP-CC sends a state update to
+        this SSM.
+        State contains the target state, e.g., if service should be put to
+        quarantine or removed from quarantine.
+        """
+        LOG.info("NS2 SSM: SMP-CC CALLBACK quarantaine={}"
+                 .format(state.quarantaine))
+        # TODO: Trigger reconfig event using the content from ._service_info
 
     def _set_quarantaine(self, value):
         # FIXME: add locks for thread safety
