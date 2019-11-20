@@ -74,7 +74,7 @@ class SambaAccess:
         file_path = os.path.join(self.local_dir, filename)
         print("Downloading {} from the Samba share to {}".format(filename, file_path), flush=True)
         file_obj = open(file_path, 'wb')
-        file_attr, filesize = conn.retrieveFile(self.smb_share, filename, file_obj)        
+        file_attr, filesize = conn.retrieveFile(self.smb_share, filename, file_obj)
         file_obj.close()
         
         if return_content:
@@ -107,14 +107,27 @@ class SambaAccess:
             conn.deleteFiles(self.smb_share, filename)
         except OperationFailure as of:
             print("Error deleting {}. Does the file exist?".format(filename))
-                    
+
+    def exists_file(self, filename):
+        """Return if the file exists in the Samba share"""
+        conn = self.samba_connect()
+        print("Checking if file {} exists".format(filename))
+        exists = False
+        try:
+            attr = conn.getAttributes(self.smb_share, filename)
+            exists = attr is not None
+        finally:
+            print("{} exists: {}".format(filename, exists))
+            return exists
+
         
 if __name__ == "__main__":
     # some code to test and experiment: specify floating IP of NS2 MDC
-    smb = SambaAccess("10.200.16.14")
-    smb.print_filenames()
-    smb.delete_file('remote_test.txt')
-    print(smb.write_file('remote_test2.txt', 'test.txt'))
-    print(smb.get_file("remote_test2.txt", return_content=True))
-    smb.print_filenames()
+    smb = SambaAccess("172.31.13.160")
+    # smb.print_filenames()
+    smb.exists_file('blablala')
+    # smb.delete_file('remote_test.txt')
+    # print(smb.write_file('remote_test2.txt', 'test.txt'))
+    # print(smb.get_file("remote_test2.txt", return_content=True))
+    # smb.print_filenames()
 
