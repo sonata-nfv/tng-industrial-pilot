@@ -471,6 +471,7 @@ def valEM63print():
 
 
 # auxiliary file access functions to use within run_EM63 to facilitate access to either local files or Samba
+# TODO: implement and test samba version
 def file_exists(filepath, samba=False):
     """Return if the specified file exists"""
     exists = os.path.exists(filepath)
