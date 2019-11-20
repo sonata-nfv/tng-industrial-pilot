@@ -489,13 +489,10 @@ def file_read(filepath, readlines=False, samba=False):
         return content
 
 
-def file_write(filepath, text, append=True, samba=False):
+def file_write(filepath, text, samba=False):
     """Write text to file. Either append or overwrite."""
-    print("Writing to {} (append={}). Text: {}".format(filepath, append, text))
-    w_flag = 'w'
-    if append:
-        w_flag = 'w+'
-    with open(filepath, w_flag) as f:
+    print("Writing to {} Text: {}".format(filepath, append, text))
+    with open(filepath, 'w+') as f:
         f.write(text)
 
 
@@ -536,7 +533,7 @@ def run_EM63(samba=False):
     if file_exists(reqFile, samba=samba):
         print("---------------------------------------------")
         print("Request file found: "+reqFile+". Processing ...")
-        reqFileContent = file_read(reqFile)
+        reqFileContent = file_read(reqFile, samba=samba)
 
         # Extract Job file name from REQ file
         try:
@@ -641,7 +638,7 @@ def run_EM63(samba=False):
         # Create RSP file
         rspFile = filepathEM63 + "SESS" + str(session).zfill(4) + '.RSP'
         txtRSP = '00000001 PROCESSED "EXECUTE ' + jobFile + '";'
-        file_write(rspFile, txtRSP, append=False, samba=samba)
+        file_write(rspFile, txtRSP, samba=samba)
         print("Response file was written: ", rspFile)
         sys.stdout.flush()
 
