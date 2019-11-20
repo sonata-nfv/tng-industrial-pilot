@@ -483,7 +483,7 @@ def file_read(filepath, readlines=False, samba=False):
     print("Reading {} with readlines={} and samba={}".format(filepath, readlines, samba))
     with open(filepath, 'r') as f:
         if readlines:
-            content = f.readline()
+            content = f.readlines()
         else:
             content = f.read()
         return content
