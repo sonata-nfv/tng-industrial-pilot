@@ -81,12 +81,12 @@ class SambaAccess:
             with open(file_path, 'r') as f:
                 return f.read()
         return file_path
-        
-    def write_file(self, filename, file_path, overwrite=True):
-        """Write the local file at file_path to the Samba share with the specified name. Return the bytes written."""
+
+    def save_file(self, filename, file_path, overwrite=True):
+        """Save the local file at file_path to the Samba share with the specified name. Return the bytes written."""
         conn = self.samba_connect()
         uploaded_bytes = 0
-        print("Writing local file {} to Samba share to {}".format(file_path, filename), flush=True)
+        print("Saving local file {} to Samba share to {}".format(file_path, filename), flush=True)
         try:
             with open(file_path, 'rb') as f:
                 uploaded_bytes = conn.storeFile(self.smb_share, filename, f)
@@ -94,10 +94,17 @@ class SambaAccess:
             if overwrite:
                 print("File exists already, overwriting...", flush=True)
                 self.delete_file(filename)
-                return self.write_file(filename, file_path)
+                return self.save_file(filename, file_path)
             else:
                 print("File exists already, NOT overwriting...", flush=True)
         return uploaded_bytes
+
+    def write_file(self, filename, text):
+        """Write the specified text to the file."""
+        print("Writing to file {}: {}".format(filename, text), flush=True)
+        with open(filename, 'w') as f:
+            f.write(text)
+        self.save_file(filename, filename, overwrite=True)
         
     def delete_file(self, filename):
         """Delete files in the Samba share matching the filename."""
@@ -125,9 +132,11 @@ if __name__ == "__main__":
     # some code to test and experiment: specify floating IP of NS2 MDC
     smb = SambaAccess("172.31.13.160")
     # smb.print_filenames()
-    smb.exists_file('blablala')
+    # smb.exists_file('blablala')
     # smb.delete_file('remote_test.txt')
-    # print(smb.write_file('remote_test2.txt', 'test.txt'))
-    # print(smb.get_file("remote_test2.txt", return_content=True))
+    # print(smb.save_file('remote_test.txt', 'test.txt'))
+    # print(smb.save_file('remote_test.txt', 'test.txt'))
+    smb.write_file('remote_test2.txt', 'works really well!')
+    print(smb.get_file("remote_test2.txt", return_content=True))
     # smb.print_filenames()
 

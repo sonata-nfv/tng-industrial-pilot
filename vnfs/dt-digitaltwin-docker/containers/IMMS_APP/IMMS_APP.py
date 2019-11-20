@@ -491,9 +491,16 @@ def file_read(filepath, readlines=False, samba=False):
 
 def file_write(filepath, text, samba=False):
     """Write text to file. Either append or overwrite."""
-    print("Writing to {} Text: {}".format(filepath, append, text))
+    print("Writing to {} Text: {}".format(filepath, text))
     with open(filepath, 'w+') as f:
         f.write(text)
+
+
+def file_delete(filepath, samba=False):
+    """Delete specified file"""
+    print("Deleting file {}".format(filepath))
+    rmFile(filepath)
+
 
 
 def run_EM63(samba=False):
@@ -544,7 +551,7 @@ def run_EM63(samba=False):
             jobFile = ''
             print("No job file name found. Error ...")
         # TODO: Implement separate function for this too? Not sure what this does exactly
-        rmFile(reqFile)
+        file_delete(reqFile, samba=samba)
     else:
         return
 
@@ -629,7 +636,7 @@ def run_EM63(samba=False):
                     txtLOG0 = 'COMMAND 1 PROCESSED "JOB command" ' \
                         + str(varDATE) + ' ' + str(varTIME) + ';\n'
                     if file_exists(logFile, samba=samba):
-                        rmFile(logFile)
+                        file_delete(logFile, samba=samba)
                     # if txtLOG != '' and txtLOG0 != '':
                     txtLOG0 = txtLOG0 + txtLOG
                     file_write(logFile, txtLOG0, samba=samba)
