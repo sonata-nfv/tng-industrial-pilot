@@ -470,7 +470,42 @@ def valEM63print():
     return
 
 
-def run_EM63():
+# auxiliary file access functions to use within run_EM63 to facilitate access to either local files or Samba
+# TODO: implement and test samba version
+def file_exists(filepath, samba=False):
+    """Return if the specified file exists"""
+    exists = os.path.exists(filepath)
+    print("Check if {} exists: {}".format(filepath, exists))
+    return exists
+
+
+def file_read(filepath, readlines=False, samba=False):
+    """Open, read file and return file contents. If readlines, return list of lines instead of single string"""
+    print("Reading {} with readlines={} and samba={}".format(filepath, readlines, samba))
+    with open(filepath, 'r') as f:
+        if readlines:
+            content = f.readlines()
+        else:
+            content = f.read()
+        return content
+
+
+def file_write(filepath, text, samba=False):
+    """Write text to file. Either append or overwrite."""
+    print("Writing to {} Text: {}".format(filepath, text))
+    with open(filepath, 'w+') as f:
+        f.write(text)
+
+
+def file_delete(filepath, samba=False):
+    """Delete specified file"""
+    print("Deleting file {}".format(filepath))
+    rmFile(filepath)
+
+
+
+def run_EM63(samba=False):
+    """If samba=False, read/write files from local (mounted) file system, else connect via Samba"""
     global varDATE, varTIME, filepathEM63, varFormEM63path, session, valEM63
     session = session + 1
     if session > 3:
@@ -493,7 +528,7 @@ def run_EM63():
         if filepathEM63.startswith('/') and not filepathEM63.endswith('/'):
             print("EM63 path needs / ")
             filepathEM63 = filepathEM63 + "/"
-        if not os.path.exists(filepathEM63):
+        if not file_exists(filepathEM63, samba=samba):
             print("EM63 path " + filepathEM63 + " does not exist.")
             time.sleep(2)
             return
@@ -503,12 +538,10 @@ def run_EM63():
     # Open SESSnnnn.REQ file if it exists
     reqFile = filepathEM63 + "SESS" + str(session).zfill(4) + '.REQ'
     # print(reqFile)
-    if os.path.exists(reqFile):
+    if file_exists(reqFile, samba=samba):
         print("---------------------------------------------")
         print("Request file found: "+reqFile+". Processing ...")
-        f_in = open(reqFile, 'r')
-        reqFileContent = f_in.read()
-        f_in.close()
+        reqFileContent = file_read(reqFile, samba=samba)
 
         # Extract Job file name from REQ file
         try:
@@ -518,17 +551,16 @@ def run_EM63():
             # ", " not found in the original string
             jobFile = ''
             print("No job file name found. Error ...")
-        rmFile(reqFile)
+        # TODO: Implement separate function for this too? Not sure what this does exactly
+        file_delete(reqFile, samba=samba)
     else:
         return
 
     # Look for job file named
     jobFile = filepathEM63 + jobFile
-    if os.path.exists(jobFile):
+    if file_exists(jobFile, samba=samba):
         print("Job file found: "+jobFile+". Processing ...")
-        f_in = open(jobFile, 'r')
-        jobFileLines = f_in.readlines()
-        f_in.close()
+        jobFileLines = file_read(jobFile, readlines=True, samba=samba)
         # print(jobFileLines)
         # rmFile(jobFile)
 
@@ -540,9 +572,7 @@ def run_EM63():
                 # Extract target file name from line
                 datFile = re.search('"(.+?)"', line).group(1)
                 datFile = filepathEM63 + datFile
-                f_datFile = open(datFile, 'w+')
-                f_datFile.write(txtGETID)
-                f_datFile.close()
+                file_write(datFile, txtGETID, samba=samba)
                 txtLOG = 'COMMAND 2 PROCESSED "GETID command" ' \
                     + str(varDATE) + ' ' + str(varTIME) + ';'
                 # print(txtLOG)
@@ -553,18 +583,12 @@ def run_EM63():
                 datFile = re.search('"(.+?)"', line).group(1)
                 datFile = filepathEM63 + datFile
                 # Check if local copy of GETINFO.DAT exists: GETINFO.conf
-                if os.path.exists("GETINFO.conf"):
+                if file_exists("GETINFO.conf", samba=samba):
                     # use it
-                    f_in = open('GETINFO.conf', 'r')
-                    confFileBody = f_in.read()
-                    f_datFile = open(datFile, 'w+')
-                    f_datFile.write(confFileBody)
-                    f_datFile.close()
-                    f_in.close()
+                    confFileBody = file_read('GETINFO.conf', samba=samba)
+                    file_write(datFile, confFileBody, samba=samba)
                 else:
-                    f_datFile = open(datFile, 'w+')
-                    f_datFile.write(txtGETINFO)
-                    f_datFile.close()
+                    file_write(datFile, txtGETINFO, samba=samba)
                 txtLOG = 'COMMAND 2 PROCESSED "GETINFO command" ' \
                     + str(varDATE) + ' ' + str(varTIME) + ';'
                 # print(txtLOG)
@@ -598,9 +622,7 @@ def run_EM63():
                 txtREPORT = txtREPORT + '\n' + valREPORT + ';'
                 txtREPORT = txtREPORT.replace(",\n", "\n")
                 txtREPORT = txtREPORT.replace(",;", "")
-                f_datFile = open(datFile, 'w+')
-                f_datFile.write(txtREPORT)
-                f_datFile.close()
+                file_write(datFile, txtREPORT, samba=samba)
                 txtLOG = 'COMMAND 2 PROCESSED "REPORT command" ' \
                     + str(varDATE) + ' ' + str(varTIME) + ';'
                 # print(txtLOG)
@@ -614,23 +636,17 @@ def run_EM63():
                 if logFile != '':
                     txtLOG0 = 'COMMAND 1 PROCESSED "JOB command" ' \
                         + str(varDATE) + ' ' + str(varTIME) + ';\n'
-                    if os.path.exists(logFile):
-                        rmFile(logFile)
+                    if file_exists(logFile, samba=samba):
+                        file_delete(logFile, samba=samba)
                     # if txtLOG != '' and txtLOG0 != '':
-                    f_logFile = open(logFile, 'w+')
                     txtLOG0 = txtLOG0 + txtLOG
-                    f_logFile.write(txtLOG0)
-                    f_logFile.close()
+                    file_write(logFile, txtLOG0, samba=samba)
                     # print("Log file was written: ", logFile)
 
         # Create RSP file
         rspFile = filepathEM63 + "SESS" + str(session).zfill(4) + '.RSP'
-        if os.path.exists(rspFile):
-            rmFile(rspFile)
-        f_rspFile = open(rspFile, 'w+')
         txtRSP = '00000001 PROCESSED "EXECUTE ' + jobFile + '";'
-        f_rspFile.write(txtRSP)
-        f_rspFile.close()
+        file_write(rspFile, txtRSP, samba=samba)
         print("Response file was written: ", rspFile)
         sys.stdout.flush()
 
