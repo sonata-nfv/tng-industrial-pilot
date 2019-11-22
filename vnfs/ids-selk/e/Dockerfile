@@ -1,4 +1,4 @@
-FROM elasticsearch:7.3.2
+FROM elasticsearch:7.4.2
 MAINTAINER "smpilot@5gtango.eu"
 
 USER elasticsearch

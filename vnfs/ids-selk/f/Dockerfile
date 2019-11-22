@@ -1,6 +1,6 @@
 ## STEP 1: GET 'FILEBEAT' FROM OFFICIAL IMAGE REPOSITORY
 
-FROM elastic/filebeat:7.3.2
+FROM elastic/filebeat:7.4.2
 MAINTAINER "smpilot@5gtango.eu"
 
 ## STEP 2: CONFIGURE 'FILEBEAT' TO USE 'LOGSTASH'

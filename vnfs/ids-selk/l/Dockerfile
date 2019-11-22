@@ -1,6 +1,6 @@
 # Dockerfile with a cusomized configuration for Logstash
 
-FROM logstash:7.3.2
+FROM logstash:7.4.2
 MAINTAINER sm-pilot@5gtango.eu
 
 # CONFIG
