@@ -1,4 +1,4 @@
-FROM elastic/kibana:7.3.2
+FROM elastic/kibana:7.4.2
 MAINTAINER "smpilot@5gtango.eu"
 
 ENV SERVER_NAME="kibana"
