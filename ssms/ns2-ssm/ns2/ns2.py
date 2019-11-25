@@ -303,6 +303,7 @@ class ns2SSM(smbase):
             topic="monitor.ssm.{}".format(
                 str(self._get_service_instance_uuid())),
             data={"workflow": "reconfigure",
+                  "service_instance_id": self._get_service_instance_uuid(),
                   "reconfiguration_payload": rconf_payload})
 
     def _publish_to_broker(self, topic, data, properties=None):
