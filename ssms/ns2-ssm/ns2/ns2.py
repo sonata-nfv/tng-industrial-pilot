@@ -269,10 +269,13 @@ class ns2SSM(smbase):
                 'configure': {'trigger': False}
             }
             # trigger reconfig only for MDC VNF
-            # TODO: allow configuration in both directions based on target_quarantaine_state
             if vnf_name == 'msf-vnf1':
                 vnf_dict['configure']['trigger'] = True
-                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
+                # allow configuration in both directions based on target_quarantaine_state
+                vnf_dict['configure']['payload'] = {
+                    'message': 'Manually triggered reconfiguration',
+                    'quarantine_state': target_quarantaine_state
+                    }
             # build the response
             response['vnf'].append(vnf_dict)
         # update internal state
