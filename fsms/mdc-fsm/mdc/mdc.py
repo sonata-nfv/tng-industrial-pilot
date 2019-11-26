@@ -188,6 +188,9 @@ class mdcFSM(smbase):
         else:
             error_msg = "None"  # not sure if None is really expected by the MANO framework
 
+        LOG.debug("MDC FSM status: normal_ns1_host={}".format(normal_ns1_host))
+        LOG.debug("MDC FSM status: quarantine_ns1_host={}".format(quarantine_ns1_host))
+
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
             'status': 'COMPLETED',
