@@ -44,7 +44,7 @@ LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
 
-class MdcFsm(smbase):
+class mdcFSM(smbase):
 
     def __init__(self, connect_to_broker=True):
         """
@@ -192,7 +192,7 @@ class MdcFsm(smbase):
 
 def main():
     LOG.info("MDC FSM: main()")
-    MdcFsm()
+    mdcFSM()
 
 
 if __name__ == '__main__':

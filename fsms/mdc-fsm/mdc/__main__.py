@@ -1,8 +1,8 @@
-from mdc import mdcfsm
+from mdc import mdc
 
 
 def main():
-    mdcfsm.main()
+    mdc.main()
 
 if __name__ == '__main__':
     main()
