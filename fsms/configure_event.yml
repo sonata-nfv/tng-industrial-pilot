@@ -64,3 +64,10 @@ vnfrs:
     id: data-link
 ingress: null
 egress: null
+generic_envs:
+  - cdu_id: 'cdu01-ae977910-9156-4c2b-9398-bbfda847a2f9'
+    envs:
+      MQTT_BROKER_HOST: '<default_mqtt_ip>'
+      QUARANTINE_MQTT_BROKER_HOST: '<quarantine_mqtt_ip>'
+      SMB_USER_NAME: 'localadmin'
+      SMB_CLIENT_NAME: 'K8S-MASTER'
