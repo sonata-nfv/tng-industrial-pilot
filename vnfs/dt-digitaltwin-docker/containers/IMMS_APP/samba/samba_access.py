@@ -52,7 +52,7 @@ class SambaAccess:
                 conn.connect(self.smb_host, 139, timeout=10)
                 print("Connection successful.")
                 return True
-            except socket.timeout as ex:
+            except (socket.timeout, ConnectionResetError) as ex:
                 print("Connection timed out. Retry in 5s. Timeout error: {}".format(str(ex)))
                 time.sleep(5)
         print("Connection timed out {} times. Giving up now.".format(max_attempts))
