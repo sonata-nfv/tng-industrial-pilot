@@ -26,8 +26,8 @@
 # partner consortium (www.5gtango.eu).
 echo "DT: Wait for MDC ... (3 seconds)"
 sleep 3  # ok, lets give the MDC some time to start Samba ... (ugly but works)
-echo "DT: Mount em63_share from MDC ..."
-mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
+#echo "DT: Mount em63_share from MDC ..."
+#mount -t cifs -o guest //$DT_EM63_SHARE_HOST/guest $DT_EM63_SHARE
 
 echo "DT: Starting DigitalTwin generator ..."
 cd IMMS_APP

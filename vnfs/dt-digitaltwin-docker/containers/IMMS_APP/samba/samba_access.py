@@ -37,6 +37,7 @@ from smb.smb_structs import OperationFailure
 
 class SambaAccess:
     def __init__(self, smb_host, smb_share="guest", local_dir=Path("../em63_share")):
+        print("Creating SambaAccess with host {}, share {}, local dir {}".format(smb_host, smb_share, local_dir))
         self.smb_host = smb_host
         self.smb_share = smb_share
         self.local_dir = local_dir
@@ -65,7 +66,7 @@ class SambaAccess:
         for f in file_list:
             print(f.filename, flush=True)
             
-    def get_file(self, filename, return_content=False):
+    def get_file(self, filename, return_content=False, readlines=False):
         """
         Retrieve and saves specified file from Samba share locally. 
         Return path to downloaded file (default). Or file contents (if return_content=True).
@@ -79,6 +80,8 @@ class SambaAccess:
         
         if return_content:
             with open(file_path, 'r') as f:
+                if readlines:
+                    return f.readlines()
                 return f.read()
         return file_path
 
@@ -130,13 +133,13 @@ class SambaAccess:
         
 if __name__ == "__main__":
     # some code to test and experiment: specify floating IP of NS2 MDC
-    smb = SambaAccess("172.31.13.160")
-    # smb.print_filenames()
+    smb = SambaAccess("10.200.16.30")
+    smb.print_filenames()
     # smb.exists_file('blablala')
     # smb.delete_file('remote_test.txt')
     # print(smb.save_file('remote_test.txt', 'test.txt'))
     # print(smb.save_file('remote_test.txt', 'test.txt'))
-    smb.write_file('remote_test2.txt', 'works really well!')
-    print(smb.get_file("remote_test2.txt", return_content=True))
+    # smb.write_file('remote_test2.txt', 'works really well!')
+    # print(smb.get_file("remote_test2.txt", return_content=True))
     # smb.print_filenames()
 

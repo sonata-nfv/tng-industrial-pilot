@@ -10,3 +10,4 @@ PyQt5
 pyqtgraph
 cryptography
 ipython
+pysmb
