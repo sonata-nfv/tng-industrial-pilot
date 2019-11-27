@@ -268,9 +268,10 @@ class ns2SSM(smbase):
         if target_quarantaine_state is None:
             # be a bit more verbose here and let the user know we use the default
             LOG.info("No quarantine status given in reconf. request. Using 'True' as default")
-            LOG.debug("Content keys {}".format(content.keys()))  # TODO: remove, just for testing
-            LOG.debug("Content service keys {}".format(content.get("service").keys()))  # TODO: remove, just for testing
             target_quarantaine_state = True
+        else:
+            LOG.info("Found target quarantine status: {}".format(
+                target_quarantaine_state))
         # get IDs of all VNF instances
         for vnf in content['functions']:
             # create the response
