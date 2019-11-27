@@ -58,6 +58,10 @@ RUN chmod +x stop.sh
 ENV DT_WEB_LISTEN 0.0.0.0
 ENV DT_WEB_PORT 15001
 ENV DT_EM63_SHARE /em63_share
+# configuration for IDS
+ENV DT_EM63_USERNAME Alice
+ENV DT_EM63_HOSTNAME IMMS
+
 # mdc in emulator: 30.0.1.2 local testing: 172.17.0.2
 ENV DT_EM63_SHARE_HOST 30.0.1.2
 ENV OPCUA_HOST localhost

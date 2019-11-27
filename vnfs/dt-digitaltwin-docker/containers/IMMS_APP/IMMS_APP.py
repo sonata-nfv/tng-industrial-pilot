@@ -118,7 +118,9 @@ filepathEM63 = os.environ.get("DT_EM63_SHARE", "../em63_share")
 
 # get and set EM63 connection
 smb_host = os.environ.get("DT_EM63_SHARE_HOST", "10.200.16.35")
-smb = SambaAccess(smb_host)
+smb_username = os.environ.get("DT_EM63_USERNAME", "Alice")
+smb_hostname = os.environ.get("DT_EM63_HOSTNAME", "IMMS")
+smb = SambaAccess(smb_host, username=smb_username, hostname=smb_hostname)
 
 valEM63 = [
         [txtDATE, varDATE, desDATE],
@@ -500,7 +502,7 @@ def file_read(filepath, readlines=False, samba=False):
     print("Reading {} with readlines={} and samba={}".format(filepath, readlines, samba))
     if samba:
         filename = remove_prefix(filepath)
-        return smb.get_file(filename, return_content=True, readlines=readlines)
+        return smb.get_file_content(filename, readlines=readlines)
 
     with open(filepath, 'r') as f:
         if readlines:
