@@ -260,13 +260,14 @@ class ns2SSM(smbase):
         # try to get the target quarantine state (default: True, e.g., for monitor trigger)
         target_quarantaine_state = None
         try:  # ignore all errors here
-            content.get("service").get("quarantine_state")
+            target_quarantaine_state = content.get("service").get("quarantine_state")
         except:
             pass
         if target_quarantaine_state is None:
             # be a bit more verbose here and let the user know we use the default
             LOG.info("No quarantine status given in reconf. request. Using 'True' as default")
-            LOG.debug("Content: {}".format(content.keys()))  # TODO: remove, just for testing
+            LOG.debug("Content keys {}".format(content.keys()))  # TODO: remove, just for testing
+            LOG.debug("Content service keys {}".format(content.get("service").keys()))  # TODO: remove, just for testing
             target_quarantaine_state = True
         # get IDs of all VNF instances
         for vnf in content['functions']:
@@ -323,8 +324,8 @@ class ns2SSM(smbase):
         Wrapper for broker publishing.
         Provides logging and can be executed locally (INIT_DELAY < 0)
         """
-        LOG.info("NS2 SSM: PUBLISHING >> topic={}, payload_keys={:.550} [...]"
-                 .format(topic, yaml.dump(data).strip().replace("\n", "")))
+        LOG.info("NS2 SSM: PUBLISHING >> topic={}, payloads={}"
+                 .format(topic, data))
         if INIT_DELAY < 0:
             # debug mode (e.g. tng-sm)
             # directly call the configure event to simulate SLM behavior
