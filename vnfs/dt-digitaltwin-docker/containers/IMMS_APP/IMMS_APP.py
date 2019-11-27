@@ -118,7 +118,9 @@ filepathEM63 = os.environ.get("DT_EM63_SHARE", "../em63_share")
 
 # get and set EM63 connection
 smb_host = os.environ.get("DT_EM63_SHARE_HOST", "10.200.16.35")
-smb = SambaAccess(smb_host)
+smb_username = os.environ.get("DT_EM63_USERNAME", "Alice")
+smb_hostname = os.environ.get("DT_EM63_USERNAME", "IMMS")
+smb = SambaAccess(smb_host, username=smb_username, hostname=smb_hostname)
 
 valEM63 = [
         [txtDATE, varDATE, desDATE],
