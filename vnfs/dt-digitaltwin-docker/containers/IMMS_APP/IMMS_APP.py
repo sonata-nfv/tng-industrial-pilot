@@ -51,6 +51,7 @@ import plotly
 import plotly.graph_objs as go
 import numpy as np
 from opcua import ua, Client, Server
+from samba.samba_access import SambaAccess
 
 app = Flask(__name__)
 
@@ -113,7 +114,11 @@ varFormEM63pass = ''
 session = 0  # Increment session for further em63 sessions
 
 # Get configuration from environment varialbe (or use the old default)
-filepathEM63 = os.environ.get("DT_EM63_SHARE", "/home/marcel/em63/")
+filepathEM63 = os.environ.get("DT_EM63_SHARE", "../em63_share")
+
+# get and set EM63 connection
+smb_host = os.environ.get("DT_EM63_SHARE_HOST", "10.200.16.30")
+smb = SambaAccess(smb_host)
 
 valEM63 = [
         [txtDATE, varDATE, desDATE],
@@ -471,10 +476,21 @@ def valEM63print():
 
 
 # auxiliary file access functions to use within run_EM63 to facilitate access to either local files or Samba
-# TODO: implement and test samba version
+def remove_prefix(filepath, prefix=filepathEM63):
+    """Return filename without prefix. Necessary for Samba connections"""
+    if filepath.startswith(prefix):
+        print("Removing prefix {} from {} for Samba interaction".format(prefix, filepath))
+        return filepath[len(prefix):]
+    return filepath
+
+
 def file_exists(filepath, samba=False):
     """Return if the specified file exists"""
-    exists = os.path.exists(filepath)
+    if samba:
+        filename = remove_prefix(filepath)
+        exists = smb.exists_file(filename)
+    else:
+        exists = os.path.exists(filepath)
     print("Check if {} exists: {}".format(filepath, exists))
     return exists
 
@@ -482,6 +498,10 @@ def file_exists(filepath, samba=False):
 def file_read(filepath, readlines=False, samba=False):
     """Open, read file and return file contents. If readlines, return list of lines instead of single string"""
     print("Reading {} with readlines={} and samba={}".format(filepath, readlines, samba))
+    if samba:
+        filename = remove_prefix(filepath)
+        return smb.get_file(filename, return_content=True, readlines=readlines)
+
     with open(filepath, 'r') as f:
         if readlines:
             content = f.readlines()
@@ -493,18 +513,25 @@ def file_read(filepath, readlines=False, samba=False):
 def file_write(filepath, text, samba=False):
     """Write text to file. Either append or overwrite."""
     print("Writing to {} Text: {}".format(filepath, text))
-    with open(filepath, 'w+') as f:
-        f.write(text)
+    if samba:
+        filename = remove_prefix(filepath)
+        smb.write_file(filename, text)
+    else:
+        with open(filepath, 'w+') as f:
+            f.write(text)
 
 
 def file_delete(filepath, samba=False):
     """Delete specified file"""
     print("Deleting file {}".format(filepath))
-    rmFile(filepath)
+    if samba:
+        filename = remove_prefix(filepath)
+        smb.delete_file(filename)
+    else:
+        rmFile(filepath)
 
 
-
-def run_EM63(samba=False):
+def run_EM63(samba=True):
     """If samba=False, read/write files from local (mounted) file system, else connect via Samba"""
     global varDATE, varTIME, filepathEM63, varFormEM63path, session, valEM63
     session = session + 1
@@ -528,7 +555,8 @@ def run_EM63(samba=False):
         if filepathEM63.startswith('/') and not filepathEM63.endswith('/'):
             print("EM63 path needs / ")
             filepathEM63 = filepathEM63 + "/"
-        if not file_exists(filepathEM63, samba=samba):
+        # check if the local directory exists
+        if not file_exists(filepathEM63, samba=False):
             print("EM63 path " + filepathEM63 + " does not exist.")
             time.sleep(2)
             return
@@ -551,7 +579,6 @@ def run_EM63(samba=False):
             # ", " not found in the original string
             jobFile = ''
             print("No job file name found. Error ...")
-        # TODO: Implement separate function for this too? Not sure what this does exactly
         file_delete(reqFile, samba=samba)
     else:
         return
