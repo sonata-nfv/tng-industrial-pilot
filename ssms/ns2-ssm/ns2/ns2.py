@@ -258,7 +258,11 @@ class ns2SSM(smbase):
         """
         response = {'status': 'COMPLETED', 'vnf': []}
         # try to get the target quarantine state (default: True, e.g., for monitor trigger)
-        target_quarantaine_state = content.get("quarantine_state")
+        target_quarantaine_state = None
+        try:  # ignore all errors here
+            content.get("service").get("quarantine_state")
+        except:
+            pass
         if target_quarantaine_state is None:
             # be a bit more verbose here and let the user know we use the default
             LOG.info("No quarantine status given in reconf. request. Using 'True' as default")
@@ -304,7 +308,6 @@ class ns2SSM(smbase):
         # Trigger reconfig event using the content from ._service_info
         # build payload to trigger reconfiguration event in SLM
         rconf_payload = dict()  # self._service_info.copy()
-        rconf_payload["functions"] = self._service_info.get("functions")
         rconf_payload["workflow"] = "reconfigure"
         rconf_payload["quarantine_state"] = state.quarantaine
         # publish reconfiguration event trigger to monitoring topic
@@ -313,8 +316,7 @@ class ns2SSM(smbase):
                 str(self._get_service_instance_uuid())),
             data={"workflow": "reconfigure",
                   "service_instance_id": self._get_service_instance_uuid(),
-                  "reconfiguration_payload": rconf_payload,
-                  "quarantine_state": state.quarantaine})
+                  "reconfiguration_payload": rconf_payload})
 
     def _publish_to_broker(self, topic, data, properties=None):
         """
