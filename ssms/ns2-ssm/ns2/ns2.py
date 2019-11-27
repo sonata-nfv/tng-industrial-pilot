@@ -278,7 +278,7 @@ class ns2SSM(smbase):
                 vnf_dict['configure']['trigger'] = True
                 # allow configuration in both directions based on target_quarantaine_state
                 vnf_dict['configure']['payload'] = {
-                    'message': 'Manually triggered reconfiguration',
+                    'message': 'Triggered reconfiguration',
                     'quarantine_state': target_quarantaine_state
                     }
             # build the response
@@ -303,7 +303,8 @@ class ns2SSM(smbase):
                  .format(state.quarantaine))
         # Trigger reconfig event using the content from ._service_info
         # build payload to trigger reconfiguration event in SLM
-        rconf_payload = self._service_info.copy()
+        rconf_payload = dict()  # self._service_info.copy()
+        rconf_payload["functions"] = self._service_info.get("functions")
         rconf_payload["workflow"] = "reconfigure"
         rconf_payload["quarantine_state"] = state.quarantaine
         # publish reconfiguration event trigger to monitoring topic
@@ -320,7 +321,7 @@ class ns2SSM(smbase):
         Wrapper for broker publishing.
         Provides logging and can be executed locally (INIT_DELAY < 0)
         """
-        LOG.info("NS2 SSM: PUBLISHING >> topic={}, payload={:.150} [...]"
+        LOG.info("NS2 SSM: PUBLISHING >> topic={}, payload_keys={:.550} [...]"
                  .format(topic, yaml.dump(data).strip().replace("\n", "")))
         if INIT_DELAY < 0:
             # debug mode (e.g. tng-sm)
