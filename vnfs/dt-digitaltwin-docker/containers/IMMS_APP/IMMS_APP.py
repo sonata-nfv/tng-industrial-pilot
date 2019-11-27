@@ -114,10 +114,10 @@ varFormEM63pass = ''
 session = 0  # Increment session for further em63 sessions
 
 # Get configuration from environment varialbe (or use the old default)
-filepathEM63 = os.environ.get("DT_EM63_SHARE", "../em63_share")
+filepathEM63 = os.environ.get("DT_EM63_SHARE")
 
 # get and set EM63 connection
-smb_host = os.environ.get("DT_EM63_SHARE_HOST", "10.200.16.30")
+smb_host = os.environ.get("DT_EM63_SHARE_HOST")
 smb = SambaAccess(smb_host)
 
 valEM63 = [
