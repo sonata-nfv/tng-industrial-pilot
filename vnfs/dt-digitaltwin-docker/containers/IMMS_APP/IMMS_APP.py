@@ -500,7 +500,7 @@ def file_read(filepath, readlines=False, samba=False):
     print("Reading {} with readlines={} and samba={}".format(filepath, readlines, samba))
     if samba:
         filename = remove_prefix(filepath)
-        return smb.get_file(filename, return_content=True, readlines=readlines)
+        return smb.get_file_content(filename, readlines=readlines)
 
     with open(filepath, 'r') as f:
         if readlines:
