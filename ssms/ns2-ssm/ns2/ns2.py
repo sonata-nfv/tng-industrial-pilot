@@ -260,7 +260,9 @@ class ns2SSM(smbase):
         # try to get the target quarantine state (default: True, e.g., for monitor trigger)
         target_quarantaine_state = None
         try:  # ignore all errors here
-            target_quarantaine_state = content.get("service").get("quarantine_state")
+            target_quarantaine_state = content.get(
+                "service").get(
+                    "reconfiguration_payload").get("quarantine_state")
         except:
             pass
         if target_quarantaine_state is None:
