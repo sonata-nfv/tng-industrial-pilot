@@ -257,8 +257,13 @@ class ns2SSM(smbase):
         The reconfiguration event is forwarded to the MDC FSM.
         """
         response = {'status': 'COMPLETED', 'vnf': []}
-        # try to get the target qurataine state (default: True, e.g., for monitr trigger)
-        target_quarantaine_state = content.get("quarantaine", True)
+        # try to get the target quarantine state (default: True, e.g., for monitor trigger)
+        target_quarantaine_state = content.get("quarantine_state")
+        if target_quarantaine_state is None:
+            # be a bit more verbose here and let the user know we use the default
+            LOG.info("No quarantine status given in reconf. request. Using 'True' as default")
+            LOG.debug("Content: {}".format(content))  # TODO: remove, just for testing
+            target_quarantaine_state = True
         # get IDs of all VNF instances
         for vnf in content['functions']:
             # create the response
@@ -300,7 +305,7 @@ class ns2SSM(smbase):
         # build payload to trigger reconfiguration event in SLM
         rconf_payload = self._service_info.copy()
         rconf_payload["workflow"] = "reconfigure"
-        rconf_payload["quarantaine"] = state.quarantaine
+        rconf_payload["quarantine_state"] = state.quarantaine
         # publish reconfiguration event trigger to monitoring topic
         self._publish_to_broker(
             topic="monitor.ssm.{}".format(
