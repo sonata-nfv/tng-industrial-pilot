@@ -43,7 +43,8 @@ LOG = logging.getLogger("fsm-mdc")
 LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
-ENV_MQTT_HOST_NORMAL = "MQTT_BROKER_HOST"
+ENV_MQTT_HOST = "MQTT_BROKER_HOST"
+ENV_MQTT_HOST_NORMAL = "NORMAL_MQTT_BROKER_HOST"
 ENV_MQTT_HOST_QUARANTINE = "QUARANTINE_MQTT_BROKER_HOST"
 
 
@@ -168,12 +169,12 @@ class mdcFSM(smbase):
             if id.startswith('cdu01'):
                 # this is the MDC CDU
                 cdu_id = id
-                normal_ns1_host = cdu['envs'].get(ENV_MQTT_HOST_NORMAL)
+                normal_ns1_host = cdu['envs'].get(ENV_MQTT_HOST)
                 quarantine_ns1_host = cdu['envs'].get(ENV_MQTT_HOST_QUARANTINE)
                 break  # stop (we don't care about the other CDUs)
 
         if normal_ns1_host is None:
-            error_msg += "MDC FSM: '{}' not found in envs //".format(ENV_MQTT_HOST_NORMAL)
+            error_msg += "MDC FSM: '{}' not found in envs //".format(ENV_MQTT_HOST)
 
         if quarantine_ns1_host is None:
             error_msg += "MDC FSM: '{}' not found in envs //".format(ENV_MQTT_HOST_QUARANTINE)
@@ -188,8 +189,18 @@ class mdcFSM(smbase):
         else:
             error_msg = "None"  # not sure if None is really expected by the MANO framework
 
-        LOG.debug("MDC FSM status: normal_ns1_host={}".format(normal_ns1_host))
-        LOG.debug("MDC FSM status: quarantine_ns1_host={}".format(quarantine_ns1_host))
+        LOG.debug("MDC FSM ENVs: normal_ns1_host={}".format(normal_ns1_host))
+        LOG.debug("MDC FSM ENVs: quarantine_ns1_host={}".format(quarantine_ns1_host))
+
+        # get target state (quarantine yes/no) from SSM message and set the target IP accordingly
+        target_state = content.get("quarantine_state", True)
+        # DEFAULT: enable quarantine
+        target_ns1_host = quarantine_ns1_host
+        if not target_state:
+            # disable quarantine
+            target_ns1_host = normal_ns1_host
+        LOG.info("MDC FSM: Target quarantine state={} setting target_ns1_host={}"
+                 .format(target_state, target_ns1_host))
 
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
@@ -197,7 +208,8 @@ class mdcFSM(smbase):
             'envs': [{
                 'cdu_id': cdu_id,
                 'envs': {
-                    ENV_MQTT_HOST_NORMAL: quarantine_ns1_host,
+                    ENV_MQTT_HOST: target_ns1_host,  # set the target
+                    ENV_MQTT_HOST_NORMAL: normal_ns1_host,  # backup the old normal host
                     ENV_MQTT_HOST_QUARANTINE: quarantine_ns1_host
                     }
                 }],
