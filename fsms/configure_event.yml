@@ -71,3 +71,4 @@ generic_envs:
       QUARANTINE_MQTT_BROKER_HOST: '<quarantine_mqtt_ip>'
       SMB_USER_NAME: 'localadmin'
       SMB_CLIENT_NAME: 'K8S-MASTER'
+quarantine_state: True

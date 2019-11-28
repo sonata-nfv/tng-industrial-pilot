@@ -267,10 +267,10 @@ class ns2SSM(smbase):
             pass
         if target_quarantaine_state is None:
             # be a bit more verbose here and let the user know we use the default
-            LOG.info("No quarantine status given in reconf. request. Using 'True' as default")
+            LOG.info("NS2 SSM: No quarantine status given in reconf. request. Using 'True' as default")
             target_quarantaine_state = True
         else:
-            LOG.info("Found target quarantine status: {}".format(
+            LOG.info("NS2 SSM: Found target quarantine status: {}".format(
                 target_quarantaine_state))
         # get IDs of all VNF instances
         for vnf in content['functions']:
