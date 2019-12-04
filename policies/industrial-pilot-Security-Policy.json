@@ -2,11 +2,11 @@
 	"descriptor_schema": "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/policy-descriptor/policy-schema.yml",
 	"name": "industrial-pilot-Security-Policy1",
 	"vendor": "eu.5gtango",
-	"version": "0.5",
+	"version": "0.7",
 	"network_service": {
 		"vendor": "eu.5gtango",
 		"name": "tng-smpilot-ns2-eids",
-		"version": "0.8"
+		"version": "0.9"
 	},
 	"monitoring_rules": [
 		{
