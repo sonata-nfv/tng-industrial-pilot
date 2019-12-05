@@ -41,8 +41,7 @@ RUN apt -y update && \
     chmod 660 /dev/net/tun
 COPY squid.conf /etc/squid/squid.conf
 COPY weidmueller-client.ovpn /etc/openvpn/weidmueller-client.ovpn
-COPY entrypoint.sh /sbin/entrypoint.sh
-RUN chmod 755 /sbin/entrypoint.sh
+COPY start.sh start.sh
+RUN chmod 755 start.sh
 EXPOSE 3128/tcp
-ENTRYPOINT ["/sbin/entrypoint.sh"]
-CMD openvpn --config /etc/openvpn/weidmueller-client.ovpn
+CMD ["./start.sh"]
