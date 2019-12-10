@@ -44,4 +44,5 @@ COPY weidmueller-client.ovpn /etc/openvpn/weidmueller-client.ovpn
 COPY start.sh start.sh
 RUN chmod 755 start.sh
 EXPOSE 3128/tcp
+EXPOSE 1194/udp
 CMD ["./start.sh"]
