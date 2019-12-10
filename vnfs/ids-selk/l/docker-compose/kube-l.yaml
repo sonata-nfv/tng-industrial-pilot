@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: arocha/ce7logstash:7.3.2
+        image: arocha/ce7logstash:7.4.2
         ports:
         - containerPort: 5044
 ---

@@ -38,14 +38,14 @@ import os
 import time
 import tnglib
 from smbase.smbase import smbase
-try:  # Docker
+try:  # running in Docker (set SSM to production mode)
     from ns2.smpccs_client import SsmCommandControlClient
     from ns2.smpccs_pb2 import SsmState
-    INIT_DELAY = 1  # only wait a small amount of time
-except:  # tmg-sdk-sm
+    INIT_DELAY = 1  # wait small amount of time in production
+except:  # tmg-sdk-sm (set SSM to local debugging mode)
     from smpccs_client import SsmCommandControlClient
     from smpccs_pb2 import SsmState
-    INIT_DELAY = 5  # wait longer for debugging
+    INIT_DELAY = -1  # < 0 means we are in local debugging mode
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger("ssm-ns2")
@@ -103,8 +103,14 @@ class ns2SSM(smbase):
         request = yaml.load(payload)
 
         # Don't trigger on non-request messages
+        if not request:
+            LOG.info("Received an empty request message, ignoring...")
+            LOG.debug("Ignoring: {}".format(payload))
+            return
+
         if "ssm_type" not in request.keys():
             LOG.info("Received a non-request message, ignoring...")
+            LOG.debug("Ignoring: {}".format(request))
             return
 
         # Create the response
@@ -210,7 +216,8 @@ class ns2SSM(smbase):
         suuid = self._get_service_instance_uuid()
         sname = self._get_service_name()
         if suuid is not None and sname is not None:
-            self._service_state = SsmState(uuid=suuid, name=sname)
+            self._service_state = SsmState(
+                uuid=suuid, name=sname, status="running")
 
         # get address of remote SMP-CC server
         con_str = os.getenv("smpcc_grpc_endpoint")
@@ -222,21 +229,24 @@ class ns2SSM(smbase):
             smpccc = SsmCommandControlClient(
                 self._service_state,
                 connection=con_str,
-                callback=None)
+                # configure callback that is called if SMP-CC sends an update
+                callback_obj=self)
             smpccc.start()  # runs in dedicated daemon thread
 
         # Give the client some time start
         # TODO this is an ugly hack! better build a lock-based mechanism
         LOG.info("NS2 SSM: Waiting for SMP-CC client to start ({}s)"
-                 .format(INIT_DELAY))
-        time.sleep(INIT_DELAY)
-
-        # TODO: Implement callback upon remote state change!
+                 .format(abs(INIT_DELAY)))
+        time.sleep(abs(INIT_DELAY))
 
         # done
         LOG.info("NS2 SSM: configure/instantiation event completed")
         LOG.debug("NS2 SSM: configure/instantiation event response: {}"
                   .format(response))
+        # in the local/debugging case: block and wait:
+        if INIT_DELAY < 0:
+            LOG.info("NS2 SSM: Blocking SSM for debugging ...")
+            input("... Press <ENTER> to continue ...")
         return response
 
     def _configure_event_reconfiguration(self, content):
@@ -247,6 +257,21 @@ class ns2SSM(smbase):
         The reconfiguration event is forwarded to the MDC FSM.
         """
         response = {'status': 'COMPLETED', 'vnf': []}
+        # try to get the target quarantine state (default: True, e.g., for monitor trigger)
+        target_quarantaine_state = None
+        try:  # ignore all errors here
+            target_quarantaine_state = content.get(
+                "service").get(
+                    "reconfiguration_payload").get("quarantine_state")
+        except:
+            pass
+        if target_quarantaine_state is None:
+            # be a bit more verbose here and let the user know we use the default
+            LOG.info("NS2 SSM: No quarantine status given in reconf. request. Using 'True' as default")
+            target_quarantaine_state = True
+        else:
+            LOG.info("NS2 SSM: Found target quarantine status: {}".format(
+                target_quarantaine_state))
         # get IDs of all VNF instances
         for vnf in content['functions']:
             # create the response
@@ -259,14 +284,79 @@ class ns2SSM(smbase):
             # trigger reconfig only for MDC VNF
             if vnf_name == 'msf-vnf1':
                 vnf_dict['configure']['trigger'] = True
-                vnf_dict['configure']['payload'] = {'message': 'IDS Alert 1'}
+                # allow configuration in both directions based on target_quarantaine_state
+                vnf_dict['configure']['payload'] = {
+                    'message': 'Triggered reconfiguration',
+                    'quarantine_state': target_quarantaine_state
+                    }
             # build the response
             response['vnf'].append(vnf_dict)
+        # update internal state
+        self._set_quarantaine(target_quarantaine_state)
+        # TODO (optional): trigger a callback to update state at SMP-CCS
         # done
         LOG.info("NS2 SSM: configure/reconfiguration event completed")
         LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"
                   .format(response))
         return response
+
+    def smpcc_callback(self, state):
+        """
+        This method is called when the remote SMP-CC sends a state update to
+        this SSM.
+        State contains the target state, e.g., if service should be put to
+        quarantine or removed from quarantine.
+        """
+        LOG.info("NS2 SSM: SMP-CC CALLBACK quarantaine={}"
+                 .format(state.quarantaine))
+        # Trigger reconfig event using the content from ._service_info
+        # build payload to trigger reconfiguration event in SLM
+        rconf_payload = dict()  # self._service_info.copy()
+        rconf_payload["workflow"] = "reconfigure"
+        rconf_payload["quarantine_state"] = state.quarantaine
+        # publish reconfiguration event trigger to monitoring topic
+        self._publish_to_broker(
+            topic="monitor.ssm.{}".format(
+                str(self._get_service_instance_uuid())),
+            data={"workflow": "reconfigure",
+                  "service_instance_id": self._get_service_instance_uuid(),
+                  "reconfiguration_payload": rconf_payload})
+
+    def _publish_to_broker(self, topic, data, properties=None):
+        """
+        Wrapper for broker publishing.
+        Provides logging and can be executed locally (INIT_DELAY < 0)
+        """
+        LOG.info("NS2 SSM: PUBLISHING >> topic={}, payloads={}"
+                 .format(topic, data))
+        if INIT_DELAY < 0:
+            # debug mode (e.g. tng-sm)
+            # directly call the configure event to simulate SLM behavior
+            self.configure_event(data.get("reconfiguration_payload"))
+            return  # stop and do not publish on broker
+        # production mode (publish message to MANO broker)
+        try:
+            # try to publish a reconfig event to the broker
+            self.manoconn.publish(
+                topic=topic, message=yaml.dump(data), properties=properties)
+        except BaseException as ex:
+            LOG.error("Could not publish to broker: {}".format(ex))
+
+    def _set_quarantaine(self, value):
+        # FIXME: add locks for thread safety
+        if self._service_state is None:
+            LOG.error("NS2 SSM: Cannot set state. State store is None.")
+            return
+        LOG.info("NS2 SSM: setting quarantaine state")
+        self._service_state.quarantaine = value
+        self._print_state()
+
+    def _print_state(self):
+        if self._service_state is None:
+            LOG.error("NS2 SSM: Cannot print state. State store is None.")
+            return
+        LOG.info("NS2 SSM: quarantaine state is: {}"
+                 .format(self._service_state.quarantaine))
 
     def state_event(self, content):
         """

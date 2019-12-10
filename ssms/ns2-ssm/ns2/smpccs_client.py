@@ -67,7 +67,7 @@ def _update_state_with_dict(state, update):
 
 class SsmCommandControlClient(threading.Thread):
 
-    def __init__(self, state, connection="localhost:9012", callback=None):
+    def __init__(self, state, connection="localhost:9012", callback_obj=None):
         """
         state: the SSMs state object (type: pb2.SsmState)
         connection: connection string of the remote SMP-CC server.
@@ -76,7 +76,7 @@ class SsmCommandControlClient(threading.Thread):
         super().__init__(daemon=True)
         self.state = state
         self.connection_str = connection
-        self.callback_func = callback
+        self.callback_obj = callback_obj
 
     def run(self):
         print("SMP-CC client: started ...")
@@ -97,8 +97,8 @@ class SsmCommandControlClient(threading.Thread):
                         _update_state_with_dict(self.state,
                                                 _state_to_dict(new_state))
                         print("SMP-CC client: updated local state")
-                        if self.callback_func:
-                            self.callback_func(new_state)
+                        if self.callback_obj:
+                            self.callback_obj.smpcc_callback(new_state)
             except BaseException as ex:
                 print("SMP-CC client: Error {}".format(type(ex)))
                 print(ex)
@@ -108,8 +108,10 @@ class SsmCommandControlClient(threading.Thread):
             time.sleep(TIME_RECONNECT)
 
 
-def test_callback(state):
-    print("SMP-CC client: quarantaine={}".format(state.quarantaine))
+class TestCallback(object):
+
+    def smpcc_callback(state):
+        print("SMP-CC client: quarantaine={}".format(state.quarantaine))
 
 
 def main():
@@ -127,10 +129,11 @@ def main():
 
     # create state object (this must also be done by SSM)
     state = pb2.SsmState(uuid=name, name=name)
+    tc = TestCallback()
     t = SsmCommandControlClient(
         state,
         connection=con_str,
-        callback=test_callback)
+        callback_obj=tc)
     t.start()
 
     # block (a SSM runs forever)

@@ -18,11 +18,11 @@ $ docker exec -it my-kb bash
 
 Get the official KIBANA Docker Image
 
-```$ docker pull elastic/kibana:7.3.2```
+```$ docker pull elastic/kibana:7.4.2```
 
 Run the KIBANA Docker image
 
-```$ docker run --rm -d -e ELASTICSEARCH_URL="http://elasticsearch:9200" --hostname=kibana --name=kibana --network=host -t elastic/kibana:7.3.2
+```$ docker run --rm -d -e ELASTICSEARCH_URL="http://elasticsearch:9200" --hostname=kibana --name=kibana --network=host -t elastic/kibana:7.4.2
 ```
 
 More info here: [KIBANA deployemnt guide](https://www.elastic.co/guide/en/kibana/current/index.html)

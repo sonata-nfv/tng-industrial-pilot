@@ -4,7 +4,7 @@ description: "Performance test for mqtt broker"
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/test-descriptor/testdescriptor-schema.yml
 name: "test-industrial-pilot-ns1"
 vendor: "eu.5gtango.egm"
-version: '0.8'
+version: '1.0'
 
 service_platforms:
   - "SONATA"
@@ -25,7 +25,7 @@ phases:
       probes:
       - id: mqttprobe
         description: "A service initial configuration container"
-        image: "easyglobalmarket/mqtt-probe:latest"
+        image: "easyglobalmarket/mqtt-probe:v1.0"
         name: mqttprobe
         parameters:
         - key: IP

@@ -44,7 +44,7 @@ items:
             value: http://localhost:9200
           - name: SERVER_NAME
             value: kibana
-          image: docker.elastic.co/kibana/kibana:7.3.2
+          image: docker.elastic.co/kibana/kibana:7.4.2
           name: kibana
           ports:
           - containerPort: 5061

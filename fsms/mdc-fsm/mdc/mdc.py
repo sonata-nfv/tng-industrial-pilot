@@ -43,8 +43,12 @@ LOG = logging.getLogger("fsm-mdc")
 LOG.setLevel(logging.DEBUG)
 logging.getLogger("son-mano-base:messaging").setLevel(logging.INFO)
 
+ENV_MQTT_HOST = "MQTT_BROKER_HOST"
+ENV_MQTT_HOST_NORMAL = "NORMAL_MQTT_BROKER_HOST"
+ENV_MQTT_HOST_QUARANTINE = "QUARANTINE_MQTT_BROKER_HOST"
 
-class MdcFsm(smbase):
+
+class mdcFSM(smbase):
 
     def __init__(self, connect_to_broker=True):
         """
@@ -151,48 +155,74 @@ class MdcFsm(smbase):
         This method handles a configure event. The configure event changes the configuration
         of the MDC to connect it to a different NS1 ("Shadow Copy").
         """
-        LOG.debug("MDC FSM: Starting configuration event")
+        LOG.info("MDC FSM: Starting configuration event")
         
         # get hostname of the quarantine NS1 from the NSR. Note: Only possible if set as instantiation param, when starting the NS (not preconfigured env)!
         # example content: http://logs.sonata-nfv.eu/messages/graylog_65/fbe87433-f568-11e9-a4e4-0242ac130004
         cdu_id = None
+        normal_ns1_host = None
         quarantine_ns1_host = None
-        error_msg = 'None'
-        
-        # loop over CDUs to find CDU01 which belongs to the MDC
+        error_msg = ""
+        # ENVs are given per CDU. Search for CDU01 (MDC)
         for cdu in content['generic_envs']:
             id = cdu['cdu_id']
             if id.startswith('cdu01'):
+                # this is the MDC CDU
                 cdu_id = id
-                if 'QUARANTINE_MQTT_BROKER_HOST' in cdu['envs']:
-                    quarantine_ns1_host = cdu['envs']['QUARANTINE_MQTT_BROKER_HOST']
-                    LOG.info("MDC FSM: Quarantine NS1 host: {} for CDU: {}".format(quarantine_ns1_host, cdu_id))
-                else:
-                    error_msg = "MDC FSM: 'QUARANTINE_MQTT_BROKER_HOST' not found in envs"
-                    LOG.error(error_msg)
-                break
+                normal_ns1_host = cdu['envs'].get(ENV_MQTT_HOST)
+                quarantine_ns1_host = cdu['envs'].get(ENV_MQTT_HOST_QUARANTINE)
+                break  # stop (we don't care about the other CDUs)
+
+        if normal_ns1_host is None:
+            error_msg += "MDC FSM: '{}' not found in envs //".format(ENV_MQTT_HOST)
+
+        if quarantine_ns1_host is None:
+            error_msg += "MDC FSM: '{}' not found in envs //".format(ENV_MQTT_HOST_QUARANTINE)
                 
         if cdu_id is None:
-            error_msg = "MDC FSM: MDC cdu01 ID not found"
+            error_msg += "MDC FSM: MDC cdu01 ID not found //"
             LOG.error(error_msg)
-        
+
+        if len(error_msg) > 0:
+            # Error happened. Print all errs.
+            LOG.error("MDC FSM: Error! {}".format(error_msg))
+        else:
+            error_msg = "None"  # not sure if None is really expected by the MANO framework
+
+        LOG.debug("MDC FSM ENVs: normal_ns1_host={}".format(normal_ns1_host))
+        LOG.debug("MDC FSM ENVs: quarantine_ns1_host={}".format(quarantine_ns1_host))
+
+        # get target state (quarantine yes/no) from SSM message and set the target IP accordingly
+        target_state = content.get("quarantine_state", True)
+        # DEFAULT: enable quarantine
+        target_ns1_host = quarantine_ns1_host
+        if not target_state:
+            # disable quarantine
+            target_ns1_host = normal_ns1_host
+        LOG.info("MDC FSM: Target quarantine state={} setting target_ns1_host={}"
+                 .format(target_state, target_ns1_host))
+
         # reconfigure MDC: overwrite existing MQTT broker host
         response = {
             'status': 'COMPLETED',
             'envs': [{
                 'cdu_id': cdu_id,
-                'envs': {'MQTT_BROKER_HOST': quarantine_ns1_host}
+                'envs': {
+                    ENV_MQTT_HOST: target_ns1_host,  # set the target
+                    ENV_MQTT_HOST_NORMAL: normal_ns1_host,  # backup the old normal host
+                    ENV_MQTT_HOST_QUARANTINE: quarantine_ns1_host
+                    }
                 }],
             'error': error_msg
             } 
-        LOG.info("MDC FSM: Configuration event complete")
-        
+        LOG.info("MDC FSM: Configuration event completed")
+        LOG.debug("MDC FSM response: {}".format(response))
         return response
 
 
 def main():
     LOG.info("MDC FSM: main()")
-    MdcFsm()
+    mdcFSM()
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ version: '0.5'
 package:
   vendor: eu.5gtango
   name: industrial-pilot-test-egm
-  version: '0.9'
+  version: '1.0'
   maintainer: Aureliano Sinatra, EGM
   description: This is a 5GTANGO test package for mqtt Benchmarking
 files:

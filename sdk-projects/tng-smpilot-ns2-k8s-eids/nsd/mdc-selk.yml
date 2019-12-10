@@ -29,7 +29,7 @@
 descriptor_schema: https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml
 vendor: eu.5gtango
 name: tng-smpilot-ns2-eids
-version: '0.8'
+version: '0.9'
 author: sm-pilot@5gtango.eu
 description: 'a CNF for MDC with SELK (sidecar) enhanced security barrier'
 
@@ -37,19 +37,19 @@ network_functions:
 - vnf_id: vnf1
   vnf_vendor: eu.5gtango
   vnf_name: msf-vnf1
-  vnf_version: '0.8'
+  vnf_version: '0.9'
 - vnf_id: vnf2
   vnf_vendor: eu.5gtango
   vnf_name: lhc-vnf2
-  vnf_version: '0.8'
+  vnf_version: '0.9'
 - vnf_id: vnf3
   vnf_vendor: eu.5gtango
   vnf_name: e-vnf3
-  vnf_version: '0.8'
+  vnf_version: '0.9'
 - vnf_id: vnf4
   vnf_vendor: eu.5gtango
   vnf_name: k-vnf4
-  vnf_version: '0.8'
+  vnf_version: '0.9'
   
 # external CPs of the NS. only need to define what needs to be accessible from the outside
 connection_points:

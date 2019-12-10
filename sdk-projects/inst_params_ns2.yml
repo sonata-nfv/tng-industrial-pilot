@@ -1,7 +1,9 @@
 # for MQTT connection to NS1 (get IP after instantiating NS1)
-MQTT_BROKER_HOST: <ns1_cc_floating_ip>
-QUARANTINE_MQTT_BROKER_HOST: <quarantine_ns1_cc_floating_ip>
+MQTT_BROKER_HOST: <ns1_cc_floating_ip>  # update
+QUARANTINE_MQTT_BROKER_HOST: <quarantine_ns1_cc_floating_ip>  # update
 
 # for configuration of IDS: this is the only allowed user and hostname to connect to the MDC without an alarm
-SMB_USER_NAME: localadmin
-SMB_CLIENT_NAME: K8S-MASTER
+# Alice and IMMS are the default settings of the IMMS; so no need to change them
+# to trigger an alarm, start an IMMS with a different username (or hostname)
+SMB_USER_NAME: Alice
+SMB_CLIENT_NAME: IMMS

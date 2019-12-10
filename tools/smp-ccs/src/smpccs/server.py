@@ -102,7 +102,7 @@ class SsmStateStore(object):
     Stores mapping from UUID to SsmState objects.
     """
     def __init__(self):
-        print("Created: {}".format(self))
+        print("Created: {}".format(self), flush=True)
         self._store = dict()
 
     def register(self, state):
@@ -124,7 +124,7 @@ class SsmStateStore(object):
         state.time_updated = int(time.time())
         # TODO locking needed?
         self._store[state.uuid] = state
-        print("Registered: ", end="")
+        print("Registered: ", end="", flush=True)
         pprint_state(state, True)
 
     def update(self, uuid, update):
@@ -137,7 +137,7 @@ class SsmStateStore(object):
         if uuid not in self._store:
             raise SsmNotFoundException("UUID: {} not found".format(uuid))
         del self._store[uuid]
-        print("Removed: {}".format(uuid))
+        print("Removed: {}".format(uuid), flush=True)
 
     def get_dict(self):
         """
@@ -154,10 +154,10 @@ class SsmStateStore(object):
 
 
 def pprint_state(state, detailed=False):
-    print("SsmState({})".format(state.uuid))
+    print("SsmState({})".format(state.uuid), flush=True)
     if detailed:
         for k, v in _state_to_dict(state).items():
-            print("\t{}: {}".format(k, v))
+            print("\t{}: {}".format(k, v), flush=True)
 
 
 def _state_to_dict(state):
@@ -191,9 +191,9 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         """
         Simple request and reply example.
         """
-        print("Received: '{}'".format(request.text))
+        print("Received: '{}'".format(request.text), flush=True)
         reply = pb2.Pong(text="Pong!")
-        print("Replying: '{}'".format(reply.text))
+        print("Replying: '{}'".format(reply.text), flush=True)
         return reply
 
     def ControlSsm(self, state, context):
@@ -203,11 +203,11 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         state updates to the client SSM.
         """
         def _cleanup():
-            print("Disconnected: {}".format(state.uuid))
+            print("Disconnected: {}".format(state.uuid), flush=True)
             try:
                 self.store.remove(state.uuid)
             except BaseException as ex:
-                print("Error: {}".format(ex))
+                print("Error: {}".format(ex), flush=True)
 
         # 1. callback if client disconnects
         context.add_callback(_cleanup)
@@ -226,12 +226,12 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
                 state.changed = False
             # FIXME this could be done nicer with a lock, but ok for now
             time.sleep(UPDATE_INTERVAL)
-        print("Stopping control for: ", end="")
+        print("Stopping control for: ", end="", flush=True)
         pprint_state(state)
 
 
 def serve():
-    print("SMP-CC server starting ...")
+    print("SMP-CC server starting ...", flush=True)
     store = SsmStateStore()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     servicer = SmpSsmControlServicer()
@@ -240,15 +240,15 @@ def serve():
         servicer, server)
     server.add_insecure_port('[::]:9012')
     server.start()
-    print("SMP-CC server started: {}".format(server))
+    print("SMP-CC server started: {}".format(server), flush=True)
     try:
         # start the REST API server (blocks)
         app.store = store
         serve_rest_api()
     except KeyboardInterrupt:
-        print("SMP-CC server stopping ...")
+        print("SMP-CC server stopping ...", flush=True)
         server.stop(0)
-    print("SMP-CC server stopped.")
+    print("SMP-CC server stopped.", flush=True)
 
 
 def main():

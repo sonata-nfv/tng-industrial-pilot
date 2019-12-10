@@ -1,6 +1,14 @@
 # Elasticsearch
 
-## Elasticsearch CNF for SMP deployment via the SP
+## Build a customized ES image
+
+```
+$ docker build -t vnf-ids-elasticsearch .
+$ docker run --rm --name elasticsearch -d vnf-ids-elasticsearch
+$ docker exec -it elasticsearch bash
+```
+
+## Manual instantiation of Elasticsearch CNF used in SMPilot
 
 ```
 $ docker pull sonatanfv/vnf-ids-elasticsearch
@@ -15,15 +23,15 @@ $ docker inspect my-es | grep -i ipaddress
 172.17.0.2
 ```
 
-## Standalone Elasticsearch
+## Manual instantiation of a standalone Elasticsearch
 
 Get the official ELASTICSEARCH Docker Image
 
-```$ docker pull elastic/elasticsearch:7.3.2```
+```$ docker pull elastic/elasticsearch:7.4.2```
 
 Run the ELASTICSEARCH Docker image
 
-```$ docker run --rm -d [-p 9200:9200 -p 9300:9300] -e "discovery.type=single-node" --hostname=elastic --name=elastic --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:7.3.2```
+```$ docker run --rm -d [-p 9200:9200 -p 9300:9300] -e "discovery.type=single-node" --hostname=elastic --name=elastic --network=host --mount source=elastic,destination=/usr/share/elasticsearch/data -t docker.elastic.co/elasticsearch/elasticsearch:7.4.2```
 
 
 * `path.home=/usr/share/elasticsearch`
