@@ -40,6 +40,9 @@ RUN apt -y update && \
     mknod /dev/net/tun c 10 200 && \
     chmod 660 /dev/net/tun
 COPY squid.conf /etc/squid/squid.conf
-COPY weidmueller-client.ovpn /etc/openvpn/weidmueller-client.ovpn
-RUN squid -f /etc/squid/squid.conf 
-CMD openvpn --config /etc/openvpn/weidmueller-client.ovpn
+COPY client3.ovpn /etc/openvpn/client3.ovpn
+COPY start.sh start.sh
+RUN chmod 755 start.sh
+EXPOSE 3128/tcp
+EXPOSE 1194/udp
+CMD ["./start.sh"]
