@@ -14,6 +14,9 @@ smpccc fsm01
 
 # Terminal 3: Additional SMP-CC test clients to test multi-FSM case
 smpccc fsm02
+
+# Terminal 4: Test update
+smpcccu
 ```
 
 ## Deploy as Docker
