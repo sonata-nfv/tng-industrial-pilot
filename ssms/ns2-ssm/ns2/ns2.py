@@ -39,11 +39,11 @@ import time
 import tnglib
 from smbase.smbase import smbase
 try:  # running in Docker (set SSM to production mode)
-    from ns2.smpccs_client import SsmCommandControlClient
+    from ns2.smpccs_client import SsmCommandControlClient, SsmUpdateClient
     from ns2.smpccs_pb2 import SsmState
     INIT_DELAY = 1  # wait small amount of time in production
 except:  # tmg-sdk-sm (set SSM to local debugging mode)
-    from smpccs_client import SsmCommandControlClient
+    from smpccs_client import SsmCommandControlClient, SsmUpdateClient
     from smpccs_pb2 import SsmState
     INIT_DELAY = -1  # < 0 means we are in local debugging mode
 
@@ -68,6 +68,8 @@ class ns2SSM(smbase):
         self._service_info = None
         # state of the service (e.g. quarantaine yes/no)
         self._service_state = None
+        # gRPC client to send updates to SMP-CCS
+        self.smpcccu = None
 
         super(self.__class__, self).__init__(sm_id=self.sm_id,
                                              sm_version=self.sm_version,
@@ -224,7 +226,7 @@ class ns2SSM(smbase):
         if con_str is None:
             LOG.error("NS2 SSM: Could not find 'smpcc_grpc_endpoint'")
 
-        # initialize SMP-CC client and connect to remote control server
+        # initialize SMP-CC control client and connect to remote control server
         if con_str is not None and self._service_state is not None:
             smpccc = SsmCommandControlClient(
                 self._service_state,
@@ -232,6 +234,9 @@ class ns2SSM(smbase):
                 # configure callback that is called if SMP-CC sends an update
                 callback_obj=self)
             smpccc.start()  # runs in dedicated daemon thread
+
+        # initialize SMP-CC update client for later use
+        self.smpcccu = SsmUpdateClient(connection=con_str)
 
         # Give the client some time start
         # TODO this is an ugly hack! better build a lock-based mechanism
@@ -267,6 +272,7 @@ class ns2SSM(smbase):
             pass
         if target_quarantaine_state is None:
             # be a bit more verbose here and let the user know we use the default
+            # this happens if the trigger comes from the policy engine
             LOG.info("NS2 SSM: No quarantine status given in reconf. request. Using 'True' as default")
             target_quarantaine_state = True
         else:
@@ -293,7 +299,12 @@ class ns2SSM(smbase):
             response['vnf'].append(vnf_dict)
         # update internal state
         self._set_quarantaine(target_quarantaine_state)
-        # TODO (optional): trigger a callback to update state at SMP-CCS
+        # use RPC client to update state at SMP-CCS (i.e. to ensure the SMP-CC knows about automatically triggered updates)
+        if self.smpcccu and self._service_state:
+            if self.smpcccu.send_update(self._service_state):
+                LOG.info("NS2 SSM: SMP-CC client has delivered update to SMP-CCS")
+        else:
+            LOG.error("NS2 SSM: SMP-CC client for updates is None")
         # done
         LOG.info("NS2 SSM: configure/reconfiguration event completed")
         LOG.debug("NS2 SSM: configure/reconfiguration event response: {}"

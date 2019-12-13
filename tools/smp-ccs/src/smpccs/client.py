@@ -140,5 +140,5 @@ def main_update():
                              quarantaine=True)
         # register and wait for state updates
         print("SMP-CC client: updating state: {}".format(
-            state.name))    
+              state.name))    
         stub.UpdateQuarantine(state)
