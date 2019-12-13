@@ -23,10 +23,10 @@ smpccc fsm02
 docker pull sonatanfv/smp-ccs
 
 # start the container
-docker run -d -p 9011:9011 -p 9012:9012 --restart always --name smp-ccs sonatanfv/smp-ccs
+docker run -d -p 80:80 -p 9012:9012 --restart always --name smp-ccs sonatanfv/smp-ccs
 
 # remotly monitor the server using REST (since its logs are quite limited)
-watch curl -X GET fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus
+watch curl -X GET fgcn-tango-smp-ctrl.cs.upb.de/api/v1/ssmstatus
 ```
 
 ## REST API
@@ -38,8 +38,8 @@ Gets a dictionary with the states of all registered SSMs.
 Example: 
 
 ```sh
-curl -X GET 127.0.0.1:9011/api/v1/ssmstatus
-curl -X GET fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus
+curl -X GET 127.0.0.1/api/v1/ssmstatus
+curl -X GET fgcn-tango-smp-ctrl.cs.upb.de/api/v1/ssmstatus
 ```
 
 Returns (Status 200):
@@ -67,8 +67,8 @@ Fields to send:
 Example:
 
 ```sh
-curl -X PUT 127.0.0.1:9011/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
-curl -X PUT fgcn-tango-smp-ctrl.cs.upb.de:9011/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
+curl -X PUT 127.0.0.1/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
+curl -X PUT fgcn-tango-smp-ctrl.cs.upb.de/api/v1/ssmstatus -d uuid=ssm01 -d quarantaine=1
 ```
 
 Returns (Status 200):
