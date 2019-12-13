@@ -32,6 +32,7 @@ import smpccs_pb2 as pb2
 from flask import Flask, Blueprint
 from flask_restplus import Resource, Api, Namespace
 from flask_restplus import inputs
+from flask_cors import CORS
 from werkzeug.contrib.fixers import ProxyFix
 
 
@@ -44,6 +45,7 @@ class SsmNotFoundException(BaseException):
 
 # Basic setup of REST server for API
 app = Flask(__name__)
+CORS(app)  # enable cors
 app.wsgi_app = ProxyFix(app.wsgi_app)
 blueprint = Blueprint('api', __name__, url_prefix="/api")
 api_v1 = Namespace("v1", description="SMP-CCS API v1")
