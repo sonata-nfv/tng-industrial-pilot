@@ -38,7 +38,8 @@ setup(name='smpccs',
       # namespace_packages=['tngsdk', ],
       include_package_data=True,       # package data specified in MANIFEST.in
       install_requires=["grpcio-tools",
-                        "flask-restplus"],
+                        "flask-restplus",
+                        "flask-cors"],
       zip_safe=False,
       entry_points={
           'console_scripts': [

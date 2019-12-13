@@ -24,6 +24,7 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 from concurrent import futures
+import os
 import time
 import grpc
 import smpccs_pb2_grpc as pb2_grpc
@@ -31,6 +32,7 @@ import smpccs_pb2 as pb2
 from flask import Flask, Blueprint
 from flask_restplus import Resource, Api, Namespace
 from flask_restplus import inputs
+from flask_cors import CORS
 from werkzeug.contrib.fixers import ProxyFix
 
 
@@ -43,6 +45,7 @@ class SsmNotFoundException(BaseException):
 
 # Basic setup of REST server for API
 app = Flask(__name__)
+CORS(app)  # enable cors
 app.wsgi_app = ProxyFix(app.wsgi_app)
 blueprint = Blueprint('api', __name__, url_prefix="/api")
 api_v1 = Namespace("v1", description="SMP-CCS API v1")
@@ -56,7 +59,7 @@ api.add_namespace(api_v1)
 
 
 def serve_rest_api(service_address="0.0.0.0",
-                   service_port=9011,
+                   service_port=os.getenv("REST_PORT", 80),
                    debug=True):
     app.run(host=service_address,
             port=int(service_port),
@@ -238,7 +241,7 @@ def serve():
     servicer.store = store
     pb2_grpc.add_SmpSsmControlServicer_to_server(
         servicer, server)
-    server.add_insecure_port('[::]:9012')
+    server.add_insecure_port('[::]:{}'.format(os.getenv("GRPC_PORT", 9012)))
     server.start()
     print("SMP-CC server started: {}".format(server), flush=True)
     try:
