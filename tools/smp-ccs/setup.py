@@ -45,6 +45,7 @@ setup(name='smpccs',
           'console_scripts': [
               'smpccs=smpccs.server:main',
               'smpccc=smpccs.client:main',
+              'smpcccu=smpccs.client:main_update',
           ],
       },
       setup_requires=[],

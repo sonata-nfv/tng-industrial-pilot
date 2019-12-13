@@ -125,3 +125,20 @@ def main():
     # block (a SSM runs forever)
     while True:
         time.sleep(2)
+
+
+def main_update():
+    # example how to implement another client to send updates to SMP-CC
+    name = "ssm01"  # default name
+    if len(sys.argv) > 1:
+        name = sys.argv[1]
+
+    with grpc.insecure_channel("localhost:9012") as channel:
+        stub = pb2_grpc.SmpSsmUpdateStub(channel)
+        state = pb2.SsmState(uuid=name,
+                             name=name,
+                             quarantaine=True)
+        # register and wait for state updates
+        print("SMP-CC client: updating state: {}".format(
+            state.name))    
+        stub.UpdateQuarantine(state)

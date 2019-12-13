@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x88\x01\n\x08SsmState\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0ctime_created\x18\x03 \x01(\r\x12\x14\n\x0ctime_updated\x18\x04 \x01(\r\x12\x0e\n\x06status\x18\x05 \x01(\t\x12\x0f\n\x07\x63hanged\x18\x06 \x01(\x08\x12\x13\n\x0bquarantaine\x18\n \x01(\x08\x32S\n\rSmpSsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12&\n\nControlSsm\x12\t.SsmState\x1a\t.SsmState\"\x00\x30\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0csmpccs.proto\"\x14\n\x04Ping\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x14\n\x04Pong\x12\x0c\n\x04text\x18\x01 \x01(\t\"\x1e\n\x0cUpdateResult\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x88\x01\n\x08SsmState\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0ctime_created\x18\x03 \x01(\r\x12\x14\n\x0ctime_updated\x18\x04 \x01(\r\x12\x0e\n\x06status\x18\x05 \x01(\t\x12\x0f\n\x07\x63hanged\x18\x06 \x01(\x08\x12\x13\n\x0bquarantaine\x18\n \x01(\x08\x32S\n\rSmpSsmControl\x12\x1a\n\x08PingPong\x12\x05.Ping\x1a\x05.Pong\"\x00\x12&\n\nControlSsm\x12\t.SsmState\x1a\t.SsmState\"\x00\x30\x01\x32>\n\x0cSmpSsmUpdate\x12.\n\x10UpdateQuarantine\x12\t.SsmState\x1a\r.UpdateResult\"\x00\x62\x06proto3')
 )
 
 
@@ -85,6 +85,37 @@ _PONG = _descriptor.Descriptor(
   ],
   serialized_start=38,
   serialized_end=58,
+)
+
+
+_UPDATERESULT = _descriptor.Descriptor(
+  name='UpdateResult',
+  full_name='UpdateResult',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='UpdateResult.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=60,
+  serialized_end=90,
 )
 
 
@@ -156,12 +187,13 @@ _SSMSTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=61,
-  serialized_end=197,
+  serialized_start=93,
+  serialized_end=229,
 )
 
 DESCRIPTOR.message_types_by_name['Ping'] = _PING
 DESCRIPTOR.message_types_by_name['Pong'] = _PONG
+DESCRIPTOR.message_types_by_name['UpdateResult'] = _UPDATERESULT
 DESCRIPTOR.message_types_by_name['SsmState'] = _SSMSTATE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -179,6 +211,13 @@ Pong = _reflection.GeneratedProtocolMessageType('Pong', (_message.Message,), {
   })
 _sym_db.RegisterMessage(Pong)
 
+UpdateResult = _reflection.GeneratedProtocolMessageType('UpdateResult', (_message.Message,), {
+  'DESCRIPTOR' : _UPDATERESULT,
+  '__module__' : 'smpccs_pb2'
+  # @@protoc_insertion_point(class_scope:UpdateResult)
+  })
+_sym_db.RegisterMessage(UpdateResult)
+
 SsmState = _reflection.GeneratedProtocolMessageType('SsmState', (_message.Message,), {
   'DESCRIPTOR' : _SSMSTATE,
   '__module__' : 'smpccs_pb2'
@@ -194,8 +233,8 @@ _SMPSSMCONTROL = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=199,
-  serialized_end=282,
+  serialized_start=231,
+  serialized_end=314,
   methods=[
   _descriptor.MethodDescriptor(
     name='PingPong',
@@ -219,5 +258,29 @@ _SMPSSMCONTROL = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_SMPSSMCONTROL)
 
 DESCRIPTOR.services_by_name['SmpSsmControl'] = _SMPSSMCONTROL
+
+
+_SMPSSMUPDATE = _descriptor.ServiceDescriptor(
+  name='SmpSsmUpdate',
+  full_name='SmpSsmUpdate',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  serialized_start=316,
+  serialized_end=378,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='UpdateQuarantine',
+    full_name='SmpSsmUpdate.UpdateQuarantine',
+    index=0,
+    containing_service=None,
+    input_type=_SSMSTATE,
+    output_type=_UPDATERESULT,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_SMPSSMUPDATE)
+
+DESCRIPTOR.services_by_name['SmpSsmUpdate'] = _SMPSSMUPDATE
 
 # @@protoc_insertion_point(module_scope)

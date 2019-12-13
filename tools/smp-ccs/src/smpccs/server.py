@@ -130,11 +130,14 @@ class SsmStateStore(object):
         print("Registered: ", end="", flush=True)
         pprint_state(state, True)
 
-    def update(self, uuid, update):
+    def update(self, uuid, update, silent=False):
         if uuid not in self._store:
-            raise SsmNotFoundException("UUID: {} not found".format(uuid))
+            print("UUID: {} not found".format(uuid))
+            return
         # things are ok, do the update
-        _update_state_with_dict(self._store.get(uuid), update)
+        _update_state_with_dict(self._store.get(uuid), update, silent)
+        print("Updated: ")
+        pprint_state(self._store.get(uuid), detailed=True)
 
     def remove(self, uuid):
         if uuid not in self._store:
@@ -149,7 +152,7 @@ class SsmStateStore(object):
         """
         r = dict()
         for k, v in self._store.items():
-            r[k] = _state_to_dict(v)
+            r[k] = state_to_dict(v)
         return r
 
     def get(self, uuid):
@@ -157,13 +160,26 @@ class SsmStateStore(object):
 
 
 def pprint_state(state, detailed=False):
-    print("SsmState({})".format(state.uuid), flush=True)
+    print("SsmState({} | q={})"
+          .format(state.uuid, state.quarantaine), flush=True)
     if detailed:
-        for k, v in _state_to_dict(state).items():
+        for k, v in state_to_dict(state).items():
             print("\t{}: {}".format(k, v), flush=True)
 
 
-def _state_to_dict(state):
+def _update_state_with_dict(state, update, silent=False):
+    state_dict = state_to_dict(state)
+    state_dict.update(update)
+    state.uuid = state_dict.get("uuid")
+    state.name = state_dict.get("name")
+    state.status = state_dict.get("status")
+    state.time_created = state_dict.get("time_created")
+    state.time_updated = int(time.time())  # set to current time
+    state.changed = not silent  # send out notification to client
+    state.quarantaine = state_dict.get("quarantaine")
+
+
+def state_to_dict(state):
     return {
         "uuid": state.uuid,
         "name": state.name,
@@ -173,18 +189,6 @@ def _state_to_dict(state):
         "changed": state.changed,
         "quarantaine": state.quarantaine
     }
-
-
-def _update_state_with_dict(state, update):
-    state_dict = _state_to_dict(state)
-    state_dict.update(update)
-    state.uuid = state_dict.get("uuid")
-    state.name = state_dict.get("name")
-    state.status = state_dict.get("status")
-    state.time_created = state_dict.get("time_created")
-    state.time_updated = int(time.time())  # set to current time
-    state.changed = True  # set update flag
-    state.quarantaine = state_dict.get("quarantaine")
 
 
 # implements the RPC methods of SmpSsmControl
@@ -233,14 +237,32 @@ class SmpSsmControlServicer(pb2_grpc.SmpSsmControlServicer):
         pprint_state(state)
 
 
+class SmpSsmUpdateServicer(pb2_grpc.SmpSsmUpdateServicer):
+
+    def UpdateQuarantine(self, state, context):
+        print("Received state update from client: '{}'".format(state.uuid))
+        if self.store:
+            # only update quarantine
+            self.store.update(
+                state.uuid,
+                {"quarantaine": state_to_dict(state).get("quarantaine")},
+                silent=True)  # do not send update back to client
+        # return the updated state
+        return pb2.UpdateResult(status="OK")  # TODO improve error handling
+
+
 def serve():
     print("SMP-CC server starting ...", flush=True)
     store = SsmStateStore()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    servicer = SmpSsmControlServicer()
-    servicer.store = store
+    servicer1 = SmpSsmControlServicer()
+    servicer1.store = store
     pb2_grpc.add_SmpSsmControlServicer_to_server(
-        servicer, server)
+        servicer1, server)
+    servicer2 = SmpSsmUpdateServicer()
+    servicer2.store = store
+    pb2_grpc.add_SmpSsmUpdateServicer_to_server(
+        servicer2, server)
     server.add_insecure_port('[::]:{}'.format(os.getenv("GRPC_PORT", 9012)))
     server.start()
     print("SMP-CC server started: {}".format(server), flush=True)

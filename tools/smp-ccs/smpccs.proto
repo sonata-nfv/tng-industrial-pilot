@@ -35,6 +35,11 @@ service SmpSsmControl {
     rpc ControlSsm(SsmState) returns (stream SsmState) {}
 }
 
+service SmpSsmUpdate {
+    // Send a single state update from clinet to server
+    rpc UpdateQuarantine(SsmState) returns (UpdateResult) {}
+}
+
 
 message Ping {
     string text = 1;
@@ -42,6 +47,10 @@ message Ping {
 
 message Pong {
     string text = 1;
+}
+
+message UpdateResult {
+    string status = 1;
 }
 
 message SsmState {
