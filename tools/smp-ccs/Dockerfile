@@ -41,7 +41,9 @@ RUN python setup.py develop
 #
 # Runtime
 #
-EXPOSE 9011
+ENV REST_PORT 80
+EXPOSE 80
+ENV GRPC_PORT 9012
 EXPOSE 9012
 
 CMD ["smpccs"]

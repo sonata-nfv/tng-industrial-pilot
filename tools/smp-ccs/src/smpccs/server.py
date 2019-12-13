@@ -24,6 +24,7 @@
 # acknowledge the contributions of their colleagues of the SONATA
 # partner consortium (www.5gtango.eu).
 from concurrent import futures
+import os
 import time
 import grpc
 import smpccs_pb2_grpc as pb2_grpc
@@ -56,7 +57,7 @@ api.add_namespace(api_v1)
 
 
 def serve_rest_api(service_address="0.0.0.0",
-                   service_port=9011,
+                   service_port=os.getenv("REST_PORT", 80),
                    debug=True):
     app.run(host=service_address,
             port=int(service_port),
@@ -238,7 +239,7 @@ def serve():
     servicer.store = store
     pb2_grpc.add_SmpSsmControlServicer_to_server(
         servicer, server)
-    server.add_insecure_port('[::]:9012')
+    server.add_insecure_port('[::]:{}'.format(os.getenv("GRPC_PORT", 9012)))
     server.start()
     print("SMP-CC server started: {}".format(server), flush=True)
     try:
