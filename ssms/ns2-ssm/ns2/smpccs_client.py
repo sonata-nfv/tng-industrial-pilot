@@ -108,30 +108,22 @@ class SsmCommandControlClient(threading.Thread):
             time.sleep(TIME_RECONNECT)
 
 
-class SsmUpdateClient(threading.Thread):
+class SsmUpdateClient(object):
 
     def __init__(self, connection="localhost:9012"):
         """
         connection: connection string of the remote SMP-CC server.
         """
-        super().__init__(daemon=True)
         self.connection_str = connection
 
     def send_update(self, state):
         """
         state: the SSMs state object (type: pb2.SsmState)
         """
-        try:
-            with grpc.insecure_channel(self.connection_str) as channel:
-                stub = pb2_grpc.SmpSsmUpdateStub(channel)
-                # register and wait for state updates
-                print("SMP-CC client: sending updated state to SMP-CCS: {}"
-                      .format(state.name))
-                stub.UpdateQuarantine(state)
-            return True
-        except BaseException as ex:
-            print("SMP-CC client error: {}".format(ex))
-        return False
+        with grpc.insecure_channel(self.connection_str) as channel:
+            stub = pb2_grpc.SmpSsmUpdateStub(channel)
+            # register and wait for state updates
+            stub.UpdateQuarantine(state)
 
 
 class TestCallback(object):
