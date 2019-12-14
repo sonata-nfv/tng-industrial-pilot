@@ -301,8 +301,12 @@ class ns2SSM(smbase):
         self._set_quarantaine(target_quarantaine_state)
         # use RPC client to update state at SMP-CCS (i.e. to ensure the SMP-CC knows about automatically triggered updates)
         if self.smpcccu and self._service_state:
-            if self.smpcccu.send_update(self._service_state):
+            try:
+                self.smpcccu.send_update(self._service_state)
                 LOG.info("NS2 SSM: SMP-CC client has delivered update to SMP-CCS")
+            except BaseException as ex:
+                LOG.error("NS2 SSM: Could not send update to SMP-CC!")
+                LOG.error("NS2 SSM: Exception: {}".format(ex))
         else:
             LOG.error("NS2 SSM: SMP-CC client for updates is None")
         # done
