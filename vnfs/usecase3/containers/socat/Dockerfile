@@ -34,11 +34,10 @@ from ubuntu:xenial
 USER root
 
 RUN apt -y update && apt -y upgrade
-RUN apt -y install openssh-server curl net-tools
+RUN apt -y install socat curl net-tools iputils-ping
 
-RUN mkdir /var/run/sshd
-RUN mkdir /root/.ssh
+EXPOSE 11443
 
-EXPOSE 22
-
+COPY start.sh start.sh
+RUN chmod 755 start.sh
 CMD ["./start.sh"]
