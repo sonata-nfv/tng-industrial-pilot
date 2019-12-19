@@ -34,7 +34,7 @@ from ubuntu:xenial
 USER root
 
 RUN apt -y update && apt -y upgrade
-RUN apt -y install socat curl net-tools iputils-ping
+RUN apt -y install socat curl net-tools iputils-ping iptables
 
 EXPOSE 11443
 

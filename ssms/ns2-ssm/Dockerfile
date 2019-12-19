@@ -30,11 +30,12 @@
 # acknowledge the contributions of their colleagues of the 5GTANGO
 # partner consortium (www.5gtango.eu).
 
-FROM python:3.4-slim
+FROM python:3.6-slim
 MAINTAINER SONATA
 
 # install broker with fix
 RUN apt-get update && apt-get install -y git
+RUN pip install --upgrade pip
 RUN pip install grpcio-tools
 RUN pip install flask-restplus
 RUN git clone --single-branch --branch feature/reuse_channels https://github.com/eandersson/amqpstorm.git
