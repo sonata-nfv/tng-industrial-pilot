@@ -30,7 +30,7 @@
 # acknowledge the contributions of their colleagues of the 5GTANGO
 # partner consortium (www.5gtango.eu).
 
-FROM python:3.4-slim
+FROM python:3.6-slim
 MAINTAINER SONATA
 
 # install broker with fix
