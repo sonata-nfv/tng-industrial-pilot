@@ -62,8 +62,8 @@ spec:
         ns: ns3
     spec:
       containers:
-      - name: glasses-connector
-        image: sonatanfv/squidproxy:latest
+      - name: vnf-proxyvpn
+        image: sonatanfv/vnf-proxyvpn:latest
         imagePullPolicy: Always
         securityContext:
           capabilities:
