@@ -67,9 +67,7 @@ spec:
         imagePullPolicy: Always
         securityContext:
           capabilities:
-            add:
-            - NET_ADMIN
-            - SYS_ADMIN
+            privileged: true
         ports:
         - containerPort: 1194
           name: openvpn

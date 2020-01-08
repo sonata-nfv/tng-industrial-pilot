@@ -46,7 +46,7 @@ cloudnative_deployment_units:
     parameters:
       capabilities:
       - NET_ADMIN 
-      - SYS_ADMIN
+      privileged: true
      
 # corresponds to the k8s service layer: connection to the outside world     
 connection_points:
