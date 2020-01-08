@@ -25,64 +25,54 @@
 # partner consortium (www.5gtango.eu).---
 
 
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
-  name: usecase3
+  name: ns3-service
   labels:
     pilot: sm
+    ns: ns3
 spec:
   selector:
-    # must match the labels of the template
-    matchLabels:
-      pilot: sm
-    type: LoadBalancer
-    ports:
-      - name: squid
-        port: 3128 
-      - name: openvpn
-        port: 1194
-      - name: skype1
-        port: 443
-        protocol: TCP
-      - name: skype2
-        port: 3478-3481
-        protocol: UDP
-      - name: skype3
-        port: 50000-60000
-        protocol: UDP
+    pilot: sm
+    ns: ns3
+  type: LoadBalancer
+  ports:
+    - name: squid
+      port: 3128 
+    - name: openvpn
+      port: 1194
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: usecase3
+  name: ns3-deployment
   labels:
     pilot: sm
-  spec:
-    selector:
-      matchLabels:
+    ns: ns3
+spec:
+  selector:
+    matchLabels:
+      pilot: sm
+      ns: ns3
+  template:
+    metadata:
+      labels:
         pilot: sm
-    template:
-      metadata:
-        labels:
-          pilot: sm
-      spec:
-        containers:
-        - name: glasses-connector
-          image: sonatanfv/squidproxy:k8s
-          imagePullPolicy: Always
-          ports:
-          - containerPort: 1194
-            name: openvpn
-          - containerPort: 3128
-            name: squid
-          - containerPort: 443
-            name: skype1
-          - containerPort: 3478-3481
-            name: skype2
-          - containerPort: 50000-60000
-            name: skype3
-          parameters:
-            capabilities:
+        ns: ns3
+    spec:
+      containers:
+      - name: vnf-proxyvpn
+        image: sonatanfv/vnf-proxyvpn:latest
+        imagePullPolicy: Always
+        securityContext:
+          capabilities:
+            add:
             - NET_ADMIN
             - SYS_ADMIN
+        ports:
+        - containerPort: 1194
+          name: openvpn
+        - containerPort: 3128
+          name: squid
+        
