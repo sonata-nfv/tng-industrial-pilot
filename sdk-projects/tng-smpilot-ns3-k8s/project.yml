@@ -1,0 +1,17 @@
+descriptor_extension: yml
+version: '0.5'
+files:
+- path: Definitions/nsd/nsd_smpilot_ns3.yml
+  type: application/vnd.5gtango.nsd
+  tags:
+  - eu.5gtango
+- path: Definitions/vnfd/vnfd_connector.yml
+  type: application/vnd.5gtango.vnfd
+  tags:
+  - eu.5gtango
+package:
+  name: tng-smpilot-ns3-k8s
+  version: '0.1'
+  maintainer: Stefan Schneider (Paderborn University)
+  vendor: eu.5gtango
+  description: 'Smart manufacturing pilot: Glass interconnection service (NS3).'

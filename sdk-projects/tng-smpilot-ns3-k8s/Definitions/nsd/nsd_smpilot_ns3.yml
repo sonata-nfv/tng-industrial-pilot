@@ -22,55 +22,39 @@
 # funded by the European Commission under Grant number 761493 through
 # the Horizon 2020 and 5G-PPP programmes. The authors would like to
 # acknowledge the contributions of their colleagues of the SONATA
-# partner consortium (www.5gtango.eu).---
+# partner consortium (www.5gtango.eu).
 
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: ns3-service
-  labels:
-    pilot: sm
-    ns: ns3
-spec:
-  selector:
-    pilot: sm
-    ns: ns3
-  type: LoadBalancer
-  ports:
-    - name: squid
-      port: 3128 
-    - name: openvpn
-      port: 1194
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ns3-deployment
-  labels:
-    pilot: sm
-    ns: ns3
-spec:
-  selector:
-    matchLabels:
-      pilot: sm
-      ns: ns3
-  template:
-    metadata:
-      labels:
-        pilot: sm
-        ns: ns3
-    spec:
-      containers:
-      - name: vnf-proxyvpn
-        image: sonatanfv/vnf-proxyvpn:latest
-        imagePullPolicy: Always
-        securityContext:
-          capabilities:
-            privileged: true
-        ports:
-        - containerPort: 1194
-          name: openvpn
-        - containerPort: 3128
-          name: squid
-        
+descriptor_schema: "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-descriptor/nsd-schema.yml"
+vendor: "eu.5gtango"
+name: "tng-smpilot-ns3-k8s"
+version: "0.1"
+author: "Stefan Schneider (Paderborn University)"
+description: "Smart manufacturing pilot: Glass interconnection service (NS3) for K8s."
+
+network_functions:
+  - vnf_id: "vnf_conn"
+    vnf_vendor: "eu.5gtango"
+    vnf_name: "smpilot-connector"
+    vnf_version: "0.1"
+    
+connection_points:
+  - id: "openvpn"
+    interface: ipv4
+    type: "external"
+  - id: "squid"
+    interface: ipv4
+    type: "external"
+    
+virtual_links:
+  - id: "openvpn-link"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "openvpn"
+      - "vnf_conn:openvpn"
+  - id: "squid-link"
+    connectivity_type: "E-LAN"
+    connection_points_reference:
+      - "squid"
+      - "vnf_conn:squid"
