@@ -42,11 +42,11 @@ cloudnative_deployment_units:
         port: 1194
       - id: "squid"
         port: 3128
-      # openvpn client needs priviliged rights for the tunnel interface
-      parameters:
-        capabilities:
-        - NET_ADMIN 
-        - SYS_ADMIN
+    # openvpn client needs priviliged rights for the tunnel interface
+    parameters:
+      capabilities:
+      - NET_ADMIN 
+      - SYS_ADMIN
      
 # corresponds to the k8s service layer: connection to the outside world     
 connection_points:
