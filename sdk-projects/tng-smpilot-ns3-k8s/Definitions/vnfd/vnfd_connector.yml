@@ -44,9 +44,11 @@ cloudnative_deployment_units:
         port: 3128
     # openvpn client needs priviliged rights for the tunnel interface
     parameters:
-      capabilities:
-      - NET_ADMIN 
       privileged: true
+      # just NET_ADMIN doesn't suffice for Docker either...
+      # capabilities:
+      # - NET_ADMIN 
+      
      
 # corresponds to the k8s service layer: connection to the outside world     
 connection_points:
