@@ -66,8 +66,7 @@ spec:
         image: sonatanfv/vnf-proxyvpn:latest
         imagePullPolicy: Always
         securityContext:
-          capabilities:
-            privileged: true
+          privileged: true
         ports:
         - containerPort: 1194
           name: openvpn
