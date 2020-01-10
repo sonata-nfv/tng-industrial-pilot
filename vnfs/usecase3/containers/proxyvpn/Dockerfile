@@ -35,7 +35,7 @@ from ubuntu:xenial
 USER root
 RUN apt -y update && \
     apt -y upgrade && \
-    apt -y install squid openvpn && \
+    apt -y install squid openvpn curl dnsutils && \
     mkdir -p /dev/net && \
     mknod /dev/net/tun c 10 200 && \
     chmod 660 /dev/net/tun
