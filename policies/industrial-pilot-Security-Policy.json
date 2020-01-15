@@ -2,7 +2,7 @@
 	"descriptor_schema": "https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/policy-descriptor/policy-schema.yml",
 	"name": "industrial-pilot-Security-Policy1",
 	"vendor": "eu.5gtango",
-	"version": "0.7",
+	"version": "0.8",
 	"network_service": {
 		"vendor": "eu.5gtango",
 		"name": "tng-smpilot-ns2-eids",
@@ -44,7 +44,7 @@
 			"target": {
 				"name": "lhc-vnf2",
 				"vendor": "eu.5gtango",
-				"version": "0.8"
+				"version": "0.9"
 			}
 		}]
 	}]
