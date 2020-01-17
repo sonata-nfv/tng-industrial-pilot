@@ -40,8 +40,6 @@ spec:
   ports:
     - name: squid
       port: 3128 
-    - name: openvpn
-      port: 1194
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,14 +60,10 @@ spec:
         ns: ns3
     spec:
       containers:
-      - name: vnf-proxyvpn
-        image: sonatanfv/vnf-proxyvpn:latest
+      - name: vnf-proxy
+        image: sonatanfv/vnf-proxy:latest
         imagePullPolicy: Always
-        securityContext:
-          privileged: true
         ports:
-        - containerPort: 1194
-          name: openvpn
         - containerPort: 3128
           name: squid
         

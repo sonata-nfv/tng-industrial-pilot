@@ -40,19 +40,11 @@ network_functions:
     vnf_version: "0.1"
     
 connection_points:
-  - id: "openvpn"
-    interface: ipv4
-    type: "external"
   - id: "squid"
     interface: ipv4
     type: "external"
     
 virtual_links:
-  - id: "openvpn-link"
-    connectivity_type: "E-LAN"
-    connection_points_reference:
-      - "openvpn"
-      - "vnf_conn:openvpn"
   - id: "squid-link"
     connectivity_type: "E-LAN"
     connection_points_reference:
