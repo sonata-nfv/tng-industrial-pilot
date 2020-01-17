@@ -38,24 +38,12 @@ cloudnative_deployment_units:
   - id: "cdu01"
     image: "sonatanfv/vnf-proxyvpn:latest"
     connection_points:
-      - id: "openvpn"
-        port: 1194
       - id: "squid"
         port: 3128
-    # openvpn client needs priviliged rights for the tunnel interface
-    parameters:
-      privileged: true
-      # just NET_ADMIN doesn't suffice for Docker either...
-      # capabilities:
-      # - NET_ADMIN 
       
      
 # corresponds to the k8s service layer: connection to the outside world     
 connection_points:
-  - id: "openvpn"
-    interface: "ipv4"
-    type: "serviceendpoint"
-    port: 1194
   - id: "squid"
     interface: "ipv4"
     type: "serviceendpoint"
@@ -63,11 +51,6 @@ connection_points:
     
 # CNFs only use E-Tree links to map external ports/cp to internal ports/cp
 virtual_links:
-  - id: "openvpn-link"
-    connectivity_type: "E-Tree"
-    connection_points_reference:
-      - "openvpn"
-      - "cdu01:openvpn"
   - id: "squid-link"
     connectivity_type: "E-Tree"
     connection_points_reference:
