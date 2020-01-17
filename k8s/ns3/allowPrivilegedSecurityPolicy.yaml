@@ -1,0 +1,7 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: allowPrivileged
+spec:
+  privileged: true  
+  # for NS3 which needs privileged for creating tunnel interface

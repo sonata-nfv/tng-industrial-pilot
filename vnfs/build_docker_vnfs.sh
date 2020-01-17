@@ -35,6 +35,7 @@ docker build -t $target_repo/vnf-ids-elasticsearch:k8s -t $target_repo/vnf-ids-e
 # k: kibana
 docker build -t $target_repo/vnf-ids-kibana:k8s -t $target_repo/vnf-ids-kibana:latest -f ids-selk/k/Dockerfile ids-selk/k/
 # usecase3
+docker build -t $target_repo/vnf-proxy:k8s -t $target_repo/vnf-proxy:latest -f usecase3/containers/proxy/Dockerfile usecase3/containers/proxy
 docker build -t $target_repo/vnf-proxyvpn:k8s -t $target_repo/vnf-proxyvpn:latest -f usecase3/containers/proxyvpn/Dockerfile usecase3/containers/proxyvpn
 
 
