@@ -50,8 +50,6 @@ cloudnative_deployment_units:
     unit: "MB"
   parameters:
     env:
-      e_vnf3_eu_5gtango_0_9_elastic9200_ip: localhost # 'localhost' just as default, this will be overridden by the SP
-      e_vnf3_eu_5gtango_0_9_elastic9200_port: 9200
       VERSION: "0.9"
  
 # corresponds to the k8s service layer: connection to the outside world 
