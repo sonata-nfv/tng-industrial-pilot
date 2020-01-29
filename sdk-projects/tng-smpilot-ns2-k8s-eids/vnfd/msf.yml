@@ -82,8 +82,6 @@ cloudnative_deployment_units:
     unit: "MB"
   parameters:
     env:
-      lhc_vnf2_eu_5gtango_0_9_logstash5044_ip: localhost # 'localhost' just as default, this will be overridden by the SP
-      lhc_vnf2_eu_5gtango_0_9_logstash5044_port: 5044
       VERSION: '0.9'
     volume_mounts:
     - id: logs
