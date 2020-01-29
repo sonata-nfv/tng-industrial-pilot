@@ -22,8 +22,6 @@ cloudnative_deployment_units:
     unit: "MB"
   parameters:
     env:
-      e_vnf3_eu_5gtango_0_9_elastic9200_ip: localhost  # 'localhost' just as default, this will be overridden by the SP
-      e_vnf3_eu_5gtango_0_9_elastic9200_port: 9200
       VERSION: "0.9"
     volume_mounts:
     - id: logs
