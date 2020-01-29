@@ -53,10 +53,10 @@ cloudnative_deployment_units:
     unit: "MB"
   parameters:
     env:
-      # TODO: this should point to the k8s service layer of the CC
-      # the SP should add an env variable that contains this k8s service name
+      # TODO: set this if using the FMP
+      # otherwise, the SP should add an env variable that contains this k8s service name
       MQTT_BROKER_HOST: ns1-cc-service
-      MQTT_BROKER_PORT: 1883
+      QUARANTINE_MQTT_BROKER_HOST: ns1-q-cc-service
 
 - id: cdu02
   image: sonatanfv/vnf-ids-suricata:latest
