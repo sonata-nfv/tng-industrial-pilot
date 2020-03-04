@@ -1,0 +1,13 @@
+* First explain service details only with PPT. Don't start video yet
+* Then start video with "Demo time!"-Slide (1:40 of current video)
+* Normal production: Machine data arrives in normal NS1 as it should
+* Intrusion attempt:
+	* Assume hacker got IP address and already has access to the network
+	* Finds open Samba ports at IP address and connects to Samba share
+	* Could now read or write data on that Samba share
+* Intrusion detection: IDS notices intrusion, shows in Kibana dashboard
+* Aler triggered:
+	* Directly sends intrusion alert on monitoring system
+	* Policy --> installed monitoring rule --> fires --> triggers policy action & reconfiguration
+* Reconfiguration: Machine keeps sending data, but stops arriving in normal NS1 & starts arriving in NS1-q
+* Threat contained!
